@@ -3,8 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>MedBeauty · Finanzas</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<title>MedBeauty · Finanzas 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAQ1J-am1TkyHAbIT-zLtzDkNV-mfCO4-s",
+    authDomain: "medbeauty-71438.firebaseapp.com",
+    projectId: "medbeauty-71438",
+    storageBucket: "medbeauty-71438.firebasestorage.app",
+    messagingSenderId: "494839722349",
+    appId: "1:494839722349:web:6d0a7975364a030cf0ea64"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  window._db = db;
+  window._fs = { doc, setDoc, getDoc };
+  window._firebaseReady = true;
+  document.dispatchEvent(new Event('firebaseReady'));
+</script>
 <style>
 :root {
   --bg:#f7f5f0;--surface:#fff;--border:#e8e4dc;--border2:#d4cfc4;
@@ -173,195 +195,178 @@ body{background:var(--bg);color:var(--ink);font-family:'Syne',sans-serif;font-si
   .summary-grid{grid-template-columns:1fr}
 }
 </style>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAQ1J-am1TkyHAbIT-zLtzDkNV-mfCO4-s",
-    authDomain: "medbeauty-71438.firebaseapp.com",
-    projectId: "medbeauty-71438",
-    storageBucket: "medbeauty-71438.firebasestorage.app",
-    messagingSenderId: "494839722349",
-    appId: "1:494839722349:web:6d0a7975364a030cf0ea64"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  window._db = db;
-  window._fs = { doc, setDoc, getDoc };
-  window._firebaseReady = true;
-  document.dispatchEvent(new Event('firebaseReady'));
-</script>
 </head>
 <body>
 
+<div id="loadingOverlay" style="position:fixed;inset:0;background:#0b0e13;z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+  <div style="width:40px;height:40px;border:3px solid #1e2a3d;border-top-color:#2dbe7a;border-radius:50%;animation:spin 1s linear infinite"></div>
+  <div style="font-family:'Playfair Display',serif;font-size:18px;color:#2dbe7a">MedBeauty</div>
+  <div style="font-size:12px;color:#6b7a96;font-family:'DM Mono',monospace">Sincronizando finanzas...</div>
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+</div>
+
 <nav class="nav">
   <div class="nav-inner">
-    <div class="nav-brand">MedBeauty <span>· Finanzas</span></div>
-    <div class="nav-actions">
-      <button class="btn-nav ghost" onclick="openExport()">Exportar</button>
-      <button class="btn-nav primary" onclick="openAddTx()">+ Registro</button>
+    <div class="nav-brand">
+      <div class="nav-logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+      <div class="nav-title">MedBeauty <span>· Finanzas</span></div>
+    </div>
+    <div class="nav-right">
+      <button class="nav-btn active" onclick="showPage('mes',this)">Mes</button>
+      <button class="nav-btn" onclick="showPage('anual',this)">Anual</button>
+      <button class="nav-btn" onclick="showPage('analisis',this)">Análisis</button>
+      <button class="nav-btn" onclick="document.getElementById('exportModal').classList.add('open')">Exportar</button>
+      <button class="nav-btn primary" onclick="openAddTx()">+ Registro</button>
     </div>
   </div>
 </nav>
 
 <div class="main">
-
-  <!-- MONTH TABS -->
-  <div class="month-tabs-wrap" id="monthTabs"></div>
-
-  <!-- KPIs -->
-  <div class="kpi-row" id="kpiRow"></div>
-
-  <!-- CATEGORY BARS + EGRESOS -->
-  <div class="two-col">
+<div id="page-mes" class="page active">
+  <div class="month-row" id="monthRow"></div>
+  <div class="kpi-grid" id="kpiGrid"></div>
+  <div class="charts-grid">
     <div class="card">
-      <div class="card-title">Ingresos por categoría</div>
-      <div class="cat-bars" id="catBars"></div>
+      <div class="card-header"><span class="card-title">Ingresos por categoría</span><span class="card-value" id="chartCatTotal"></span></div>
+      <div class="chart-wrap"><canvas id="catChart"></canvas></div>
     </div>
     <div class="card">
-      <div class="card-title">Egresos del mes</div>
-      <div id="egresosList"></div>
-      <div class="section-header" style="margin-top:12px;margin-bottom:0">
-        <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--faint)">Total egresos</div>
-        <div id="totalEgr" style="font-family:'DM Mono',monospace;font-size:14px;font-weight:700;color:var(--red)"></div>
+      <div class="card-header"><span class="card-title">Ingreso vs Egreso</span></div>
+      <div class="chart-wrap"><canvas id="donutChart"></canvas></div>
+    </div>
+  </div>
+  <div class="charts-grid">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Movimientos</span>
+        <div style="display:flex;gap:5px">
+          <button class="nav-btn" id="fAll" onclick="filterTx('all')" style="padding:4px 10px;font-size:10px;border-color:var(--green);color:var(--green)">Todos</button>
+          <button class="nav-btn" id="fIng" onclick="filterTx('ing')" style="padding:4px 10px;font-size:10px">Ing.</button>
+          <button class="nav-btn" id="fEgr" onclick="filterTx('egr')" style="padding:4px 10px;font-size:10px">Egr.</button>
+        </div>
+      </div>
+      <div class="tx-list" id="txList"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Egresos por categoría</span></div>
+      <div class="cat-bars" id="egrBars"></div>
+      <hr>
+      <div style="display:flex;justify-content:space-between">
+        <span style="font-size:10px;font-family:'DM Mono',monospace;color:var(--muted)">TOTAL EGRESOS</span>
+        <span id="totalEgrLabel" style="font-family:'DM Mono',monospace;font-size:14px;color:var(--red);font-weight:700"></span>
       </div>
     </div>
   </div>
-
-  <!-- TRANSACTION LIST -->
-  <div class="card">
-    <div class="section-header">
-      <div class="card-title" style="margin-bottom:0">Todos los movimientos</div>
-      <div style="display:flex;gap:6px">
-        <button class="btn-export" onclick="filterTx('todos')" id="fTodos" style="border-color:var(--green);color:var(--green)">Todos</button>
-        <button class="btn-export" onclick="filterTx('ingresos')" id="fIngresos">Ingresos</button>
-        <button class="btn-export" onclick="filterTx('egresos')" id="fEgresos">Egresos</button>
-      </div>
-    </div>
-    <div style="height:12px"></div>
-    <div class="tx-list" id="txList"></div>
-  </div>
-
-  <!-- ANUAL SUMMARY -->
-  <div class="card" style="margin-top:12px">
-    <div class="card-title">Resumen anual 2026</div>
-    <div class="summary-grid" id="anualSummary"></div>
-  </div>
-
 </div>
 
-<!-- FAB -->
-<button class="fab" onclick="openAddTx()" title="Agregar movimiento">
+<div id="page-anual" class="page">
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-header"><span class="card-title">Evolución mensual 2026 — Ingresos · Egresos · Utilidad</span></div>
+    <div class="chart-wrap tall"><canvas id="lineChart"></canvas></div>
+  </div>
+  <div class="charts-grid-3" style="margin-bottom:14px">
+    <div class="card"><div class="card-header"><span class="card-title">Ingresos por mes</span></div><div class="chart-wrap short"><canvas id="barIngChart"></canvas></div></div>
+    <div class="card"><div class="card-header"><span class="card-title">Egresos por mes</span></div><div class="chart-wrap short"><canvas id="barEgrChart"></canvas></div></div>
+    <div class="card"><div class="card-header"><span class="card-title">Utilidad por mes</span></div><div class="chart-wrap short"><canvas id="barUtilChart"></canvas></div></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">Resumen 2026 — clic en un mes para verlo en detalle</span></div>
+    <table class="anual-table" id="anualTable"></table>
+  </div>
+</div>
+
+<div id="page-analisis" class="page">
+  <div class="insights-grid" id="insightsGrid"></div>
+  <div class="charts-grid">
+    <div class="card"><div class="card-header"><span class="card-title">Acumulado por categoría (todos los meses)</span></div><div class="chart-wrap tall"><canvas id="catAcumChart"></canvas></div></div>
+    <div class="card"><div class="card-header"><span class="card-title">Mix de ingresos acumulado</span></div><div class="chart-wrap tall"><canvas id="mixChart"></canvas></div></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">Composición de ingresos mes a mes</span></div>
+    <div class="chart-wrap tall"><canvas id="stackedChart"></canvas></div>
+  </div>
+</div>
+</div>
+
+<button class="fab" onclick="openAddTx()">
   <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
 </button>
 
-<!-- MODAL AGREGAR MOVIMIENTO -->
-<div class="modal-overlay" id="addModal">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="addModalTitle">Nuevo Movimiento</div>
-    <div class="toggle-tabs">
-      <button class="toggle-tab active" id="tabIng" onclick="setTxType('ingreso')">Ingreso</button>
-      <button class="toggle-tab" id="tabEgr" onclick="setTxType('egreso')">Egreso</button>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Fecha</label>
-        <input type="date" class="form-input" id="txFecha">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Monto ($)</label>
-        <input type="number" class="form-input" id="txMonto" min="0" step="0.01" placeholder="0.00">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Concepto</label>
-      <input type="text" class="form-input" id="txConcepto" placeholder="Ej: Hydrafacial, Consulta, Farmacia...">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Categoría</label>
-      <select class="form-select" id="txCategoria">
-        <optgroup label="Ingresos">
-          <option value="FACIALES">Faciales (Hydrafacial / PRP)</option>
-          <option value="CONSULTA">Consulta médica</option>
-          <option value="FARMACIA">Farmacia</option>
-          <option value="MULTIVITAMINICOS">Multivitamínicos</option>
-          <option value="ASTER">Aster</option>
-          <option value="EXTRAS">Extras / Comisiones</option>
-        </optgroup>
-        <optgroup label="Egresos">
-          <option value="FARMACIA_EGR">Farmacia (inversión)</option>
-          <option value="PERSONAL">Personal</option>
-          <option value="FIJOS">Gastos fijos</option>
-          <option value="SERVICIOS">Servicios</option>
-          <option value="OTROS">Otros</option>
-        </optgroup>
-      </select>
-    </div>
-    <button class="btn-primary" onclick="confirmAddTx()">Guardar movimiento</button>
-    <button class="btn-secondary" onclick="closeModal('addModal')">Cancelar</button>
+<div class="overlay" id="addModal"><div class="modal">
+  <div class="modal-handle"></div>
+  <div class="modal-title">Nuevo Movimiento</div>
+  <div class="type-toggle">
+    <button class="type-btn ing active" id="tIng" onclick="setType('ing')">Ingreso</button>
+    <button class="type-btn egr" id="tEgr" onclick="setType('egr')">Egreso</button>
   </div>
-</div>
+  <div class="form-row">
+    <div class="fg"><label class="fl">Fecha</label><input type="date" class="fi" id="txFecha"></div>
+    <div class="fg"><label class="fl">Monto ($)</label><input type="number" class="fi" id="txMonto" placeholder="0.00" min="0" step="0.01"></div>
+  </div>
+  <div class="fg"><label class="fl">Concepto</label><input type="text" class="fi" id="txConcepto" placeholder="Hydrafacial, Farmacia, Renta..."></div>
+  <div class="fg"><label class="fl">Categoría</label>
+    <select class="fs" id="txCat">
+      <optgroup label="— Ingresos —">
+        <option value="FACIALES">Faciales (Hydrafacial / PRP)</option>
+        <option value="CONSULTA">Consulta médica</option>
+        <option value="FARMACIA">Farmacia</option>
+        <option value="MULTIVITAMINICOS">Multivitamínicos</option>
+        <option value="ASTER">Aster</option>
+        <option value="EXTRAS">Extras / Comisiones</option>
+      </optgroup>
+      <optgroup label="— Egresos —">
+        <option value="FARMACIA_EGR">Farmacia (inversión)</option>
+        <option value="PERSONAL">Personal</option>
+        <option value="FIJOS">Gastos fijos</option>
+        <option value="SERVICIOS">Servicios</option>
+        <option value="OTROS">Otros</option>
+      </optgroup>
+    </select>
+  </div>
+  <button class="btn-p" onclick="confirmTx()">Guardar movimiento</button>
+  <button class="btn-s" onclick="closeModal('addModal')">Cancelar</button>
+</div></div>
 
-<!-- MODAL AGREGAR MES -->
-<div class="modal-overlay" id="addMonthModal">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Agregar Mes</div>
-    <div class="form-group">
-      <label class="form-label">Mes</label>
-      <select class="form-select" id="newMonthSel">
-        <option value="Enero">Enero 2026</option>
-        <option value="Febrero">Febrero 2026</option>
-        <option value="Marzo">Marzo 2026</option>
-        <option value="Abril">Abril 2026</option>
-        <option value="Junio">Junio 2026</option>
-        <option value="Julio">Julio 2026</option>
-        <option value="Agosto">Agosto 2026</option>
-        <option value="Septiembre">Septiembre 2026</option>
-        <option value="Octubre">Octubre 2026</option>
-        <option value="Noviembre">Noviembre 2026</option>
-        <option value="Diciembre">Diciembre 2026</option>
-      </select>
-    </div>
-    <button class="btn-primary" onclick="confirmAddMonth()">Crear mes</button>
-    <button class="btn-secondary" onclick="closeModal('addMonthModal')">Cancelar</button>
+<div class="overlay" id="monthModal"><div class="modal">
+  <div class="modal-handle"></div>
+  <div class="modal-title">Agregar mes</div>
+  <div class="fg"><label class="fl">Mes</label>
+    <select class="fs" id="newMonth">
+      <option value="Enero">Enero 2026</option>
+      <option value="Junio">Junio 2026</option>
+      <option value="Julio">Julio 2026</option>
+      <option value="Agosto">Agosto 2026</option>
+      <option value="Septiembre">Septiembre 2026</option>
+      <option value="Octubre">Octubre 2026</option>
+      <option value="Noviembre">Noviembre 2026</option>
+      <option value="Diciembre">Diciembre 2026</option>
+    </select>
   </div>
-</div>
+  <button class="btn-p" onclick="confirmMonth()">Crear mes</button>
+  <button class="btn-s" onclick="closeModal('monthModal')">Cancelar</button>
+</div></div>
 
-<!-- MODAL EXPORT -->
-<div class="modal-overlay" id="exportModal">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Exportar</div>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
-      <div onclick="exportData('mes')" style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg);border-radius:10px;cursor:pointer;border:1.5px solid transparent;transition:all .15s" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='transparent'">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        <div><div style="font-weight:700;font-size:14px">Mes actual (CSV)</div><div style="font-size:12px;color:var(--muted)">Todos los movimientos del mes seleccionado</div></div>
-      </div>
-      <div onclick="exportData('anual')" style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg);border-radius:10px;cursor:pointer;border:1.5px solid transparent;transition:all .15s" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='transparent'">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        <div><div style="font-weight:700;font-size:14px">Resumen anual (CSV)</div><div style="font-size:12px;color:var(--muted)">Totales por mes: ingresos, egresos, utilidad</div></div>
-      </div>
+<div class="overlay" id="exportModal"><div class="modal">
+  <div class="modal-handle"></div>
+  <div class="modal-title">Exportar datos</div>
+  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+    <div onclick="doExport('mes')" style="display:flex;gap:14px;align-items:center;padding:14px;background:var(--card2);border-radius:10px;cursor:pointer;border:1px solid var(--border2)" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border2)'">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <div><div style="font-weight:700;font-size:14px;color:var(--ink)">Mes actual CSV</div><div style="font-size:12px;color:var(--muted)">Todos los movimientos del mes activo</div></div>
     </div>
-    <button class="btn-secondary" onclick="closeModal('exportModal')">Cerrar</button>
+    <div onclick="doExport('anual')" style="display:flex;gap:14px;align-items:center;padding:14px;background:var(--card2);border-radius:10px;cursor:pointer;border:1px solid var(--border2)" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border2)'">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <div><div style="font-weight:700;font-size:14px;color:var(--ink)">Resumen anual CSV</div><div style="font-size:12px;color:var(--muted)">Totales por mes — para Excel o Numbers</div></div>
+    </div>
   </div>
-</div>
+  <button class="btn-s" onclick="closeModal('exportModal')">Cerrar</button>
+</div></div>
 
 <script>
-// ── CAT COLORS ──
-const CAT_COLORS = {
-  FACIALES:'#16a34a', FARMACIA:'#1d4ed8', CONSULTA:'#9a6f2e',
-  MULTIVITAMINICOS:'#6d28d9', ASTER:'#be185d', EXTRAS:'#64748b',
-  FARMACIA_EGR:'#b91c1c', PERSONAL:'#92400e', FIJOS:'#166534',
-  SERVICIOS:'#0369a1', OTROS:'#64748b'
-};
-
-// ── INITIAL DATA (Mayo 2026 real) ──
 const INITIAL_DATA = {
+  "Febrero": {"ingresos": [{"id": 201, "fecha": "2026-01-31", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 202, "fecha": "2026-01-31", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 999}, {"id": 203, "fecha": "2026-01-31", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 700}, {"id": 204, "fecha": "2026-02-01", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 200}, {"id": 205, "fecha": "2026-02-01", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 400}, {"id": 206, "fecha": "2026-02-02", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 191}, {"id": 207, "fecha": "2026-02-02", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 999}, {"id": 208, "fecha": "2026-02-02", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 200}, {"id": 209, "fecha": "2026-02-03", "concepto": "COMISIONES", "categoria": "EXTRAS", "monto": 1600}, {"id": 210, "fecha": "2026-02-03", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 750}, {"id": 211, "fecha": "2026-02-03", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1000}, {"id": 212, "fecha": "2026-02-03", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 999}, {"id": 213, "fecha": "2026-02-04", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 250}, {"id": 214, "fecha": "2026-02-04", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 250}, {"id": 215, "fecha": "2026-02-06", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1299}, {"id": 216, "fecha": "2026-02-06", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 299}, {"id": 217, "fecha": "2026-02-07", "concepto": "PRP + HYDRA", "categoria": "FACIALES", "monto": 1299}, {"id": 218, "fecha": "2026-02-07", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 250}, {"id": 219, "fecha": "2026-02-09", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1998}, {"id": 220, "fecha": "2026-02-09", "concepto": "PRP + HYDRA", "categoria": "FACIALES", "monto": 999}, {"id": 221, "fecha": "2026-02-09", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1270}, {"id": 222, "fecha": "2026-02-10", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 500}, {"id": 223, "fecha": "2026-02-10", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 120}, {"id": 224, "fecha": "2026-02-10", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 350}, {"id": 225, "fecha": "2026-02-10", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 999}, {"id": 226, "fecha": "2026-02-11", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 900}, {"id": 227, "fecha": "2026-02-11", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 350}, {"id": 228, "fecha": "2026-02-11", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 550}, {"id": 229, "fecha": "2026-02-12", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 1900}, {"id": 230, "fecha": "2026-02-12", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1280}, {"id": 231, "fecha": "2026-02-16", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 850}, {"id": 232, "fecha": "2026-02-16", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 250}, {"id": 233, "fecha": "2026-02-17", "concepto": "PROTOCOLO 30", "categoria": "FACIALES", "monto": 1000}, {"id": 234, "fecha": "2026-02-18", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 400}, {"id": 235, "fecha": "2026-02-19", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 350}, {"id": 236, "fecha": "2026-02-19", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 750}, {"id": 237, "fecha": "2026-02-19", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 949}, {"id": 238, "fecha": "2026-02-19", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 3249}, {"id": 239, "fecha": "2026-02-19", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 950}, {"id": 240, "fecha": "2026-02-20", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 500}, {"id": 241, "fecha": "2026-02-20", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 705}, {"id": 242, "fecha": "2026-02-20", "concepto": "MVI VITAFUSIN", "categoria": "FARMACIA", "monto": 999}, {"id": 243, "fecha": "2026-02-20", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 249}, {"id": 244, "fecha": "2026-02-21", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 560}, {"id": 245, "fecha": "2026-02-21", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 250}, {"id": 246, "fecha": "2026-02-21", "concepto": "PRP + HYDRA", "categoria": "FACIALES", "monto": 1599}, {"id": 247, "fecha": "2026-02-23", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 590}, {"id": 248, "fecha": "2026-02-23", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 750}, {"id": 249, "fecha": "2026-02-24", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1200}, {"id": 250, "fecha": "2026-02-24", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 650}, {"id": 251, "fecha": "2026-02-24", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1249}, {"id": 252, "fecha": "2026-02-25", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 100}, {"id": 253, "fecha": "2026-02-25", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 500}, {"id": 254, "fecha": "2026-02-27", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 1250}, {"id": 255, "fecha": "2026-02-27", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1030}, {"id": 256, "fecha": "2026-02-27", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 3200}], "egresos": [{"id": 301, "fecha": "2026-01-31", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 2950}, {"id": 302, "fecha": "2026-02-03", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1150}, {"id": 303, "fecha": "2026-02-09", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 970}, {"id": 304, "fecha": "2026-02-09", "concepto": "PERSONAL", "categoria": "PERSONAL", "monto": 3000}, {"id": 305, "fecha": "2026-02-10", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1750}, {"id": 306, "fecha": "2026-02-23", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1200}]},
+  "Marzo": {"ingresos": [{"id": 401, "fecha": "2026-03-02", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 402, "fecha": "2026-03-02", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 590}, {"id": 403, "fecha": "2026-03-02", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1249}, {"id": 404, "fecha": "2026-03-03", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 830}, {"id": 405, "fecha": "2026-03-03", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 730}, {"id": 406, "fecha": "2026-03-04", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1200}, {"id": 407, "fecha": "2026-03-04", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 408, "fecha": "2026-03-04", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 950}, {"id": 409, "fecha": "2026-03-05", "concepto": "CONSULTA ASTER", "categoria": "ASTER", "monto": 1000}, {"id": 410, "fecha": "2026-03-05", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 700}, {"id": 411, "fecha": "2026-03-05", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 2248}, {"id": 412, "fecha": "2026-03-05", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 413, "fecha": "2026-03-06", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 414, "fecha": "2026-03-06", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 499}, {"id": 415, "fecha": "2026-03-06", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 680}, {"id": 416, "fecha": "2026-03-07", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 400}, {"id": 417, "fecha": "2026-03-07", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 418, "fecha": "2026-03-09", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 1250}, {"id": 419, "fecha": "2026-03-09", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1850}, {"id": 420, "fecha": "2026-03-10", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 750}, {"id": 421, "fecha": "2026-03-11", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 422, "fecha": "2026-03-11", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 650}, {"id": 423, "fecha": "2026-03-12", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 699}, {"id": 424, "fecha": "2026-03-13", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1260}, {"id": 425, "fecha": "2026-03-13", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 450}, {"id": 426, "fecha": "2026-03-14", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 700}, {"id": 427, "fecha": "2026-03-16", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 428, "fecha": "2026-03-17", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 540}, {"id": 429, "fecha": "2026-03-17", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 1298}, {"id": 430, "fecha": "2026-03-18", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1250}, {"id": 431, "fecha": "2026-03-18", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 750}, {"id": 432, "fecha": "2026-03-19", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 360}, {"id": 433, "fecha": "2026-03-19", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 800}, {"id": 434, "fecha": "2026-03-20", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 435, "fecha": "2026-03-20", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 500}, {"id": 436, "fecha": "2026-03-21", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 690}, {"id": 437, "fecha": "2026-03-23", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 1000}, {"id": 438, "fecha": "2026-03-23", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1250}, {"id": 439, "fecha": "2026-03-24", "concepto": "PRP + HYDRA MEMBRESIAS", "categoria": "FACIALES", "monto": 3449}, {"id": 440, "fecha": "2026-03-25", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1100}, {"id": 441, "fecha": "2026-03-25", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 375}, {"id": 442, "fecha": "2026-03-25", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 443, "fecha": "2026-03-26", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1849}, {"id": 444, "fecha": "2026-03-26", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 200}, {"id": 445, "fecha": "2026-03-26", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 80}, {"id": 446, "fecha": "2026-03-26", "concepto": "HYDRAFACIAL MEMBRESIA", "categoria": "FACIALES", "monto": 699}, {"id": 447, "fecha": "2026-03-27", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 448, "fecha": "2026-03-27", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 325}, {"id": 449, "fecha": "2026-03-28", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 490}, {"id": 450, "fecha": "2026-03-28", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1300}, {"id": 451, "fecha": "2026-03-28", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 400}], "egresos": [{"id": 501, "fecha": "2026-03-03", "concepto": "PERSONAL AUTO", "categoria": "PERSONAL", "monto": 6000}, {"id": 502, "fecha": "2026-03-03", "concepto": "DENTISTA", "categoria": "PERSONAL", "monto": 700}, {"id": 503, "fecha": "2026-03-05", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 2000}, {"id": 504, "fecha": "2026-03-07", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1100}, {"id": 505, "fecha": "2026-03-12", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1200}, {"id": 506, "fecha": "2026-03-18", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1900}, {"id": 507, "fecha": "2026-03-23", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1050}, {"id": 508, "fecha": "2026-03-27", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1590}]},
+  "Abril": {"ingresos": [{"id": 601, "fecha": "2026-04-01", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 602, "fecha": "2026-04-01", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 800}, {"id": 603, "fecha": "2026-04-01", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1249}, {"id": 604, "fecha": "2026-04-01", "concepto": "CONSULTA ASTER", "categoria": "ASTER", "monto": 1700}, {"id": 605, "fecha": "2026-04-01", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 1398}, {"id": 606, "fecha": "2026-04-02", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 2048}, {"id": 607, "fecha": "2026-04-06", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 608, "fecha": "2026-04-06", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 770}, {"id": 609, "fecha": "2026-04-07", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 599}, {"id": 610, "fecha": "2026-04-08", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 611, "fecha": "2026-04-08", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1175}, {"id": 612, "fecha": "2026-04-09", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 1300}, {"id": 613, "fecha": "2026-04-09", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 400}, {"id": 614, "fecha": "2026-04-09", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 635}, {"id": 615, "fecha": "2026-04-10", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 200}, {"id": 616, "fecha": "2026-04-10", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 699}, {"id": 617, "fecha": "2026-04-10", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 800}, {"id": 618, "fecha": "2026-04-10", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 610}, {"id": 619, "fecha": "2026-04-10", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1249}, {"id": 620, "fecha": "2026-04-11", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 621, "fecha": "2026-04-11", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 700}, {"id": 622, "fecha": "2026-04-11", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 699}, {"id": 623, "fecha": "2026-04-13", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 624, "fecha": "2026-04-13", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 640}, {"id": 625, "fecha": "2026-04-14", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 750}, {"id": 626, "fecha": "2026-04-14", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 450}, {"id": 627, "fecha": "2026-04-14", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 660}, {"id": 628, "fecha": "2026-04-15", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 570}, {"id": 629, "fecha": "2026-04-15", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 630, "fecha": "2026-04-15", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1249}, {"id": 631, "fecha": "2026-04-16", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 700}, {"id": 632, "fecha": "2026-04-16", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 633, "fecha": "2026-04-16", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 1299}, {"id": 634, "fecha": "2026-04-17", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 699}, {"id": 635, "fecha": "2026-04-17", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 636, "fecha": "2026-04-17", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 550}, {"id": 637, "fecha": "2026-04-18", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1250}, {"id": 638, "fecha": "2026-04-18", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 910}, {"id": 639, "fecha": "2026-04-18", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 150}, {"id": 640, "fecha": "2026-04-18", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 699}, {"id": 641, "fecha": "2026-04-21", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 642, "fecha": "2026-04-21", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 699}, {"id": 643, "fecha": "2026-04-21", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1700}, {"id": 644, "fecha": "2026-04-22", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 290}, {"id": 645, "fecha": "2026-04-22", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 350}, {"id": 646, "fecha": "2026-04-22", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 699}, {"id": 647, "fecha": "2026-04-23", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 1398}, {"id": 648, "fecha": "2026-04-23", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 649, "fecha": "2026-04-23", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1321}, {"id": 650, "fecha": "2026-04-24", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 4194}, {"id": 651, "fecha": "2026-04-24", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 750}, {"id": 652, "fecha": "2026-04-24", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1600}, {"id": 653, "fecha": "2026-04-25", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 500}, {"id": 654, "fecha": "2026-04-25", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1000}, {"id": 655, "fecha": "2026-04-27", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 900}, {"id": 656, "fecha": "2026-04-27", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 657, "fecha": "2026-04-28", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 550}, {"id": 658, "fecha": "2026-04-28", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1030}, {"id": 659, "fecha": "2026-04-29", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 2170}, {"id": 660, "fecha": "2026-04-29", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 550}, {"id": 661, "fecha": "2026-04-29", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 1898}, {"id": 662, "fecha": "2026-04-30", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 663, "fecha": "2026-04-30", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 650}], "egresos": [{"id": 701, "fecha": "2026-04-01", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1250}, {"id": 702, "fecha": "2026-04-10", "concepto": "PERSONAL", "categoria": "PERSONAL", "monto": 1000}, {"id": 703, "fecha": "2026-04-11", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 3950}, {"id": 704, "fecha": "2026-04-15", "concepto": "PERSONAL FIJOS", "categoria": "FIJOS", "monto": 1300}, {"id": 705, "fecha": "2026-04-16", "concepto": "PERSONAL", "categoria": "PERSONAL", "monto": 1140}, {"id": 706, "fecha": "2026-04-17", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 2050}, {"id": 707, "fecha": "2026-04-19", "concepto": "PERSONAL", "categoria": "PERSONAL", "monto": 14000}, {"id": 708, "fecha": "2026-04-24", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 2450}, {"id": 709, "fecha": "2026-04-24", "concepto": "INSUMOS FACIALES", "categoria": "FACIALES", "monto": 1600}, {"id": 710, "fecha": "2026-04-24", "concepto": "PERSONAL", "categoria": "PERSONAL", "monto": 1090}, {"id": 711, "fecha": "2026-04-28", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 700}, {"id": 712, "fecha": "2026-04-29", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1200}]},
   "Mayo": {
     ingresos: [
       {id:1,fecha:"2026-05-01",concepto:"HYDRAFACIAL",categoria:"FACIALES",monto:699},
@@ -403,405 +408,574 @@ const INITIAL_DATA = {
       {id:37,fecha:"2026-05-18",concepto:"CONSULTA",categoria:"CONSULTA",monto:750},
       {id:38,fecha:"2026-05-18",concepto:"FARMACIA",categoria:"FARMACIA",monto:630},
       {id:39,fecha:"2026-05-18",concepto:"HYDRAFACIAL",categoria:"FACIALES",monto:600},
-      {id:40,fecha:"2026-05-18",concepto:"CONSULTA ASTER",categoria:"ASTER",monto:3000},
+      {id:40,fecha:"2026-05-18",concepto:"CONSULTA ASTER",categoria:"ASTER",monto:3000}
     ],
     egresos: [
       {id:101,fecha:"2026-05-06",concepto:"FARMACIA",categoria:"FARMACIA_EGR",monto:2120},
       {id:102,fecha:"2026-05-11",concepto:"PERSONAL",categoria:"PERSONAL",monto:4500},
       {id:103,fecha:"2026-05-14",concepto:"PERSONAL",categoria:"PERSONAL",monto:2200},
-      {id:104,fecha:"2026-05-16",concepto:"FARMACIA",categoria:"FARMACIA_EGR",monto:2300},
+      {id:104,fecha:"2026-05-16",concepto:"FARMACIA",categoria:"FARMACIA_EGR",monto:2300}
     ]
   }
 };
 
-// ── STATE ──
-let data = {};
-let months = [];
-let activeMonth = 'Mayo';
-let txFilter = 'todos';
-let txType = 'ingreso';
-let editingTxId = null;
-let nextId = 200;
+// ══ COLORS ══
+const COLORS = {
+  FACIALES:'#2dbe7a', CONSULTA:'#e8b44a', FARMACIA:'#4a9eff',
+  MULTIVITAMINICOS:'#a78bfa', ASTER:'#f472b6', EXTRAS:'#6b7a96',
+  FARMACIA_EGR:'#e85555', PERSONAL:'#fb923c', FIJOS:'#34d399',
+  SERVICIOS:'#60a5fa', OTROS:'#94a3b8'
+};
+const CAT_LABELS = {
+  FACIALES:'Faciales', CONSULTA:'Consulta', FARMACIA:'Farmacia',
+  MULTIVITAMINICOS:'Multivit.', ASTER:'Aster', EXTRAS:'Extras',
+  FARMACIA_EGR:'Farm.Inv.', PERSONAL:'Personal', FIJOS:'Fijos',
+  SERVICIOS:'Servicios', OTROS:'Otros'
+};
 
-// ── FIREBASE STORAGE ──
+Chart.defaults.color = '#6b7a96';
+Chart.defaults.font.family = "'DM Mono', monospace";
+Chart.defaults.font.size = 10;
+const GRID = 'rgba(30,42,61,0.8)';
+
+// ══ STATE ══
+let data = {}, months = [], activeMonth = 'Mayo';
+let txFilter = 'all', txType = 'ing', nextId = 1000;
+let charts = {};
+
+// ══ FIREBASE STORAGE ══
 async function save() {
   try {
-    const { doc, setDoc } = window._fs;
-    const db = window._db;
-    await setDoc(doc(db, 'finanzas', 'meses'),    { data: JSON.stringify(months), ts: Date.now() });
-    await setDoc(doc(db, 'finanzas', 'datos'),    { data: JSON.stringify(data),   ts: Date.now() });
-  } catch(e) {
-    console.error('Save error:', e);
-    showToast('Error al guardar — verifica conexión');
-  }
-}
-
-function showLoading(show) {
-  let el = document.getElementById('loadingOverlay');
-  if (!el) {
-    el = document.createElement('div');
-    el.id = 'loadingOverlay';
-    el.style.cssText = 'position:fixed;inset:0;background:rgba(247,245,240,.95);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-family:Syne,sans-serif';
-    el.innerHTML = `
-      <div style="width:44px;height:44px;border:3px solid #e8e4dc;border-top-color:#1a5c38;border-radius:50%;animation:spin 1s linear infinite"></div>
-      <div style="font-size:15px;color:#1a5c38;font-weight:700">MedBeauty Finanzas</div>
-      <div style="font-size:12px;color:#6b6b78">Sincronizando con la nube...</div>
-    `;
-    const style = document.createElement('style');
-    style.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
-    document.head.appendChild(style);
-    document.body.appendChild(el);
-  }
-  el.style.display = show ? 'flex' : 'none';
+    const {doc,setDoc} = window._fs, db = window._db;
+    await setDoc(doc(db,'finanzas','meses'), {data:JSON.stringify(months), ts:Date.now()});
+    await setDoc(doc(db,'finanzas','datos'), {data:JSON.stringify(data), ts:Date.now()});
+  } catch(e) { toast('Error al guardar'); }
 }
 
 async function load() {
   try {
-    showLoading(true);
-    const { doc, getDoc } = window._fs;
-    const db = window._db;
-
-    const [mSnap, dSnap] = await Promise.all([
-      getDoc(doc(db, 'finanzas', 'meses')),
-      getDoc(doc(db, 'finanzas', 'datos'))
+    const {doc,getDoc} = window._fs, db = window._db;
+    const [ms,ds] = await Promise.all([
+      getDoc(doc(db,'finanzas','meses')),
+      getDoc(doc(db,'finanzas','datos'))
     ]);
-
-    if (mSnap.exists() && dSnap.exists()) {
-      months = JSON.parse(mSnap.data().data);
-      data   = JSON.parse(dSnap.data().data);
+    if (ms.exists() && ds.exists()) {
+      months = JSON.parse(ms.data().data);
+      data   = JSON.parse(ds.data().data);
     } else {
-      // First time — load initial Mayo data
       data   = JSON.parse(JSON.stringify(INITIAL_DATA));
-      months = ['Mayo'];
+      months = ['Febrero','Marzo','Abril','Mayo'];
       await save();
     }
-
-    // Recalculate nextId
-    let maxId = 200;
-    Object.values(data).forEach(mo => {
-      [...(mo.ingresos||[]), ...(mo.egresos||[])].forEach(tx => {
-        if (tx.id > maxId) maxId = tx.id;
-      });
-    });
-    nextId = maxId + 1;
-    activeMonth = months[months.length - 1];
-
+    let max = 1000;
+    Object.values(data).forEach(m => [...(m.ingresos||[]),...(m.egresos||[])].forEach(t => { if(t.id>max) max=t.id; }));
+    nextId = max + 1;
+    activeMonth = months[months.length-1];
   } catch(e) {
-    console.error('Load error:', e);
     data   = JSON.parse(JSON.stringify(INITIAL_DATA));
-    months = ['Mayo'];
-    showToast('Sin conexión — cargando datos locales');
-  } finally {
-    showLoading(false);
+    months = ['Febrero','Marzo','Abril','Mayo'];
   }
 }
 
-// ── HELPERS ──
-function fmt(n) { return '$' + Number(n).toLocaleString('es-MX', {minimumFractionDigits:0, maximumFractionDigits:0}); }
-function fmtFull(n) { return '$' + Number(n).toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+// ══ HELPERS ══
+const $ = id => document.getElementById(id);
+function fmt(n) { return '$'+Number(n).toLocaleString('es-MX',{minimumFractionDigits:0,maximumFractionDigits:0}); }
 function fmtDate(d) {
-  if (!d) return '';
-  const parts = d.split('-');
-  const months_s = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  return parts[2] + ' ' + months_s[parseInt(parts[1])-1];
+  if(!d) return '';
+  const p=d.split('-'), ms=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return p[2]+' '+ms[parseInt(p[1])-1];
+}
+function tIng(m) { return (data[m]?.ingresos||[]).reduce((s,x)=>s+x.monto,0); }
+function tEgr(m) { return (data[m]?.egresos||[]).reduce((s,x)=>s+x.monto,0); }
+function getMo() { return data[activeMonth]||{ingresos:[],egresos:[]}; }
+
+function destroyChart(id) { if(charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+// ══ PAGE SWITCH ══
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  $('page-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(name==='anual') renderAnual();
+  if(name==='analisis') renderAnalisis();
 }
 
-function getMonthData() {
-  return data[activeMonth] || {ingresos:[], egresos:[]};
-}
-
-function totalIng(mo) { return (data[mo]?.ingresos || []).reduce((s,x) => s+x.monto, 0); }
-function totalEgr(mo) { return (data[mo]?.egresos || []).reduce((s,x) => s+x.monto, 0); }
-
-// ── RENDER TABS ──
+// ══ RENDER TABS ══
 function renderTabs() {
-  const el = document.getElementById('monthTabs');
-  el.innerHTML = months.map(m =>
-    `<button class="month-tab ${m===activeMonth?'active':''}" onclick="setMonth('${m}')">${m}</button>`
-  ).join('') + `<button class="month-tab add" onclick="openAddMonth()">+ Mes</button>`;
+  $('monthRow').innerHTML = months.map(m =>
+    `<button class="month-pill ${m===activeMonth?'active':''}" onclick="setMonth('${m}')">${m}</button>`
+  ).join('') + `<button class="month-pill add-pill" onclick="$('monthModal').classList.add('open')">+ Mes</button>`;
 }
 
-function setMonth(m) {
-  activeMonth = m;
-  txFilter = 'todos';
-  renderAll();
+function setMonth(m) { activeMonth=m; txFilter='all'; renderMes(); }
+
+// ══ RENDER MES ══
+function renderMes() {
+  renderTabs();
+  renderKPIs();
+  renderCatChart();
+  renderDonut();
+  renderTxList();
+  renderEgrBars();
 }
 
-// ── RENDER KPIs ──
 function renderKPIs() {
-  const mo = getMonthData();
-  const ing = mo.ingresos.reduce((s,x) => s+x.monto, 0);
-  const egr = mo.egresos.reduce((s,x) => s+x.monto, 0);
-  const util = ing - egr;
-  const pct = ing > 0 ? Math.round(util/ing*100) : 0;
-  document.getElementById('kpiRow').innerHTML = `
-    <div class="kpi-card">
-      <div class="kpi-label">Ingresos</div>
-      <div class="kpi-value green">${fmt(ing)}</div>
-      <div class="kpi-delta">${activeMonth} 2026</div>
+  const mo = getMo();
+  const ing = mo.ingresos.reduce((s,x)=>s+x.monto,0);
+  const egr = mo.egresos.reduce((s,x)=>s+x.monto,0);
+  const util = ing-egr;
+  const pct = ing>0?Math.round(util/ing*100):0;
+  // Compare with previous month
+  const idx = months.indexOf(activeMonth);
+  const prevM = idx>0?months[idx-1]:null;
+  const prevIng = prevM?tIng(prevM):0;
+  const delta = prevM?Math.round((ing-prevIng)/prevIng*100):null;
+
+  $('kpiGrid').innerHTML = `
+    <div class="kpi k-green">
+      <span class="kpi-label">Ingresos ${activeMonth}</span>
+      <span class="kpi-value green">${fmt(ing)}</span>
+      <span class="kpi-sub">${mo.ingresos.length} movimientos</span>
+      ${delta!==null?`<span class="kpi-trend ${delta>=0?'up':'down'}">${delta>=0?'↑':'↓'} ${Math.abs(delta)}% vs ${prevM}</span>`:''}
     </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Egresos</div>
-      <div class="kpi-value red">${fmt(egr)}</div>
-      <div class="kpi-delta">${mo.egresos.length} movimientos</div>
+    <div class="kpi k-red">
+      <span class="kpi-label">Egresos ${activeMonth}</span>
+      <span class="kpi-value red">${fmt(egr)}</span>
+      <span class="kpi-sub">${mo.egresos.length} movimientos</span>
     </div>
-    <div class="kpi-card featured">
-      <div class="kpi-label">Utilidad neta</div>
-      <div class="kpi-value">${fmt(util)}</div>
-      <div class="kpi-delta" style="color:rgba(255,255,255,.6)">${pct}% del ingreso</div>
+    <div class="kpi k-gold k-featured">
+      <span class="kpi-label">Utilidad neta</span>
+      <span class="kpi-value gold">${fmt(util)}</span>
+      <span class="kpi-sub">${pct}% del ingreso</span>
+    </div>
+    <div class="kpi k-blue">
+      <span class="kpi-label">Margen operativo</span>
+      <span class="kpi-value blue">${pct}%</span>
+      <span class="kpi-sub">${pct>=50?'Mes saludable':'Por debajo del 50%'}</span>
     </div>
   `;
 }
 
-// ── RENDER CAT BARS ──
-function renderCatBars() {
-  const mo = getMonthData();
+function renderCatChart() {
+  const mo = getMo();
   const cats = {};
-  mo.ingresos.forEach(x => { cats[x.categoria] = (cats[x.categoria]||0) + x.monto; });
-  const total = Object.values(cats).reduce((s,v) => s+v, 0);
-  const sorted = Object.entries(cats).sort((a,b) => b[1]-a[1]);
-  const el = document.getElementById('catBars');
-  if (sorted.length === 0) { el.innerHTML = '<div class="no-data">Sin ingresos</div>'; return; }
-  el.innerHTML = sorted.map(([cat, amt]) => {
-    const pct = total > 0 ? (amt/total*100) : 0;
-    const col = CAT_COLORS[cat] || '#64748b';
-    return `<div class="cat-bar-row">
-      <div class="cat-name">${cat}</div>
-      <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${pct}%;background:${col}"></div></div>
-      <div class="cat-amount">${fmt(amt)}</div>
-    </div>`;
-  }).join('');
+  mo.ingresos.forEach(x => { cats[x.categoria]=(cats[x.categoria]||0)+x.monto; });
+  const sorted = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  const total = sorted.reduce((s,[,v])=>s+v,0);
+  $('chartCatTotal').textContent = fmt(total);
+
+  destroyChart('catChart');
+  charts.catChart = new Chart($('catChart'),{
+    type:'bar',
+    data:{
+      labels: sorted.map(([k])=>CAT_LABELS[k]||k),
+      datasets:[{
+        data: sorted.map(([,v])=>v),
+        backgroundColor: sorted.map(([k])=>COLORS[k]+'cc'),
+        borderColor: sorted.map(([k])=>COLORS[k]),
+        borderWidth:1, borderRadius:4
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fmt(c.parsed.y)}`}}},
+      scales:{
+        x:{grid:{color:GRID},ticks:{color:'#6b7a96'}},
+        y:{grid:{color:GRID},ticks:{callback:v=>'$'+v/1000+'k',color:'#6b7a96'},beginAtZero:true}
+      }
+    }
+  });
 }
 
-// ── RENDER EGRESOS ──
-function renderEgresos() {
-  const mo = getMonthData();
-  const egr = mo.egresos;
-  const el = document.getElementById('egresosList');
-  if (egr.length === 0) { el.innerHTML = '<div style="color:var(--faint);font-size:13px;padding:8px 0">Sin egresos registrados</div>'; }
-  else {
-    el.innerHTML = egr.map(e => `
-      <div class="egreso-card">
-        <div class="egreso-info">
-          <div class="egreso-fecha">${fmtDate(e.fecha)}</div>
-          <div class="egreso-concepto">${e.concepto}</div>
-          <div class="egreso-cat">${e.categoria}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <div class="egreso-monto">${fmt(e.monto)}</div>
-          <button class="btn-danger-sm" onclick="deleteTx('egreso',${e.id})">✕</button>
-        </div>
-      </div>`).join('');
-  }
-  const total = egr.reduce((s,x) => s+x.monto, 0);
-  document.getElementById('totalEgr').textContent = fmt(total);
+function renderDonut() {
+  const mo = getMo();
+  const ing = mo.ingresos.reduce((s,x)=>s+x.monto,0);
+  const egr = mo.egresos.reduce((s,x)=>s+x.monto,0);
+  const util = ing-egr;
+
+  destroyChart('donutChart');
+  charts.donutChart = new Chart($('donutChart'),{
+    type:'doughnut',
+    data:{
+      labels:['Utilidad','Egresos'],
+      datasets:[{
+        data:[util,egr],
+        backgroundColor:['rgba(45,190,122,0.8)','rgba(232,85,85,0.8)'],
+        borderColor:['#2dbe7a','#e85555'],
+        borderWidth:2,hoverOffset:8
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:'68%',
+      plugins:{
+        legend:{position:'bottom',labels:{color:'#6b7a96',padding:16,font:{size:11}}},
+        tooltip:{callbacks:{label:c=>` ${fmt(c.parsed)} (${Math.round(c.parsed/ing*100)}%)`}}
+      }
+    }
+  });
 }
 
-// ── RENDER TX LIST ──
 function renderTxList() {
-  const mo = getMonthData();
+  const mo = getMo();
   let txs = [];
-  if (txFilter === 'todos' || txFilter === 'ingresos') {
-    mo.ingresos.forEach(x => txs.push({...x, tipo:'ingreso'}));
-  }
-  if (txFilter === 'todos' || txFilter === 'egresos') {
-    mo.egresos.forEach(x => txs.push({...x, tipo:'egreso'}));
-  }
-  txs.sort((a,b) => a.fecha.localeCompare(b.fecha));
-  const el = document.getElementById('txList');
-  if (txs.length === 0) { el.innerHTML = '<div class="no-data">Sin movimientos</div>'; return; }
-  el.innerHTML = txs.map(x => {
-    const col = CAT_COLORS[x.categoria] || '#64748b';
-    return `<div class="tx-item ${x.tipo==='egreso'?'egreso':''}">
+  if(txFilter==='all'||txFilter==='ing') mo.ingresos.forEach(x=>txs.push({...x,_tipo:'ing'}));
+  if(txFilter==='all'||txFilter==='egr') mo.egresos.forEach(x=>txs.push({...x,_tipo:'egr'}));
+  txs.sort((a,b)=>a.fecha.localeCompare(b.fecha));
+
+  const el = $('txList');
+  if(!txs.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--faint)">Sin movimientos</div>';return;}
+  el.innerHTML = txs.map(x=>{
+    const col = COLORS[x.categoria]||'#6b7a96';
+    const sign = x._tipo==='ing'?'+':'-';
+    return `<div class="tx-item ${x._tipo}" onclick="deleteTx('${x._tipo}',${x.id})">
       <div class="tx-date">${fmtDate(x.fecha)}</div>
-      <div class="tx-info">
-        <div class="tx-concepto">${x.concepto}</div>
-        <span class="cat-badge cat-${x.categoria}" style="background:${col}22;color:${col}">${x.categoria}</span>
+      <div>
+        <div class="tx-concept">${x.concepto}</div>
+        <span class="tx-cat-badge" style="background:${col}22;color:${col}">${CAT_LABELS[x.categoria]||x.categoria}</span>
       </div>
-      <div style="display:flex;align-items:center;gap:6px">
-        <div class="tx-monto ${x.tipo==='ingreso'?'ing':'egr'}">${x.tipo==='egreso'?'-':''}${fmt(x.monto)}</div>
-        <button class="btn-danger-sm" onclick="deleteTx('${x.tipo}',${x.id})">✕</button>
-      </div>
+      <div class="tx-amount ${x._tipo}">${sign}${fmt(x.monto)}</div>
     </div>`;
   }).join('');
 }
 
 function filterTx(f) {
-  txFilter = f;
-  ['Todos','Ingresos','Egresos'].forEach((label,i) => {
-    const btn = document.getElementById('f'+label);
-    const active = f === label.toLowerCase();
-    btn.style.borderColor = active ? 'var(--green)' : 'var(--border2)';
-    btn.style.color = active ? 'var(--green)' : 'var(--muted)';
+  txFilter=f;
+  ['All','Ing','Egr'].forEach(l=>{
+    const b=$('f'+l);
+    const isActive = f===l.toLowerCase();
+    b.style.borderColor=isActive?'var(--green)':'var(--border2)';
+    b.style.color=isActive?'var(--green)':'var(--muted)';
   });
   renderTxList();
 }
 
-// ── RENDER ANUAL SUMMARY ──
+function renderEgrBars() {
+  const mo = getMo();
+  const cats = {};
+  mo.egresos.forEach(x=>{cats[x.categoria]=(cats[x.categoria]||0)+x.monto;});
+  const total = Object.values(cats).reduce((s,v)=>s+v,0);
+  const sorted = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+
+  $('egrBars').innerHTML = sorted.map(([k,v])=>{
+    const pct = total>0?v/total*100:0;
+    const col = COLORS[k]||'#6b7a96';
+    return `<div class="cat-row">
+      <div class="cat-name" style="color:${col}">${CAT_LABELS[k]||k}</div>
+      <div class="cat-track"><div class="cat-fill" style="width:${pct}%;background:${col}"></div></div>
+      <div class="cat-amt">${fmt(v)}</div>
+    </div>`;
+  }).join('') || '<div style="color:var(--faint);font-size:12px;padding:8px 0">Sin egresos</div>';
+
+  $('totalEgrLabel').textContent = fmt(total);
+}
+
+// ══ RENDER ANUAL ══
 function renderAnual() {
-  const el = document.getElementById('anualSummary');
-  let totalIng2026 = 0, totalEgr2026 = 0;
-  const rows = months.map(m => {
-    const ing = totalIng(m);
-    const egr = totalEgr(m);
-    const util = ing - egr;
-    totalIng2026 += ing; totalEgr2026 += egr;
-    return `<div class="sum-card">
-      <div class="sum-label">${m}</div>
-      <div class="sum-val green">${fmt(ing)}</div>
-      <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--red)">${fmt(egr)} egr.</div>
-      <div style="font-size:12px;font-family:'DM Mono',monospace;color:var(--muted);margin-top:2px">Util: ${fmt(util)}</div>
-    </div>`;
+  renderLineChart();
+  renderBarCharts();
+  renderAnualTable();
+}
+
+function renderLineChart() {
+  destroyChart('lineChart');
+  charts.lineChart = new Chart($('lineChart'),{
+    type:'line',
+    data:{
+      labels:months,
+      datasets:[
+        {label:'Ingresos',data:months.map(m=>tIng(m)),borderColor:'#2dbe7a',backgroundColor:'rgba(45,190,122,0.08)',borderWidth:2.5,fill:true,tension:0.3,pointBackgroundColor:'#2dbe7a',pointRadius:5,pointHoverRadius:7},
+        {label:'Egresos',data:months.map(m=>tEgr(m)),borderColor:'#e85555',backgroundColor:'rgba(232,85,85,0.06)',borderWidth:2,fill:true,tension:0.3,pointBackgroundColor:'#e85555',pointRadius:4},
+        {label:'Utilidad',data:months.map(m=>tIng(m)-tEgr(m)),borderColor:'#e8b44a',backgroundColor:'transparent',borderWidth:2,borderDash:[6,4],tension:0.3,pointBackgroundColor:'#e8b44a',pointRadius:4}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{color:'#6b7a96',padding:20,usePointStyle:true}},
+        tooltip:{mode:'index',intersect:false,callbacks:{label:c=>` ${c.dataset.label}: ${fmt(c.parsed.y)}`}}},
+      scales:{
+        x:{grid:{color:GRID},ticks:{color:'#6b7a96'}},
+        y:{grid:{color:GRID},ticks:{callback:v=>'$'+v/1000+'k',color:'#6b7a96'},beginAtZero:true}
+      }
+    }
+  });
+}
+
+function renderBarCharts() {
+  const configs = [
+    {id:'barIngChart',label:'Ingresos',data:months.map(m=>tIng(m)),color:'#2dbe7a'},
+    {id:'barEgrChart',label:'Egresos',data:months.map(m=>tEgr(m)),color:'#e85555'},
+    {id:'barUtilChart',label:'Utilidad',data:months.map(m=>tIng(m)-tEgr(m)),color:'#e8b44a'},
+  ];
+  configs.forEach(({id,label,data:d,color})=>{
+    destroyChart(id);
+    charts[id] = new Chart($(id),{
+      type:'bar',
+      data:{labels:months,datasets:[{data:d,backgroundColor:color+'99',borderColor:color,borderWidth:1,borderRadius:4}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fmt(c.parsed.y)}`}}},
+        scales:{x:{grid:{color:GRID},ticks:{color:'#6b7a96'}},y:{grid:{color:GRID},ticks:{callback:v=>'$'+v/1000+'k',color:'#6b7a96'},beginAtZero:true}}}
+    });
+  });
+}
+
+function renderAnualTable() {
+  let totalIng=0,totalEgr=0;
+  const rows = months.map(m=>{
+    const ing=tIng(m),egr=tEgr(m),util=ing-egr,pct=ing>0?Math.round(util/ing*100):0;
+    totalIng+=ing;totalEgr+=egr;
+    const isActive=m===activeMonth;
+    return `<tr class="${isActive?'active-month':''}" onclick="setMonth('${m}');showPage('mes',document.querySelectorAll('.nav-btn')[0])">
+      <td>${m} 2026 ${isActive?'◀':''}</td>
+      <td class="green">${fmt(ing)}</td>
+      <td class="red">${fmt(egr)}</td>
+      <td class="gold">${fmt(util)}</td>
+      <td style="color:${pct>=50?'var(--green)':pct>=30?'var(--gold)':'var(--red)'}">${pct}%</td>
+      <td style="color:var(--muted)">${(data[m]?.ingresos||[]).length+(data[m]?.egresos||[]).length} mvtos</td>
+    </tr>`;
   }).join('');
-  el.innerHTML = rows;
-  if (months.length > 1) {
-    el.innerHTML += `<div class="sum-card" style="border-color:var(--green);background:var(--green-pale)">
-      <div class="sum-label">Total 2026</div>
-      <div class="sum-val green">${fmt(totalIng2026)}</div>
-      <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--red)">${fmt(totalEgr2026)} egr.</div>
-      <div style="font-size:12px;font-family:'DM Mono',monospace;color:var(--green);margin-top:2px;font-weight:700">Util: ${fmt(totalIng2026-totalEgr2026)}</div>
-    </div>`;
-  }
+  const totalUtil=totalIng-totalEgr, totalPct=totalIng>0?Math.round(totalUtil/totalIng*100):0;
+  $('anualTable').innerHTML=`
+    <thead><tr><th>Mes</th><th>Ingresos</th><th>Egresos</th><th>Utilidad</th><th>Margen</th><th>Movimientos</th></tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot><tr><td>TOTAL 2026</td><td class="green">${fmt(totalIng)}</td><td class="red">${fmt(totalEgr)}</td><td class="gold">${fmt(totalUtil)}</td><td style="color:var(--green)">${totalPct}%</td><td></td></tr></tfoot>
+  `;
 }
 
-function renderAll() {
-  renderTabs();
-  renderKPIs();
-  renderCatBars();
-  renderEgresos();
-  renderTxList();
-  renderAnual();
+// ══ RENDER ANÁLISIS ══
+function renderAnalisis() {
+  renderInsights();
+  renderCatAcum();
+  renderMix();
+  renderStacked();
 }
 
-// ── ADD TX ──
+function renderInsights() {
+  // Best month, best category, avg monthly, trend
+  const ingByMonth = months.map(m=>({m,v:tIng(m)}));
+  const best = ingByMonth.sort((a,b)=>b.v-a.v)[0];
+  const avgIng = ingByMonth.reduce((s,x)=>s+x.v,0)/months.length;
+  const avgEgr = months.map(m=>tEgr(m)).reduce((s,v)=>s+v,0)/months.length;
+
+  // Best category across all months
+  const allCats = {};
+  months.forEach(m=>(data[m]?.ingresos||[]).forEach(x=>{allCats[x.categoria]=(allCats[x.categoria]||0)+x.monto;}));
+  const bestCat = Object.entries(allCats).sort((a,b)=>b[1]-a[1])[0];
+
+  // Total acumulado
+  const totalIng = months.reduce((s,m)=>s+tIng(m),0);
+  const totalEgr = months.reduce((s,m)=>s+tEgr(m),0);
+  const totalUtil = totalIng-totalEgr;
+
+  $('insightsGrid').innerHTML = `
+    <div class="insight">
+      <span class="insight-icon">🏆</span>
+      <div class="insight-title">Mejor mes</div>
+      <div class="insight-value" style="color:var(--green)">${best.m}</div>
+      <div class="insight-desc">${fmt(best.v)} en ingresos</div>
+    </div>
+    <div class="insight">
+      <span class="insight-icon">💊</span>
+      <div class="insight-title">Categoría líder</div>
+      <div class="insight-value" style="color:var(--blue)">${CAT_LABELS[bestCat[0]]||bestCat[0]}</div>
+      <div class="insight-desc">${fmt(bestCat[1])} acumulado</div>
+    </div>
+    <div class="insight">
+      <span class="insight-icon">📈</span>
+      <div class="insight-title">Promedio mensual</div>
+      <div class="insight-value" style="color:var(--gold)">${fmt(avgIng)}</div>
+      <div class="insight-desc">${fmt(avgEgr)} promedio egresos</div>
+    </div>
+    <div class="insight">
+      <span class="insight-icon">💰</span>
+      <div class="insight-title">Utilidad acumulada</div>
+      <div class="insight-value" style="color:var(--green)">${fmt(totalUtil)}</div>
+      <div class="insight-desc">${Math.round(totalUtil/totalIng*100)}% margen promedio</div>
+    </div>
+    <div class="insight">
+      <span class="insight-icon">📊</span>
+      <div class="insight-title">Total ingresos 2026</div>
+      <div class="insight-value" style="color:var(--green)">${fmt(totalIng)}</div>
+      <div class="insight-desc">${months.length} meses registrados</div>
+    </div>
+    <div class="insight">
+      <span class="insight-icon">🎯</span>
+      <div class="insight-title">Meta ${activeMonth} vs prom</div>
+      <div class="insight-value" style="color:${tIng(activeMonth)>=avgIng?'var(--green)':'var(--red)'}">
+        ${tIng(activeMonth)>=avgIng?'↑ Sobre':'↓ Bajo'} prom
+      </div>
+      <div class="insight-desc">${fmt(tIng(activeMonth))} vs ${fmt(Math.round(avgIng))} prom</div>
+    </div>
+  `;
+}
+
+function renderCatAcum() {
+  const cats = {};
+  months.forEach(m=>(data[m]?.ingresos||[]).forEach(x=>{cats[x.categoria]=(cats[x.categoria]||0)+x.monto;}));
+  const sorted = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+
+  destroyChart('catAcumChart');
+  charts.catAcumChart = new Chart($('catAcumChart'),{
+    type:'bar',
+    data:{
+      labels:sorted.map(([k])=>CAT_LABELS[k]||k),
+      datasets:[{data:sorted.map(([,v])=>v),backgroundColor:sorted.map(([k])=>COLORS[k]+'cc'),borderColor:sorted.map(([k])=>COLORS[k]),borderWidth:1,borderRadius:6}]
+    },
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fmt(c.parsed.x)}`}}},
+      scales:{x:{grid:{color:GRID},ticks:{callback:v=>'$'+v/1000+'k',color:'#6b7a96'}},y:{grid:{display:false},ticks:{color:'#e8edf5'}}}
+    }
+  });
+}
+
+function renderMix() {
+  const cats = {};
+  months.forEach(m=>(data[m]?.ingresos||[]).forEach(x=>{cats[x.categoria]=(cats[x.categoria]||0)+x.monto;}));
+  const entries = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+
+  destroyChart('mixChart');
+  charts.mixChart = new Chart($('mixChart'),{
+    type:'doughnut',
+    data:{
+      labels:entries.map(([k])=>CAT_LABELS[k]||k),
+      datasets:[{data:entries.map(([,v])=>v),backgroundColor:entries.map(([k])=>COLORS[k]+'cc'),borderColor:entries.map(([k])=>COLORS[k]),borderWidth:2,hoverOffset:10}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:'60%',
+      plugins:{legend:{position:'bottom',labels:{color:'#6b7a96',padding:12,usePointStyle:true,font:{size:10}}},
+        tooltip:{callbacks:{label:c=>{const total=c.dataset.data.reduce((s,v)=>s+v,0);return ` ${c.label}: ${fmt(c.parsed)} (${Math.round(c.parsed/total*100)}%)`;}}}}
+    }
+  });
+}
+
+function renderStacked() {
+  const ingCats = [...new Set(months.flatMap(m=>(data[m]?.ingresos||[]).map(x=>x.categoria)))];
+  const datasets = ingCats.map(cat=>({
+    label:CAT_LABELS[cat]||cat,
+    data:months.map(m=>(data[m]?.ingresos||[]).filter(x=>x.categoria===cat).reduce((s,x)=>s+x.monto,0)),
+    backgroundColor:COLORS[cat]+'aa',borderColor:COLORS[cat],borderWidth:1,
+  }));
+
+  destroyChart('stackedChart');
+  charts.stackedChart = new Chart($('stackedChart'),{
+    type:'bar',
+    data:{labels:months,datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{color:'#6b7a96',padding:14,usePointStyle:true,font:{size:10}}},
+        tooltip:{mode:'index',callbacks:{label:c=>c.parsed.y>0?` ${c.dataset.label}: ${fmt(c.parsed.y)}`:null}}},
+      scales:{
+        x:{stacked:true,grid:{color:GRID},ticks:{color:'#6b7a96'}},
+        y:{stacked:true,grid:{color:GRID},ticks:{callback:v=>'$'+v/1000+'k',color:'#6b7a96'},beginAtZero:true}
+      }
+    }
+  });
+}
+
+// ══ ADD TX ══
 function openAddTx() {
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('txFecha').value = today;
-  document.getElementById('txMonto').value = '';
-  document.getElementById('txConcepto').value = '';
-  document.getElementById('txCategoria').value = 'FACIALES';
-  setTxType('ingreso');
-  document.getElementById('addModal').classList.add('open');
-  setTimeout(() => document.getElementById('txMonto').focus(), 300);
+  $('txFecha').value=new Date().toISOString().split('T')[0];
+  $('txMonto').value=''; $('txConcepto').value='';
+  $('txCat').value='FACIALES';
+  setType('ing');
+  $('addModal').classList.add('open');
+  setTimeout(()=>$('txMonto').focus(),300);
 }
 
-function setTxType(type) {
-  txType = type;
-  document.getElementById('tabIng').classList.toggle('active', type==='ingreso');
-  document.getElementById('tabEgr').classList.toggle('active', type==='egreso');
+function setType(t) {
+  txType=t;
+  $('tIng').classList.toggle('active',t==='ing');
+  $('tEgr').classList.toggle('active',t==='egr');
 }
 
-async function confirmAddTx() {
-  const fecha = document.getElementById('txFecha').value;
-  const monto = parseFloat(document.getElementById('txMonto').value);
-  const concepto = document.getElementById('txConcepto').value.trim().toUpperCase();
-  const categoria = document.getElementById('txCategoria').value;
-
-  if (!fecha || !monto || !concepto) { showToast('Completa todos los campos'); return; }
-
-  const tx = { id: nextId++, fecha, concepto, categoria, monto };
-  if (!data[activeMonth]) data[activeMonth] = {ingresos:[], egresos:[]};
-
-  if (txType === 'ingreso') {
-    data[activeMonth].ingresos.push(tx);
-  } else {
-    data[activeMonth].egresos.push(tx);
-  }
-
+async function confirmTx() {
+  const fecha=$('txFecha').value, monto=parseFloat($('txMonto').value);
+  const concepto=$('txConcepto').value.trim().toUpperCase(), categoria=$('txCat').value;
+  if(!fecha||!monto||!concepto){toast('Completa todos los campos');return;}
+  const tx={id:nextId++,fecha,concepto,categoria,monto};
+  if(!data[activeMonth]) data[activeMonth]={ingresos:[],egresos:[]};
+  if(txType==='ing') data[activeMonth].ingresos.push(tx);
+  else data[activeMonth].egresos.push(tx);
   await save();
-  renderAll();
+  renderMes();
   closeModal('addModal');
-  showToast(`Registrado: ${fmt(monto)}`);
+  toast('Registrado: '+fmt(monto));
 }
 
-async function deleteTx(tipo, id) {
-  if (!confirm('¿Eliminar este movimiento?')) return;
-  if (tipo === 'ingreso') {
-    data[activeMonth].ingresos = data[activeMonth].ingresos.filter(x => x.id !== id);
+async function deleteTx(tipo,id) {
+  if(!confirm('¿Eliminar este movimiento?')) return;
+  if(tipo==='ing') data[activeMonth].ingresos=data[activeMonth].ingresos.filter(x=>x.id!==id);
+  else data[activeMonth].egresos=data[activeMonth].egresos.filter(x=>x.id!==id);
+  await save(); renderMes();
+  toast('Movimiento eliminado');
+}
+
+// ══ MONTHS ══
+async function confirmMonth() {
+  const m=$('newMonth').value;
+  if(months.includes(m)){toast('Ese mes ya existe');return;}
+  months.push(m); data[m]={ingresos:[],egresos:[]};
+  activeMonth=m;
+  await save(); renderMes();
+  closeModal('monthModal'); toast('Mes creado: '+m);
+}
+
+// ══ EXPORT ══
+function doExport(type) {
+  let csv='',filename='';
+  const now=new Date().toLocaleDateString('es-MX').replace(/\//g,'-');
+  if(type==='mes'){
+    filename=`medbeauty-${activeMonth}-2026.csv`;
+    csv='Fecha,Tipo,Concepto,Categoria,Monto\n';
+    const mo=getMo();
+    mo.ingresos.forEach(x=>{csv+=`"${x.fecha}","INGRESO","${x.concepto}","${x.categoria}",${x.monto}\n`;});
+    mo.egresos.forEach(x=>{csv+=`"${x.fecha}","EGRESO","${x.concepto}","${x.categoria}",-${x.monto}\n`;});
   } else {
-    data[activeMonth].egresos = data[activeMonth].egresos.filter(x => x.id !== id);
-  }
-  await save();
-  renderAll();
-  showToast('Movimiento eliminado');
-}
-
-// ── ADD MONTH ──
-function openAddMonth() {
-  document.getElementById('addMonthModal').classList.add('open');
-}
-
-async function confirmAddMonth() {
-  const m = document.getElementById('newMonthSel').value;
-  if (months.includes(m)) { showToast('Ese mes ya existe'); return; }
-  months.push(m);
-  data[m] = {ingresos:[], egresos:[]};
-  activeMonth = m;
-  await save();
-  renderAll();
-  closeModal('addMonthModal');
-  showToast('Mes creado: ' + m);
-}
-
-// ── EXPORT ──
-function openExport() { document.getElementById('exportModal').classList.add('open'); }
-
-function exportData(type) {
-  let csv = '', filename = '';
-  const now = new Date().toLocaleDateString('es-MX').replace(/\//g,'-');
-
-  if (type === 'mes') {
-    filename = `medbeauty-${activeMonth}-2026.csv`;
-    csv = 'Fecha,Tipo,Concepto,Categoria,Monto\n';
-    const mo = getMonthData();
-    mo.ingresos.forEach(x => { csv += `"${x.fecha}","INGRESO","${x.concepto}","${x.categoria}",${x.monto}\n`; });
-    mo.egresos.forEach(x => { csv += `"${x.fecha}","EGRESO","${x.concepto}","${x.categoria}",-${x.monto}\n`; });
-  } else {
-    filename = `medbeauty-anual-2026.csv`;
-    csv = 'Mes,Total Ingresos,Total Egresos,Utilidad Neta,Margen %\n';
-    months.forEach(m => {
-      const ing = totalIng(m);
-      const egr = totalEgr(m);
-      const util = ing - egr;
-      const pct = ing > 0 ? Math.round(util/ing*100) : 0;
-      csv += `"${m}",${ing},${egr},${util},${pct}%\n`;
+    filename=`medbeauty-anual-2026-${now}.csv`;
+    csv='Mes,Ingresos,Egresos,Utilidad,Margen %\n';
+    months.forEach(m=>{
+      const ing=tIng(m),egr=tEgr(m),util=ing-egr,pct=ing>0?Math.round(util/ing*100):0;
+      csv+=`"${m}",${ing},${egr},${util},${pct}%\n`;
     });
   }
-
-  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename; a.click();
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;a.click();
   URL.revokeObjectURL(url);
-  closeModal('exportModal');
-  showToast('Descargado: ' + filename);
+  closeModal('exportModal'); toast('Descargado: '+filename);
 }
 
-// ── MODAL ──
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(el => {
-  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
-});
+// ══ UTILS ══
+function closeModal(id){$(id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});});
 
-// ── TOAST ──
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,.2);white-space:nowrap;font-family:Syne,sans-serif';
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2500);
+function toast(msg) {
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;z-index:999;box-shadow:var(--shadow-md);white-space:nowrap;font-family:DM Sans,sans-serif';
+  t.textContent=msg; document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2500);
 }
 
-// ── INIT ──
-function waitForFirebase(cb) {
-  if (window._firebaseReady) cb();
-  else document.addEventListener('firebaseReady', cb, {once:true});
+function showLoading(show) {
+  const el=$('loadingOverlay');
+  if(el) el.style.display=show?'flex':'none';
 }
 
-waitForFirebase(async () => {
+// ══ INIT ══
+function waitFB(cb){
+  if(window._firebaseReady) cb();
+  else document.addEventListener('firebaseReady',cb,{once:true});
+}
+
+waitFB(async()=>{
   await load();
-  renderAll();
+  showLoading(false);
+  renderMes();
 });
+</script>
+</body>
+</html>
+
 </script>
 </body>
 </html>
