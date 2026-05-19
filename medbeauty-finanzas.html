@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MedBeauty · Finanzas</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f7f5f0;--surface:#fff;--border:#e8e4dc;--border2:#d4cfc4;
+  --ink:#0f1116;--muted:#6b6b78;--faint:#a0a0aa;
+  --green:#1a5c38;--green2:#2d7a52;--green-dim:#e8f5ee;--green-pale:#f0f9f4;
+  --gold:#9a6f2e;--gold2:#c49a4a;--gold-dim:#fef3e2;
+  --red:#b91c1c;--red-dim:#fef2f2;
+  --blue:#1d4ed8;--blue-dim:#eff6ff;
+  --purple:#6d28d9;--purple-dim:#f5f3ff;
+  --shadow:0 1px 3px rgba(0,0,0,0.07),0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Syne',sans-serif;font-size:14px;min-height:100vh}
+
+/* NAV */
+.nav{background:var(--green);color:#fff;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 16px;display:flex;align-items:center;height:54px;gap:12px}
+.nav-brand{font-size:15px;font-weight:800;letter-spacing:-0.5px;display:flex;align-items:center;gap:8px}
+.nav-brand span{font-family:'Crimson Pro',serif;font-style:italic;font-weight:300;font-size:13px;opacity:.7}
+.nav-actions{margin-left:auto;display:flex;gap:6px}
+.btn-nav{padding:6px 12px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'Syne',sans-serif;transition:all .15s;white-space:nowrap}
+.btn-nav.primary{background:rgba(255,255,255,.15);color:#fff}
+.btn-nav.primary:hover{background:rgba(255,255,255,.25)}
+.btn-nav.ghost{background:transparent;color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.2)}
+.btn-nav.ghost:hover{background:rgba(255,255,255,.1);color:#fff}
+
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:20px 16px 80px}
+
+/* MONTH TABS */
+.month-tabs-wrap{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:20px;scrollbar-width:none}
+.month-tabs-wrap::-webkit-scrollbar{display:none}
+.month-tab{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);transition:all .15s;font-family:'Syne',sans-serif}
+.month-tab.active{background:var(--green);color:#fff;border-color:var(--green)}
+.month-tab.add{border-style:dashed;color:var(--green);border-color:var(--green)}
+.month-tab.add:hover{background:var(--green-dim)}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.kpi-card{background:var(--surface);border-radius:12px;padding:18px 16px;box-shadow:var(--shadow);border:1.5px solid var(--border)}
+.kpi-card.featured{background:var(--green);color:#fff;border-color:var(--green)}
+.kpi-label{font-size:10px;font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.kpi-card.featured .kpi-label{color:rgba(255,255,255,.6)}
+.kpi-value{font-family:'Crimson Pro',serif;font-size:28px;font-weight:400;color:var(--ink);line-height:1}
+.kpi-card.featured .kpi-value{color:#fff}
+.kpi-value.green{color:var(--green)}
+.kpi-value.red{color:var(--red)}
+.kpi-delta{font-size:11px;font-family:'DM Mono',monospace;margin-top:4px;color:var(--faint)}
+
+/* SECTION */
+.section{margin-bottom:20px}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.section-title{font-size:11px;font-family:'DM Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+
+/* CHART BARS */
+.cat-bars{display:flex;flex-direction:column;gap:8px}
+.cat-bar-row{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center}
+.cat-name{font-size:12px;font-weight:600;color:var(--ink);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cat-bar-track{background:var(--border);border-radius:4px;height:8px;overflow:hidden}
+.cat-bar-fill{height:100%;border-radius:4px;transition:width .5s ease}
+.cat-amount{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);white-space:nowrap}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+
+/* CARD */
+.card{background:var(--surface);border-radius:12px;padding:16px;box-shadow:var(--shadow);border:1.5px solid var(--border)}
+.card-title{font-size:11px;font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+
+/* TRANSACTION LIST */
+.tx-list{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto}
+.tx-list::-webkit-scrollbar{width:3px}
+.tx-list::-webkit-scrollbar-track{background:transparent}
+.tx-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.tx-item{display:grid;grid-template-columns:50px 1fr auto;gap:8px;align-items:center;padding:8px 10px;border-radius:8px;transition:background .1s;cursor:pointer}
+.tx-item:hover{background:var(--bg)}
+.tx-item.egreso{border-left:2px solid var(--red)}
+.tx-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint)}
+.tx-info{}
+.tx-concepto{font-size:12px;font-weight:600;color:var(--ink)}
+.tx-cat{font-size:10px;color:var(--muted)}
+.tx-monto{font-family:'DM Mono',monospace;font-size:13px;font-weight:500}
+.tx-monto.ing{color:var(--green)}
+.tx-monto.egr{color:var(--red)}
+
+/* CAT BADGE */
+.cat-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;font-family:'DM Mono',monospace}
+.cat-FACIALES{background:#dcfce7;color:#15803d}
+.cat-FARMACIA{background:var(--blue-dim);color:var(--blue)}
+.cat-CONSULTA{background:var(--gold-dim);color:var(--gold)}
+.cat-MULTIVITAMINICOS{background:var(--purple-dim);color:var(--purple)}
+.cat-ASTER{background:#fce7f3;color:#be185d}
+.cat-PERSONAL{background:#fef9c3;color:#92400e}
+.cat-EXTRAS{background:var(--border);color:var(--muted)}
+.cat-FIJOS{background:#f0fdf4;color:#166534}
+.cat-SERVICIOS{background:#e0f2fe;color:#0369a1}
+.cat-OTROS{background:var(--border);color:var(--muted)}
+
+/* FORM */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-group{margin-bottom:12px}
+.form-label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;font-family:'DM Mono',monospace}
+.form-input,.form-select{width:100%;padding:9px 12px;border:1.5px solid var(--border2);border-radius:8px;font-size:14px;font-family:'Syne',sans-serif;color:var(--ink);background:#fff;-webkit-appearance:none;transition:border-color .15s}
+.form-input:focus,.form-select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-dim)}
+.btn-primary{width:100%;padding:11px;background:var(--green);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:background .15s}
+.btn-primary:hover{background:var(--green2)}
+.btn-secondary{width:100%;padding:9px;background:transparent;color:var(--muted);border:1.5px solid var(--border2);border-radius:9px;font-size:13px;cursor:pointer;font-family:'Syne',sans-serif;margin-top:6px}
+.btn-danger-sm{padding:4px 8px;background:transparent;color:var(--red);border:1px solid #fecaca;border-radius:5px;font-size:11px;cursor:pointer;font-family:'DM Mono',monospace}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:20px 20px 0 0;padding:22px 18px 32px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;animation:slideUp .22s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:32px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 18px}
+.modal-title{font-size:17px;font-weight:700;margin-bottom:16px}
+@media(min-width:700px){
+  .modal-overlay{align-items:center;padding:20px}
+  .modal{border-radius:16px}
+  @keyframes slideUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+}
+
+/* TOGGLE TABS */
+.toggle-tabs{display:flex;gap:0;background:var(--bg);border-radius:8px;padding:3px;margin-bottom:16px}
+.toggle-tab{flex:1;padding:7px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;border-radius:6px;transition:all .15s;color:var(--muted);border:none;background:transparent;font-family:'Syne',sans-serif}
+.toggle-tab.active{background:#fff;color:var(--ink);box-shadow:var(--shadow)}
+
+/* EGRESO CARD */
+.egreso-card{background:var(--red-dim);border:1px solid #fecaca;border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.egreso-info{}
+.egreso-fecha{font-size:10px;color:var(--faint);font-family:'DM Mono',monospace}
+.egreso-concepto{font-size:13px;font-weight:600;color:var(--red)}
+.egreso-cat{font-size:10px;color:var(--muted)}
+.egreso-monto{font-family:'DM Mono',monospace;font-size:15px;font-weight:700;color:var(--red)}
+
+/* FAB */
+.fab{position:fixed;bottom:24px;right:max(16px,calc((100vw - 1100px)/2 + 16px));width:52px;height:52px;border-radius:50%;background:var(--green);color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:0 4px 14px rgba(26,92,56,.4);display:flex;align-items:center;justify-content:center;z-index:90;transition:transform .15s}
+.fab:hover{transform:scale(1.08)}
+
+/* EXPORT ROW */
+.export-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn-export{padding:8px 14px;border-radius:8px;border:1.5px solid var(--border2);background:#fff;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:'Syne',sans-serif;display:flex;align-items:center;gap:6px;transition:all .15s}
+.btn-export:hover{border-color:var(--green);color:var(--green)}
+
+/* SUMMARY TOTALS */
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.sum-card{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.sum-label{font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+.sum-val{font-family:'Crimson Pro',serif;font-size:22px;font-weight:400}
+.sum-val.green{color:var(--green)}
+.sum-val.red{color:var(--red)}
+.sum-val.gold{color:var(--gold)}
+
+/* NO DATA */
+.no-data{text-align:center;padding:40px 20px;color:var(--muted)}
+.no-data svg{opacity:.3;margin-bottom:12px}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .kpi-row .kpi-card:last-child{grid-column:1/-1}
+  .two-col{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .summary-grid{grid-template-columns:1fr}
+}
+</style>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAQ1J-am1TkyHAbIT-zLtzDkNV-mfCO4-s",
+    authDomain: "medbeauty-71438.firebaseapp.com",
+    projectId: "medbeauty-71438",
+    storageBucket: "medbeauty-71438.firebasestorage.app",
+    messagingSenderId: "494839722349",
+    appId: "1:494839722349:web:6d0a7975364a030cf0ea64"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  window._db = db;
+  window._fs = { doc, setDoc, getDoc };
+  window._firebaseReady = true;
+  document.dispatchEvent(new Event('firebaseReady'));
+</script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">MedBeauty <span>· Finanzas</span></div>
+    <div class="nav-actions">
+      <button class="btn-nav ghost" onclick="openExport()">Exportar</button>
+      <button class="btn-nav primary" onclick="openAddTx()">+ Registro</button>
+    </div>
+  </div>
+</nav>
+
+<div class="main">
+
+  <!-- MONTH TABS -->
+  <div class="month-tabs-wrap" id="monthTabs"></div>
+
+  <!-- KPIs -->
+  <div class="kpi-row" id="kpiRow"></div>
+
+  <!-- CATEGORY BARS + EGRESOS -->
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Ingresos por categoría</div>
+      <div class="cat-bars" id="catBars"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Egresos del mes</div>
+      <div id="egresosList"></div>
+      <div class="section-header" style="margin-top:12px;margin-bottom:0">
+        <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--faint)">Total egresos</div>
+        <div id="totalEgr" style="font-family:'DM Mono',monospace;font-size:14px;font-weight:700;color:var(--red)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSACTION LIST -->
+  <div class="card">
+    <div class="section-header">
+      <div class="card-title" style="margin-bottom:0">Todos los movimientos</div>
+      <div style="display:flex;gap:6px">
+        <button class="btn-export" onclick="filterTx('todos')" id="fTodos" style="border-color:var(--green);color:var(--green)">Todos</button>
+        <button class="btn-export" onclick="filterTx('ingresos')" id="fIngresos">Ingresos</button>
+        <button class="btn-export" onclick="filterTx('egresos')" id="fEgresos">Egresos</button>
+      </div>
+    </div>
+    <div style="height:12px"></div>
+    <div class="tx-list" id="txList"></div>
+  </div>
+
+  <!-- ANUAL SUMMARY -->
+  <div class="card" style="margin-top:12px">
+    <div class="card-title">Resumen anual 2026</div>
+    <div class="summary-grid" id="anualSummary"></div>
+  </div>
+
+</div>
+
+<!-- FAB -->
+<button class="fab" onclick="openAddTx()" title="Agregar movimiento">
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
+
+<!-- MODAL AGREGAR MOVIMIENTO -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="addModalTitle">Nuevo Movimiento</div>
+    <div class="toggle-tabs">
+      <button class="toggle-tab active" id="tabIng" onclick="setTxType('ingreso')">Ingreso</button>
+      <button class="toggle-tab" id="tabEgr" onclick="setTxType('egreso')">Egreso</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Fecha</label>
+        <input type="date" class="form-input" id="txFecha">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Monto ($)</label>
+        <input type="number" class="form-input" id="txMonto" min="0" step="0.01" placeholder="0.00">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Concepto</label>
+      <input type="text" class="form-input" id="txConcepto" placeholder="Ej: Hydrafacial, Consulta, Farmacia...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Categoría</label>
+      <select class="form-select" id="txCategoria">
+        <optgroup label="Ingresos">
+          <option value="FACIALES">Faciales (Hydrafacial / PRP)</option>
+          <option value="CONSULTA">Consulta médica</option>
+          <option value="FARMACIA">Farmacia</option>
+          <option value="MULTIVITAMINICOS">Multivitamínicos</option>
+          <option value="ASTER">Aster</option>
+          <option value="EXTRAS">Extras / Comisiones</option>
+        </optgroup>
+        <optgroup label="Egresos">
+          <option value="FARMACIA_EGR">Farmacia (inversión)</option>
+          <option value="PERSONAL">Personal</option>
+          <option value="FIJOS">Gastos fijos</option>
+          <option value="SERVICIOS">Servicios</option>
+          <option value="OTROS">Otros</option>
+        </optgroup>
+      </select>
+    </div>
+    <button class="btn-primary" onclick="confirmAddTx()">Guardar movimiento</button>
+    <button class="btn-secondary" onclick="closeModal('addModal')">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL AGREGAR MES -->
+<div class="modal-overlay" id="addMonthModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Agregar Mes</div>
+    <div class="form-group">
+      <label class="form-label">Mes</label>
+      <select class="form-select" id="newMonthSel">
+        <option value="Enero">Enero 2026</option>
+        <option value="Febrero">Febrero 2026</option>
+        <option value="Marzo">Marzo 2026</option>
+        <option value="Abril">Abril 2026</option>
+        <option value="Junio">Junio 2026</option>
+        <option value="Julio">Julio 2026</option>
+        <option value="Agosto">Agosto 2026</option>
+        <option value="Septiembre">Septiembre 2026</option>
+        <option value="Octubre">Octubre 2026</option>
+        <option value="Noviembre">Noviembre 2026</option>
+        <option value="Diciembre">Diciembre 2026</option>
+      </select>
+    </div>
+    <button class="btn-primary" onclick="confirmAddMonth()">Crear mes</button>
+    <button class="btn-secondary" onclick="closeModal('addMonthModal')">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL EXPORT -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Exportar</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+      <div onclick="exportData('mes')" style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg);border-radius:10px;cursor:pointer;border:1.5px solid transparent;transition:all .15s" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='transparent'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <div><div style="font-weight:700;font-size:14px">Mes actual (CSV)</div><div style="font-size:12px;color:var(--muted)">Todos los movimientos del mes seleccionado</div></div>
+      </div>
+      <div onclick="exportData('anual')" style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg);border-radius:10px;cursor:pointer;border:1.5px solid transparent;transition:all .15s" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='transparent'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <div><div style="font-weight:700;font-size:14px">Resumen anual (CSV)</div><div style="font-size:12px;color:var(--muted)">Totales por mes: ingresos, egresos, utilidad</div></div>
+      </div>
+    </div>
+    <button class="btn-secondary" onclick="closeModal('exportModal')">Cerrar</button>
+  </div>
+</div>
+
+<script>
+// ── CAT COLORS ──
+const CAT_COLORS = {
+  FACIALES:'#16a34a', FARMACIA:'#1d4ed8', CONSULTA:'#9a6f2e',
+  MULTIVITAMINICOS:'#6d28d9', ASTER:'#be185d', EXTRAS:'#64748b',
+  FARMACIA_EGR:'#b91c1c', PERSONAL:'#92400e', FIJOS:'#166534',
+  SERVICIOS:'#0369a1', OTROS:'#64748b'
+};
+
+// ── INITIAL DATA (Mayo 2026 real) ──
+const INITIAL_DATA = {
+  "Mayo": {
+    ingresos: [
+      {id:1,fecha:"2026-05-01",concepto:"HYDRAFACIAL",categoria:"FACIALES",monto:699},
+      {id:2,fecha:"2026-05-02",concepto:"MVI VITAFUSIN",categoria:"MULTIVITAMINICOS",monto:1249},
+      {id:3,fecha:"2026-05-02",concepto:"HYDRAFACIAL",categoria:"FACIALES",monto:350},
+      {id:4,fecha:"2026-05-02",concepto:"CONSULTA",categoria:"CONSULTA",monto:300},
+      {id:5,fecha:"2026-05-03",concepto:"FARMACIA",categoria:"FARMACIA",monto:540},
+      {id:6,fecha:"2026-05-04",concepto:"FARMACIA",categoria:"FARMACIA",monto:710},
+      {id:7,fecha:"2026-05-04",concepto:"CONSULTA",categoria:"CONSULTA",monto:750},
+      {id:8,fecha:"2026-05-05",concepto:"CONSULTA",categoria:"CONSULTA",monto:150},
+      {id:9,fecha:"2026-05-05",concepto:"FARMACIA",categoria:"FARMACIA",monto:490},
+      {id:10,fecha:"2026-05-05",concepto:"HYDRAFACIAL",categoria:"FACIALES",monto:1398},
+      {id:11,fecha:"2026-05-06",concepto:"CONSULTA",categoria:"CONSULTA",monto:300},
+      {id:12,fecha:"2026-05-06",concepto:"FARMACIA",categoria:"FARMACIA",monto:570},
+      {id:13,fecha:"2026-05-07",concepto:"MVI VITAFUSIN",categoria:"MULTIVITAMINICOS",monto:700},
+      {id:14,fecha:"2026-05-07",concepto:"FARMACIA",categoria:"FARMACIA",monto:120},
+      {id:15,fecha:"2026-05-08",concepto:"HYDRAFACIAL",categoria:"FACIALES",monto:499},
+      {id:16,fecha:"2026-05-08",concepto:"CONSULTA",categoria:"CONSULTA",monto:900},
+      {id:17,fecha:"2026-05-08",concepto:"FARMACIA",categoria:"FARMACIA",monto:850},
+      {id:18,fecha:"2026-05-09",concepto:"MVI VITAFUSIN",categoria:"MULTIVITAMINICOS",monto:700},
+      {id:19,fecha:"2026-05-11",concepto:"MVI VITAFUSIN",categoria:"MULTIVITAMINICOS",monto:700},
+      {id:20,fecha:"2026-05-11",concepto:"CONSULTA",categoria:"CONSULTA",monto:300},
+      {id:21,fecha:"2026-05-11",concepto:"FARMACIA",categoria:"FARMACIA",monto:1348},
+      {id:22,fecha:"2026-05-11",concepto:"FARMACIA",categoria:"FARMACIA",monto:630},
+      {id:23,fecha:"2026-05-12",concepto:"FARMACIA",categoria:"FARMACIA",monto:390},
+      {id:24,fecha:"2026-05-12",concepto:"HYDRAFACIAL",categoria:"FACIALES",monto:1298},
+      {id:25,fecha:"2026-05-12",concepto:"CONSULTA",categoria:"CONSULTA",monto:500},
+      {id:26,fecha:"2026-05-13",concepto:"HYDRAFACIAL",categoria:"FACIALES",monto:1150},
+      {id:27,fecha:"2026-05-14",concepto:"CONSULTA",categoria:"CONSULTA",monto:700},
+      {id:28,fecha:"2026-05-14",concepto:"MVI VITAFUSIN",categoria:"MULTIVITAMINICOS",monto:1000},
+      {id:29,fecha:"2026-05-14",concepto:"HYDRAFACIAL",categoria:"FACIALES",monto:649},
+      {id:30,fecha:"2026-05-14",concepto:"FARMACIA",categoria:"FARMACIA",monto:1110},
+      {id:31,fecha:"2026-05-15",concepto:"HYDRAFACIAL",categoria:"FACIALES",monto:700},
+      {id:32,fecha:"2026-05-15",concepto:"FARMACIA",categoria:"FARMACIA",monto:230},
+      {id:33,fecha:"2026-05-15",concepto:"CONSULTA",categoria:"CONSULTA",monto:600},
+      {id:34,fecha:"2026-05-15",concepto:"CONSULTA",categoria:"CONSULTA",monto:600},
+      {id:35,fecha:"2026-05-15",concepto:"FARMACIA",categoria:"FARMACIA",monto:290},
+      {id:36,fecha:"2026-05-16",concepto:"FARMACIA",categoria:"FARMACIA",monto:450},
+      {id:37,fecha:"2026-05-18",concepto:"CONSULTA",categoria:"CONSULTA",monto:750},
+      {id:38,fecha:"2026-05-18",concepto:"FARMACIA",categoria:"FARMACIA",monto:630},
+      {id:39,fecha:"2026-05-18",concepto:"HYDRAFACIAL",categoria:"FACIALES",monto:600},
+      {id:40,fecha:"2026-05-18",concepto:"CONSULTA ASTER",categoria:"ASTER",monto:3000},
+    ],
+    egresos: [
+      {id:101,fecha:"2026-05-06",concepto:"FARMACIA",categoria:"FARMACIA_EGR",monto:2120},
+      {id:102,fecha:"2026-05-11",concepto:"PERSONAL",categoria:"PERSONAL",monto:4500},
+      {id:103,fecha:"2026-05-14",concepto:"PERSONAL",categoria:"PERSONAL",monto:2200},
+      {id:104,fecha:"2026-05-16",concepto:"FARMACIA",categoria:"FARMACIA_EGR",monto:2300},
+    ]
+  }
+};
+
+// ── STATE ──
+let data = {};
+let months = [];
+let activeMonth = 'Mayo';
+let txFilter = 'todos';
+let txType = 'ingreso';
+let editingTxId = null;
+let nextId = 200;
+
+// ── FIREBASE STORAGE ──
+async function save() {
+  try {
+    const { doc, setDoc } = window._fs;
+    const db = window._db;
+    await setDoc(doc(db, 'finanzas', 'meses'),    { data: JSON.stringify(months), ts: Date.now() });
+    await setDoc(doc(db, 'finanzas', 'datos'),    { data: JSON.stringify(data),   ts: Date.now() });
+  } catch(e) {
+    console.error('Save error:', e);
+    showToast('Error al guardar — verifica conexión');
+  }
+}
+
+function showLoading(show) {
+  let el = document.getElementById('loadingOverlay');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'loadingOverlay';
+    el.style.cssText = 'position:fixed;inset:0;background:rgba(247,245,240,.95);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-family:Syne,sans-serif';
+    el.innerHTML = `
+      <div style="width:44px;height:44px;border:3px solid #e8e4dc;border-top-color:#1a5c38;border-radius:50%;animation:spin 1s linear infinite"></div>
+      <div style="font-size:15px;color:#1a5c38;font-weight:700">MedBeauty Finanzas</div>
+      <div style="font-size:12px;color:#6b6b78">Sincronizando con la nube...</div>
+    `;
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+    document.head.appendChild(style);
+    document.body.appendChild(el);
+  }
+  el.style.display = show ? 'flex' : 'none';
+}
+
+async function load() {
+  try {
+    showLoading(true);
+    const { doc, getDoc } = window._fs;
+    const db = window._db;
+
+    const [mSnap, dSnap] = await Promise.all([
+      getDoc(doc(db, 'finanzas', 'meses')),
+      getDoc(doc(db, 'finanzas', 'datos'))
+    ]);
+
+    if (mSnap.exists() && dSnap.exists()) {
+      months = JSON.parse(mSnap.data().data);
+      data   = JSON.parse(dSnap.data().data);
+    } else {
+      // First time — load initial Mayo data
+      data   = JSON.parse(JSON.stringify(INITIAL_DATA));
+      months = ['Mayo'];
+      await save();
+    }
+
+    // Recalculate nextId
+    let maxId = 200;
+    Object.values(data).forEach(mo => {
+      [...(mo.ingresos||[]), ...(mo.egresos||[])].forEach(tx => {
+        if (tx.id > maxId) maxId = tx.id;
+      });
+    });
+    nextId = maxId + 1;
+    activeMonth = months[months.length - 1];
+
+  } catch(e) {
+    console.error('Load error:', e);
+    data   = JSON.parse(JSON.stringify(INITIAL_DATA));
+    months = ['Mayo'];
+    showToast('Sin conexión — cargando datos locales');
+  } finally {
+    showLoading(false);
+  }
+}
+
+// ── HELPERS ──
+function fmt(n) { return '$' + Number(n).toLocaleString('es-MX', {minimumFractionDigits:0, maximumFractionDigits:0}); }
+function fmtFull(n) { return '$' + Number(n).toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmtDate(d) {
+  if (!d) return '';
+  const parts = d.split('-');
+  const months_s = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return parts[2] + ' ' + months_s[parseInt(parts[1])-1];
+}
+
+function getMonthData() {
+  return data[activeMonth] || {ingresos:[], egresos:[]};
+}
+
+function totalIng(mo) { return (data[mo]?.ingresos || []).reduce((s,x) => s+x.monto, 0); }
+function totalEgr(mo) { return (data[mo]?.egresos || []).reduce((s,x) => s+x.monto, 0); }
+
+// ── RENDER TABS ──
+function renderTabs() {
+  const el = document.getElementById('monthTabs');
+  el.innerHTML = months.map(m =>
+    `<button class="month-tab ${m===activeMonth?'active':''}" onclick="setMonth('${m}')">${m}</button>`
+  ).join('') + `<button class="month-tab add" onclick="openAddMonth()">+ Mes</button>`;
+}
+
+function setMonth(m) {
+  activeMonth = m;
+  txFilter = 'todos';
+  renderAll();
+}
+
+// ── RENDER KPIs ──
+function renderKPIs() {
+  const mo = getMonthData();
+  const ing = mo.ingresos.reduce((s,x) => s+x.monto, 0);
+  const egr = mo.egresos.reduce((s,x) => s+x.monto, 0);
+  const util = ing - egr;
+  const pct = ing > 0 ? Math.round(util/ing*100) : 0;
+  document.getElementById('kpiRow').innerHTML = `
+    <div class="kpi-card">
+      <div class="kpi-label">Ingresos</div>
+      <div class="kpi-value green">${fmt(ing)}</div>
+      <div class="kpi-delta">${activeMonth} 2026</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Egresos</div>
+      <div class="kpi-value red">${fmt(egr)}</div>
+      <div class="kpi-delta">${mo.egresos.length} movimientos</div>
+    </div>
+    <div class="kpi-card featured">
+      <div class="kpi-label">Utilidad neta</div>
+      <div class="kpi-value">${fmt(util)}</div>
+      <div class="kpi-delta" style="color:rgba(255,255,255,.6)">${pct}% del ingreso</div>
+    </div>
+  `;
+}
+
+// ── RENDER CAT BARS ──
+function renderCatBars() {
+  const mo = getMonthData();
+  const cats = {};
+  mo.ingresos.forEach(x => { cats[x.categoria] = (cats[x.categoria]||0) + x.monto; });
+  const total = Object.values(cats).reduce((s,v) => s+v, 0);
+  const sorted = Object.entries(cats).sort((a,b) => b[1]-a[1]);
+  const el = document.getElementById('catBars');
+  if (sorted.length === 0) { el.innerHTML = '<div class="no-data">Sin ingresos</div>'; return; }
+  el.innerHTML = sorted.map(([cat, amt]) => {
+    const pct = total > 0 ? (amt/total*100) : 0;
+    const col = CAT_COLORS[cat] || '#64748b';
+    return `<div class="cat-bar-row">
+      <div class="cat-name">${cat}</div>
+      <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+      <div class="cat-amount">${fmt(amt)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── RENDER EGRESOS ──
+function renderEgresos() {
+  const mo = getMonthData();
+  const egr = mo.egresos;
+  const el = document.getElementById('egresosList');
+  if (egr.length === 0) { el.innerHTML = '<div style="color:var(--faint);font-size:13px;padding:8px 0">Sin egresos registrados</div>'; }
+  else {
+    el.innerHTML = egr.map(e => `
+      <div class="egreso-card">
+        <div class="egreso-info">
+          <div class="egreso-fecha">${fmtDate(e.fecha)}</div>
+          <div class="egreso-concepto">${e.concepto}</div>
+          <div class="egreso-cat">${e.categoria}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="egreso-monto">${fmt(e.monto)}</div>
+          <button class="btn-danger-sm" onclick="deleteTx('egreso',${e.id})">✕</button>
+        </div>
+      </div>`).join('');
+  }
+  const total = egr.reduce((s,x) => s+x.monto, 0);
+  document.getElementById('totalEgr').textContent = fmt(total);
+}
+
+// ── RENDER TX LIST ──
+function renderTxList() {
+  const mo = getMonthData();
+  let txs = [];
+  if (txFilter === 'todos' || txFilter === 'ingresos') {
+    mo.ingresos.forEach(x => txs.push({...x, tipo:'ingreso'}));
+  }
+  if (txFilter === 'todos' || txFilter === 'egresos') {
+    mo.egresos.forEach(x => txs.push({...x, tipo:'egreso'}));
+  }
+  txs.sort((a,b) => a.fecha.localeCompare(b.fecha));
+  const el = document.getElementById('txList');
+  if (txs.length === 0) { el.innerHTML = '<div class="no-data">Sin movimientos</div>'; return; }
+  el.innerHTML = txs.map(x => {
+    const col = CAT_COLORS[x.categoria] || '#64748b';
+    return `<div class="tx-item ${x.tipo==='egreso'?'egreso':''}">
+      <div class="tx-date">${fmtDate(x.fecha)}</div>
+      <div class="tx-info">
+        <div class="tx-concepto">${x.concepto}</div>
+        <span class="cat-badge cat-${x.categoria}" style="background:${col}22;color:${col}">${x.categoria}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <div class="tx-monto ${x.tipo==='ingreso'?'ing':'egr'}">${x.tipo==='egreso'?'-':''}${fmt(x.monto)}</div>
+        <button class="btn-danger-sm" onclick="deleteTx('${x.tipo}',${x.id})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterTx(f) {
+  txFilter = f;
+  ['Todos','Ingresos','Egresos'].forEach((label,i) => {
+    const btn = document.getElementById('f'+label);
+    const active = f === label.toLowerCase();
+    btn.style.borderColor = active ? 'var(--green)' : 'var(--border2)';
+    btn.style.color = active ? 'var(--green)' : 'var(--muted)';
+  });
+  renderTxList();
+}
+
+// ── RENDER ANUAL SUMMARY ──
+function renderAnual() {
+  const el = document.getElementById('anualSummary');
+  let totalIng2026 = 0, totalEgr2026 = 0;
+  const rows = months.map(m => {
+    const ing = totalIng(m);
+    const egr = totalEgr(m);
+    const util = ing - egr;
+    totalIng2026 += ing; totalEgr2026 += egr;
+    return `<div class="sum-card">
+      <div class="sum-label">${m}</div>
+      <div class="sum-val green">${fmt(ing)}</div>
+      <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--red)">${fmt(egr)} egr.</div>
+      <div style="font-size:12px;font-family:'DM Mono',monospace;color:var(--muted);margin-top:2px">Util: ${fmt(util)}</div>
+    </div>`;
+  }).join('');
+  el.innerHTML = rows;
+  if (months.length > 1) {
+    el.innerHTML += `<div class="sum-card" style="border-color:var(--green);background:var(--green-pale)">
+      <div class="sum-label">Total 2026</div>
+      <div class="sum-val green">${fmt(totalIng2026)}</div>
+      <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--red)">${fmt(totalEgr2026)} egr.</div>
+      <div style="font-size:12px;font-family:'DM Mono',monospace;color:var(--green);margin-top:2px;font-weight:700">Util: ${fmt(totalIng2026-totalEgr2026)}</div>
+    </div>`;
+  }
+}
+
+function renderAll() {
+  renderTabs();
+  renderKPIs();
+  renderCatBars();
+  renderEgresos();
+  renderTxList();
+  renderAnual();
+}
+
+// ── ADD TX ──
+function openAddTx() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('txFecha').value = today;
+  document.getElementById('txMonto').value = '';
+  document.getElementById('txConcepto').value = '';
+  document.getElementById('txCategoria').value = 'FACIALES';
+  setTxType('ingreso');
+  document.getElementById('addModal').classList.add('open');
+  setTimeout(() => document.getElementById('txMonto').focus(), 300);
+}
+
+function setTxType(type) {
+  txType = type;
+  document.getElementById('tabIng').classList.toggle('active', type==='ingreso');
+  document.getElementById('tabEgr').classList.toggle('active', type==='egreso');
+}
+
+async function confirmAddTx() {
+  const fecha = document.getElementById('txFecha').value;
+  const monto = parseFloat(document.getElementById('txMonto').value);
+  const concepto = document.getElementById('txConcepto').value.trim().toUpperCase();
+  const categoria = document.getElementById('txCategoria').value;
+
+  if (!fecha || !monto || !concepto) { showToast('Completa todos los campos'); return; }
+
+  const tx = { id: nextId++, fecha, concepto, categoria, monto };
+  if (!data[activeMonth]) data[activeMonth] = {ingresos:[], egresos:[]};
+
+  if (txType === 'ingreso') {
+    data[activeMonth].ingresos.push(tx);
+  } else {
+    data[activeMonth].egresos.push(tx);
+  }
+
+  await save();
+  renderAll();
+  closeModal('addModal');
+  showToast(`Registrado: ${fmt(monto)}`);
+}
+
+async function deleteTx(tipo, id) {
+  if (!confirm('¿Eliminar este movimiento?')) return;
+  if (tipo === 'ingreso') {
+    data[activeMonth].ingresos = data[activeMonth].ingresos.filter(x => x.id !== id);
+  } else {
+    data[activeMonth].egresos = data[activeMonth].egresos.filter(x => x.id !== id);
+  }
+  await save();
+  renderAll();
+  showToast('Movimiento eliminado');
+}
+
+// ── ADD MONTH ──
+function openAddMonth() {
+  document.getElementById('addMonthModal').classList.add('open');
+}
+
+async function confirmAddMonth() {
+  const m = document.getElementById('newMonthSel').value;
+  if (months.includes(m)) { showToast('Ese mes ya existe'); return; }
+  months.push(m);
+  data[m] = {ingresos:[], egresos:[]};
+  activeMonth = m;
+  await save();
+  renderAll();
+  closeModal('addMonthModal');
+  showToast('Mes creado: ' + m);
+}
+
+// ── EXPORT ──
+function openExport() { document.getElementById('exportModal').classList.add('open'); }
+
+function exportData(type) {
+  let csv = '', filename = '';
+  const now = new Date().toLocaleDateString('es-MX').replace(/\//g,'-');
+
+  if (type === 'mes') {
+    filename = `medbeauty-${activeMonth}-2026.csv`;
+    csv = 'Fecha,Tipo,Concepto,Categoria,Monto\n';
+    const mo = getMonthData();
+    mo.ingresos.forEach(x => { csv += `"${x.fecha}","INGRESO","${x.concepto}","${x.categoria}",${x.monto}\n`; });
+    mo.egresos.forEach(x => { csv += `"${x.fecha}","EGRESO","${x.concepto}","${x.categoria}",-${x.monto}\n`; });
+  } else {
+    filename = `medbeauty-anual-2026.csv`;
+    csv = 'Mes,Total Ingresos,Total Egresos,Utilidad Neta,Margen %\n';
+    months.forEach(m => {
+      const ing = totalIng(m);
+      const egr = totalEgr(m);
+      const util = ing - egr;
+      const pct = ing > 0 ? Math.round(util/ing*100) : 0;
+      csv += `"${m}",${ing},${egr},${util},${pct}%\n`;
+    });
+  }
+
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+  closeModal('exportModal');
+  showToast('Descargado: ' + filename);
+}
+
+// ── MODAL ──
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,.2);white-space:nowrap;font-family:Syne,sans-serif';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+// ── INIT ──
+function waitForFirebase(cb) {
+  if (window._firebaseReady) cb();
+  else document.addEventListener('firebaseReady', cb, {once:true});
+}
+
+waitForFirebase(async () => {
+  await load();
+  renderAll();
+});
+</script>
+</body>
+</html>
