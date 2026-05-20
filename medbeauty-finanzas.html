@@ -6,26 +6,33 @@
 <title>MedBeauty · Finanzas 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<script>
+// Firebase loads async — non-blocking
+window._firebaseReady = false;
+window._db = null;
+window._fs = null;
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAQ1J-am1TkyHAbIT-zLtzDkNV-mfCO4-s",
-    authDomain: "medbeauty-71438.firebaseapp.com",
-    projectId: "medbeauty-71438",
-    storageBucket: "medbeauty-71438.firebasestorage.app",
-    messagingSenderId: "494839722349",
-    appId: "1:494839722349:web:6d0a7975364a030cf0ea64"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  window._db = db;
-  window._fs = { doc, setDoc, getDoc };
-  window._firebaseReady = true;
-  document.dispatchEvent(new Event('firebaseReady'));
+(async function() {
+  try {
+    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    const { getFirestore, doc, setDoc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const app = initializeApp({
+      apiKey: "AIzaSyAQ1J-am1TkyHAbIT-zLtzDkNV-mfCO4-s",
+      authDomain: "medbeauty-71438.firebaseapp.com",
+      projectId: "medbeauty-71438",
+      storageBucket: "medbeauty-71438.firebasestorage.app",
+      messagingSenderId: "494839722349",
+      appId: "1:494839722349:web:6d0a7975364a030cf0ea64"
+    });
+    window._db = getFirestore(app);
+    window._fs = { doc, setDoc, getDoc };
+    window._firebaseReady = true;
+    document.dispatchEvent(new Event('firebaseReady'));
+  } catch(e) {
+    console.warn('Firebase no disponible:', e);
+    document.dispatchEvent(new Event('firebaseReady'));
+  }
+})();
 </script>
 <style>
 :root {
@@ -751,39 +758,81 @@ let data = {}, months = [], activeMonth = 'Mayo';
 let txFilter = 'all', txType = 'ing', nextId = 2000;
 let charts = {};
 
-// ── FIREBASE ──
-async function save() {
-  try {
-    const {doc,setDoc} = window._fs, db = window._db;
-    await setDoc(doc(db,'finanzas','meses'),{data:JSON.stringify(months),ts:Date.now()});
-    await setDoc(doc(db,'finanzas','datos'),{data:JSON.stringify(data),ts:Date.now()});
-  } catch(e) { toast('Error al guardar'); }
+// ── STORAGE — LOCAL FIRST, FIREBASE IN BACKGROUND ──
+function loadLocal() {
+  // Always load from INITIAL_DATA first as base
+  const saved = localStorage.getItem('mb_fin_v3');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      data   = parsed.data;
+      months = parsed.months;
+    } catch(e) {
+      data   = JSON.parse(JSON.stringify(INITIAL_DATA));
+      months = ['Febrero','Marzo','Abril','Mayo'];
+    }
+  } else {
+    data   = JSON.parse(JSON.stringify(INITIAL_DATA));
+    months = ['Febrero','Marzo','Abril','Mayo'];
+    saveLocal();
+  }
+  let max = 2000;
+  Object.values(data).forEach(m => [...(m.ingresos||[]),...(m.egresos||[])].forEach(t => { if(t.id>max) max=t.id; }));
+  nextId = max + 1;
+  activeMonth = months[months.length-1];
 }
 
-async function load() {
+function saveLocal() {
+  try { localStorage.setItem('mb_fin_v3', JSON.stringify({data, months})); } catch(e) {}
+}
+
+async function syncFromFirebase() {
+  if (!window._firebaseReady || !window._db) return;
   try {
-    const {doc,getDoc} = window._fs, db = window._db;
-    const [ms,ds] = await Promise.all([
+    const {doc, getDoc} = window._fs, db = window._db;
+    const [ms, ds] = await Promise.all([
       getDoc(doc(db,'finanzas','meses')),
       getDoc(doc(db,'finanzas','datos'))
     ]);
     if (ms.exists() && ds.exists()) {
-      months = JSON.parse(ms.data().data);
-      data   = JSON.parse(ds.data().data);
+      const fbMonths = JSON.parse(ms.data().data);
+      const fbData   = JSON.parse(ds.data().data);
+      // Only update if Firebase has more data
+      const fbTotal = Object.values(fbData).reduce((s,m)=>(s+(m.ingresos||[]).length+(m.egresos||[]).length),0);
+      const localTotal = Object.values(data).reduce((s,m)=>(s+(m.ingresos||[]).length+(m.egresos||[]).length),0);
+      if (fbTotal >= localTotal) {
+        data   = fbData;
+        months = fbMonths;
+        saveLocal();
+        let max = 2000;
+        Object.values(data).forEach(m => [...(m.ingresos||[]),...(m.egresos||[])].forEach(t => { if(t.id>max) max=t.id; }));
+        nextId = max + 1;
+        renderMes();
+        console.log('✓ Sincronizado con Firebase');
+      }
     } else {
-      data   = JSON.parse(JSON.stringify(INITIAL_DATA));
-      months = ['Febrero','Marzo','Abril','Mayo'];
-      await save();
+      // First time in Firebase — push local data
+      await pushToFirebase();
     }
-    let max = 2000;
-    Object.values(data).forEach(m => [...(m.ingresos||[]),...(m.egresos||[])].forEach(t => { if(t.id>max) max=t.id; }));
-    nextId = max + 1;
-    activeMonth = months[months.length-1];
-  } catch(e) {
-    data   = JSON.parse(JSON.stringify(INITIAL_DATA));
-    months = ['Febrero','Marzo','Abril','Mayo'];
-    toast('Sin conexión — datos locales');
-  }
+  } catch(e) { console.warn('Firebase sync error:', e); }
+}
+
+async function pushToFirebase() {
+  if (!window._firebaseReady || !window._db) return;
+  try {
+    const {doc, setDoc} = window._fs, db = window._db;
+    await setDoc(doc(db,'finanzas','meses'), {data:JSON.stringify(months), ts:Date.now()});
+    await setDoc(doc(db,'finanzas','datos'), {data:JSON.stringify(data), ts:Date.now()});
+  } catch(e) { console.warn('Firebase push error:', e); }
+}
+
+async function save() {
+  saveLocal(); // Always save locally first (instant)
+  await pushToFirebase(); // Then sync to Firebase (background)
+}
+
+function load() {
+  loadLocal(); // Instant — no await needed
 }
 
 // ── HELPERS ──
@@ -1148,15 +1197,26 @@ function toast(msg) {
   setTimeout(()=>t.remove(),2500);
 }
 
-// ── INIT ──
-function waitFB(cb) {
-  if(window._firebaseReady) cb();
-  else document.addEventListener('firebaseReady',cb,{once:true});
+// ── INIT — LOCAL FIRST ──
+function hideLoading() {
+  const el = document.getElementById('loadingScreen');
+  if(el) el.style.display = 'none';
 }
-waitFB(async()=>{
-  await load();
-  document.getElementById('loadingScreen').style.display='none';
-  renderMes();
+
+// 1. Load local data immediately — no waiting
+load();
+hideLoading();
+renderMes();
+
+// 2. When Firebase is ready, sync in background
+document.addEventListener('firebaseReady', () => {
+  setTimeout(syncFromFirebase, 500); // Small delay to not block UI
+}, { once: true });
+}
+
+waitFB(async () => {
+  clearTimeout(fbTimeout); // Firebase loaded — cancel timeout
+  await initApp();
 });
 </script>
 </body>
