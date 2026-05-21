@@ -2,259 +2,303 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MedBeauty · Finanzas 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MedBeauty · Finanzas</title>
 <style>
-:root{
-  --bg:#0a0d12;--surface:#10151e;--card:#141b27;--card2:#1a2235;
-  --border:#1e2a3d;--border2:#253248;
-  --ink:#e8edf5;--muted:#6b7a96;--faint:#3a4a66;
-  --green:#2dbe7a;--green2:#1e9e62;--gdim:rgba(45,190,122,.1);
-  --gold:#f0b429;--gdim2:rgba(240,180,41,.1);
-  --red:#e85555;--rdim:rgba(232,85,85,.1);
-  --blue:#4a9eff;--purple:#a78bfa;--pink:#f472b6;
-}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:15px;min-height:100vh}
+:root{
+  --bg:#f2f2f7;--white:#fff;--dark:#1c1c1e;--gray:#8e8e93;--lgray:#f2f2f7;
+  --border:#e5e5ea;--green:#30d158;--green2:#1e7e46;--red:#ff3b30;--red2:#c0392b;
+  --orange:#ff9500;--blue:#007aff;--purple:#af52de;--pink:#ff2d55;
+  --shadow:0 1px 4px rgba(0,0,0,.08);--radius:14px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;font-size:15px}
 
-/* HEADER */
-.hdr{background:rgba(10,13,18,.95);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;padding:0 28px}
-.hdr-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;height:60px;gap:12px}
-.brand{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--ink)}
-.brand em{color:var(--green);font-style:italic}
-.hdr-btns{margin-left:auto;display:flex;gap:6px}
-.hbtn{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap}
-.hbtn:hover{border-color:var(--green);color:var(--green)}
-.hbtn.ok{background:var(--green);border-color:var(--green);color:#000}
+/* ── TOP BAR ── */
+.topbar{background:var(--dark);color:#fff;padding:0 20px;display:flex;align-items:center;height:56px;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(0,0,0,.3)}
+.brand{font-size:16px;font-weight:800;flex:1}
+.brand em{color:var(--green);font-style:italic;font-weight:400}
+.topbar-btns{display:flex;gap:6px}
+.tbtn{padding:7px 14px;border-radius:9px;border:none;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;transition:.15s}
+.tbtn-ghost{background:rgba(255,255,255,.12);color:#fff}
+.tbtn-ghost:hover{background:rgba(255,255,255,.2)}
+.tbtn-green{background:var(--green);color:#000}
+.tbtn-green:hover{background:var(--green2);color:#fff}
 
-/* NAV ICONS */
-.nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px}
-.nav-inner{max-width:1200px;margin:0 auto;display:flex}
-.nbtn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:14px 24px;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;border-bottom:3px solid transparent;transition:all .2s;position:relative;top:1px}
-.nbtn:hover{color:var(--green)}
-.nbtn.on{color:var(--green);border-bottom-color:var(--green)}
-.nbtn svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* ── TABS ── */
+.tabs{background:var(--white);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:0 16px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{display:flex;flex-direction:column;align-items:center;gap:5px;padding:11px 20px;cursor:pointer;border-bottom:2.5px solid transparent;color:var(--gray);font-size:11px;font-weight:700;white-space:nowrap;transition:.2s;border-top:none;border-left:none;border-right:none;background:none;font-family:inherit}
+.tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tab:hover,.tab.on{color:var(--green);border-bottom-color:var(--green)}
 
-/* MONTHS */
-.months{max-width:1200px;margin:0 auto;padding:20px 28px 0;display:flex;gap:8px;flex-wrap:wrap}
-.mpill{padding:8px 18px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border2);background:transparent;color:var(--muted);font-family:'DM Mono',monospace;transition:all .2s}
-.mpill:hover{border-color:var(--green);color:var(--green)}
-.mpill.on{background:var(--green);border-color:var(--green);color:#000}
-.mpill.add{border-style:dashed;color:var(--green);border-color:var(--green2)}
+/* ── MONTH PILLS ── */
+.pills{background:var(--white);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;gap:8px;flex-wrap:wrap}
+.pill{padding:6px 16px;border-radius:16px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;font-size:13px;font-weight:600;color:var(--gray);transition:.15s;font-family:inherit}
+.pill:hover{border-color:var(--green);color:var(--green)}
+.pill.on{background:var(--green);border-color:var(--green);color:#000}
+.pill.add{border-style:dashed;color:var(--green);border-color:var(--green)}
 
-/* MAIN */
-.main{max-width:1200px;margin:0 auto;padding:24px 28px 100px}
+/* ── MAIN ── */
+.main{max-width:1100px;margin:0 auto;padding:20px 20px 100px}
 .page{display:none}.page.on{display:block}
 
-/* KPI */
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
-.kpi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;position:relative;overflow:hidden}
-.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.kpi.g::after{background:var(--green)}.kpi.r::after{background:var(--red)}.kpi.gd::after{background:var(--gold)}.kpi.b::after{background:var(--blue)}
-.kpi.feat{background:linear-gradient(135deg,rgba(45,190,122,.1),transparent);border-color:var(--green2)}
-.klbl{font-size:10px;font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:block}
-.kval{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;line-height:1;display:block}
-.kval.g{color:var(--green)}.kval.r{color:var(--red)}.kval.gd{color:var(--gold)}.kval.b{color:var(--blue)}
-.ksub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:8px;display:block}
-.kbadge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-family:'DM Mono',monospace;padding:2px 7px;border-radius:10px;margin-top:6px;font-weight:600}
-.kbadge.up{background:var(--gdim);color:var(--green)}.kbadge.dn{background:var(--rdim);color:var(--red)}
+/* ── KPI ROW ── */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.kpi{background:var(--white);border-radius:var(--radius);padding:18px 16px;box-shadow:var(--shadow);border-top:3px solid transparent}
+.kpi.k-green{border-top-color:var(--green)}
+.kpi.k-red{border-top-color:var(--red)}
+.kpi.k-orange{border-top-color:var(--orange)}
+.kpi.k-blue{border-top-color:var(--blue)}
+.kpi-lbl{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.kpi-val{font-size:26px;font-weight:800;line-height:1}
+.kpi-val.green{color:var(--green2)}.kpi-val.red{color:var(--red2)}.kpi-val.orange{color:var(--orange)}.kpi-val.blue{color:var(--blue)}
+.kpi-sub{font-size:11px;color:var(--gray);margin-top:6px}
+.kpi-badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;margin-top:5px}
+.badge-green{background:#e8faf0;color:var(--green2)}.badge-red{background:#fff0ef;color:var(--red2)}
 
-/* GRIDS */
+/* ── CARDS & GRIDS ── */
+.card{background:var(--white);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:14px}
+.card-title{font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .g2{display:grid;grid-template-columns:3fr 2fr;gap:14px;margin-bottom:14px}
 .g2b{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px}
-.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px}
-.g-ins{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.g-ins{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
 
-/* CARD */
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px}
-.ctitle{font-size:10px;font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:18px;display:block}
-.chdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px}
+/* ── BAR CHART ── */
+.barchart{display:flex;flex-direction:column;gap:10px}
+.bar-row{display:flex;align-items:center;gap:10px}
+.bar-name{width:100px;text-align:right;font-size:12px;font-weight:700;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-bg{flex:1;background:var(--lgray);border-radius:6px;height:26px;position:relative;overflow:hidden}
+.bar-fg{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 8px;transition:width .5s ease;min-width:0}
+.bar-fg span{font-size:10px;font-weight:700;color:#fff;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.2)}
+.bar-ext{font-size:11px;font-weight:700;color:var(--gray);width:72px;flex-shrink:0;text-align:right}
 
-/* CHART */
-.cw{position:relative}.h200{height:200px}.h250{height:250px}.h280{height:280px}.h160{height:160px}
+/* ── DONUT ── */
+.donut-wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.donut-legend{display:flex;flex-direction:column;gap:9px;flex:1;min-width:110px}
+.leg-row{display:flex;align-items:center;gap:8px}
+.leg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.leg-lbl{font-size:12px;color:#3c3c43;flex:1}
+.leg-val{font-size:12px;font-weight:700}
+.leg-pct{font-size:10px;color:var(--gray);width:30px;text-align:right}
 
-/* CAT BARS */
-.cbars{display:flex;flex-direction:column;gap:12px}
-.crow{display:grid;grid-template-columns:100px 1fr 68px;gap:8px;align-items:center}
-.cname{font-size:11px;font-weight:600;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ctrack{background:var(--border);border-radius:3px;height:6px;overflow:hidden}
-.cfill{height:100%;border-radius:3px;transition:width .5s}
-.camt{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-align:right}
+/* ── TX LIST ── */
+.txlist{display:flex;flex-direction:column;gap:2px;max-height:480px;overflow-y:auto;scrollbar-width:thin}
+.txlist::-webkit-scrollbar{width:3px}.txlist::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.tx{display:grid;grid-template-columns:46px 1fr auto;gap:8px;align-items:center;padding:9px 10px;border-radius:10px;cursor:pointer;transition:background .1s}
+.tx:hover{background:var(--lgray)}
+.tx.ing{border-left:3px solid var(--green)}.tx.egr{border-left:3px solid var(--red)}
+.tx-date{font-size:10px;color:#aeaeb2;line-height:1.3}
+.tx-name{font-size:13px;font-weight:600}
+.tx-cat{display:inline-block;font-size:10px;padding:1px 6px;border-radius:5px;margin-top:2px}
+.tx-amt{font-size:13px;font-weight:700;text-align:right;white-space:nowrap}
+.tx-amt.ing{color:var(--green2)}.tx-amt.egr{color:var(--red2)}
+.no-data{text-align:center;padding:40px;color:#c7c7cc;font-size:13px}
 
-/* TX */
-.txlist{display:flex;flex-direction:column;gap:2px;max-height:400px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
-.txi{display:grid;grid-template-columns:46px 1fr auto;gap:8px;align-items:center;padding:10px 10px;border-radius:10px;transition:background .1s;cursor:pointer}
-.txi:hover{background:var(--card2)}
-.txi.ing{border-left:2px solid var(--green)}.txi.egr{border-left:2px solid var(--red)}
-.txdate{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);line-height:1.3}
-.txcon{font-size:13px;font-weight:600;color:var(--ink)}
-.txbadge{display:inline-block;font-size:9px;font-family:'DM Mono',monospace;padding:1px 5px;border-radius:4px;margin-top:2px}
-.txamt{font-family:'DM Mono',monospace;font-size:12px;font-weight:600;text-align:right}
-.txamt.ing{color:var(--green)}.txamt.egr{color:var(--red)}
+/* ── ANUAL CHART ── */
+.anual-bars{display:flex;gap:8px;align-items:flex-end;padding:8px 0}
+.ag{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.ac{display:flex;gap:2px;align-items:flex-end;height:110px}
+.ab{flex:1;border-radius:3px 3px 0 0;min-height:3px;transition:height .5s}
+.al{font-size:10px;color:var(--gray);text-align:center;font-weight:600}
+.anual-vals{display:grid;gap:4px;margin-top:6px}
+.av{font-size:9px;font-family:monospace;text-align:center}
 
-/* ANUAL TABLE */
-.atable{width:100%;border-collapse:collapse}
-.atable thead th{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:10px 14px;text-align:right;border-bottom:1px solid var(--border2);font-weight:400}
-.atable thead th:first-child{text-align:left}
-.atable tbody tr{border-bottom:1px solid var(--border);transition:background .1s;cursor:pointer}
-.atable tbody tr:hover{background:var(--card2)}
-.atable tbody tr.cur td{color:var(--gold)!important}
-.atable td{padding:12px 14px;font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);text-align:right}
-.atable td:first-child{font-family:'DM Sans',sans-serif;font-weight:700;color:var(--ink);text-align:left;font-size:14px}
-.atable td.g{color:var(--green)}.atable td.r{color:var(--red)}.atable td.gd{color:var(--gold)}
-.atable tfoot td{border-top:2px solid var(--border2);font-weight:700;color:var(--ink);padding:12px 14px;font-family:'DM Mono',monospace}
+/* ── ANUAL TABLE ── */
+.at{width:100%;border-collapse:collapse}
+.at thead th{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;padding:10px 12px;text-align:right;border-bottom:1px solid var(--border);font-weight:700}
+.at thead th:first-child{text-align:left}
+.at tbody tr{border-bottom:1px solid #f2f2f7;cursor:pointer;transition:background .1s}
+.at tbody tr:hover{background:#fafafa}
+.at tbody tr.cur td{color:var(--orange)!important}
+.at td{padding:12px 12px;font-size:13px;color:var(--gray);text-align:right}
+.at td:first-child{font-weight:700;color:var(--dark);text-align:left}
+.at td.g{color:var(--green2)}.at td.r{color:var(--red2)}.at td.o{color:var(--orange)}
+.at tfoot td{border-top:2px solid var(--border);font-weight:800;color:var(--dark);padding:12px;text-align:right}
+.at tfoot td:first-child{text-align:left}
 
-/* INSIGHTS */
-.ins{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px}
-.ins-icon{font-size:26px;margin-bottom:8px;display:block}
-.ins-lbl{font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px}
-.ins-val{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;line-height:1.1}
-.ins-desc{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}
+/* ── INSIGHTS ── */
+.ins{background:var(--white);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.ins-ic{font-size:22px;margin-bottom:7px}
+.ins-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray);margin-bottom:4px;font-weight:700}
+.ins-val{font-size:20px;font-weight:800;line-height:1.1}
+.ins-desc{font-size:11px;color:var(--gray);margin-top:4px;line-height:1.4}
 
-/* SEC TITLE */
-.stitle{font-size:10px;font-family:'DM Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:10px}
-.stitle::after{content:'';flex:1;height:1px;background:var(--border)}
-
-/* FILTER */
+/* ── FILTER ── */
 .frow{display:flex;gap:5px}
-.fbtn{padding:5px 10px;border-radius:7px;font-size:10px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--muted);font-family:'DM Mono',monospace;transition:all .15s}
-.fbtn.on{border-color:var(--green);color:var(--green);background:var(--gdim)}
+.fb{padding:5px 11px;border-radius:8px;border:1.5px solid var(--border);background:var(--white);color:var(--gray);font-size:11px;font-weight:700;cursor:pointer;transition:.15s;font-family:inherit}
+.fb.on{border-color:var(--green);color:var(--green);background:#e8faf0}
 
-/* MODAL */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
-.overlay.open{display:flex}
-.modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px 20px 0 0;padding:22px 22px 40px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;animation:su .2s ease}
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:60px 20px}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty-title{font-size:17px;font-weight:700;color:var(--dark);margin-bottom:6px}
+.empty-sub{font-size:13px;color:var(--gray)}
+
+/* ── MODAL ── */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.ov.open{display:flex}
+.modal{background:var(--white);border-radius:20px 20px 0 0;padding:22px 22px 44px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;animation:su .22s ease}
 @keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
-@media(min-width:700px){.overlay{align-items:center;padding:20px}.modal{border-radius:16px}}
-.mhandle{width:32px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 20px}
-.mtitle{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;margin-bottom:18px;color:var(--ink)}
-.trow{display:flex;border-radius:9px;overflow:hidden;border:1px solid var(--border2);margin-bottom:16px}
-.tbtn{flex:1;padding:11px;text-align:center;font-size:13px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .15s}
-.tbtn.ing.on{background:var(--gdim);color:var(--green)}.tbtn.egr.on{background:var(--rdim);color:var(--red)}
+@media(min-width:600px){.ov{align-items:center;padding:20px}.modal{border-radius:18px;max-height:90vh}}
+.mhandle{width:34px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 22px}
+.mtitle{font-size:20px;font-weight:800;margin-bottom:18px}
+.ts{display:flex;background:var(--lgray);border-radius:10px;padding:3px;gap:3px;margin-bottom:16px}
+.tb{flex:1;padding:10px;text-align:center;border-radius:8px;border:none;font-size:14px;font-weight:700;cursor:pointer;color:var(--gray);font-family:inherit;background:transparent;transition:.15s}
+.tb.ing.on{background:var(--green);color:#000}
+.tb.egr.on{background:var(--red);color:#fff}
+.fgr{margin-bottom:13px}
+.fgr label{display:block;font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.3px;margin-bottom:5px}
+.fi,.fs{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;color:var(--dark);background:var(--white);-webkit-appearance:none;transition:.15s}
+.fi:focus,.fs:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(48,209,88,.12)}
+.fi::placeholder{color:#c7c7cc}
 .frow2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.fg{margin-bottom:12px}
-.fl{display:block;font-size:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:5px}
-.fi,.fs{width:100%;padding:11px 13px;border:1.5px solid var(--border2);border-radius:9px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--card);-webkit-appearance:none;transition:border-color .15s}
-.fi:focus,.fs:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--gdim)}
-.fi::placeholder{color:var(--faint)}
-.btnp{width:100%;padding:13px;background:var(--green);color:#000;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;margin-top:2px}
-.btnp:hover{background:var(--green2);color:#fff}
-.btns{width:100%;padding:11px;background:transparent;color:var(--muted);border:1.5px solid var(--border2);border-radius:10px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:7px}
+.bsave{width:100%;padding:13px;background:var(--green);color:#000;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;margin-top:4px;transition:.15s}
+.bsave:hover{background:var(--green2);color:#fff}
+.bcancel{width:100%;padding:11px;background:transparent;color:var(--gray);border:1.5px solid var(--border);border-radius:12px;font-size:14px;cursor:pointer;font-family:inherit;margin-top:7px}
+.eopt{display:flex;gap:14px;align-items:center;padding:14px;border-radius:12px;border:1.5px solid var(--border);background:#fafafa;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+.eopt:hover{border-color:var(--green)}
+.eopt svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
-/* FAB */
-.fab{position:fixed;bottom:26px;right:max(22px,calc((100vw - 1200px)/2 + 22px));width:54px;height:54px;border-radius:50%;background:var(--green);color:#000;border:none;cursor:pointer;box-shadow:0 4px 18px rgba(45,190,122,.4);display:flex;align-items:center;justify-content:center;z-index:90;transition:transform .15s}
+/* ── FAB ── */
+.fab{position:fixed;bottom:28px;right:max(24px,calc((100vw - 1100px)/2 + 24px));width:54px;height:54px;border-radius:50%;background:var(--green);color:#000;border:none;cursor:pointer;font-size:26px;font-weight:300;box-shadow:0 4px 18px rgba(48,209,88,.4);display:flex;align-items:center;justify-content:center;z-index:90;transition:.15s;line-height:1}
 .fab:hover{transform:scale(1.08)}
 .fab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 
-/* EXPORT */
-.eopt{display:flex;gap:14px;align-items:center;padding:15px;border-radius:10px;cursor:pointer;border:1.5px solid var(--border2);background:var(--card2);margin-bottom:10px;transition:border-color .15s}
-.eopt:hover{border-color:var(--green)}
-.eopt svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+hr{border:none;border-top:1px solid var(--border);margin:14px 0}
 
-/* DIVIDER */
-hr{border:none;border-top:1px solid var(--border);margin:16px 0}
+/* ── LEGEND STRIP ── */
+.legend-strip{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;font-weight:600;color:var(--gray)}
+.ls-item{display:flex;align-items:center;gap:4px}
+.ls-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
 
-/* RESP */
-@media(max-width:900px){
-  .hdr,.nav{padding:0 16px}.months{padding:16px 16px 0}.main{padding:18px 16px 100px}
-  .kpis{grid-template-columns:1fr 1fr}.g2,.g2b,.g3{grid-template-columns:1fr}.g-ins{grid-template-columns:1fr 1fr}
-  .nbtn{padding:10px 14px}.frow2{grid-template-columns:1fr}
+/* ── RESPONSIVE ── */
+@media(max-width:800px){
+  .kpis,.g2,.g2b,.g3{grid-template-columns:1fr 1fr}
+  .g-ins{grid-template-columns:1fr 1fr}
+  .main{padding:14px 14px 100px}
+  .frow2{grid-template-columns:1fr}
+  .topbar-btns .tbtn-ghost{display:none}
 }
-@media(max-width:500px){.kpis{grid-template-columns:1fr 1fr}.kval{font-size:24px}.g-ins{grid-template-columns:1fr}}
+@media(max-width:480px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .kpi-val{font-size:22px}
+  .g-ins{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="hdr">
-  <div class="hdr-inner">
-    <div class="brand">MedBeauty <em>· Finanzas 2026</em></div>
-    <div class="hdr-btns">
-      <button class="hbtn" onclick="document.getElementById('expModal').classList.add('open')">Exportar</button>
-      <button class="hbtn ok" onclick="openAdd()">+ Registro</button>
-    </div>
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="brand">MedBeauty <em>· Finanzas</em></div>
+  <div class="topbar-btns">
+    <button class="tbtn tbtn-ghost" onclick="openM('expMod')">Exportar</button>
+    <button class="tbtn tbtn-green" onclick="openAdd()">+ Registro</button>
   </div>
-</header>
+</div>
 
-<!-- NAV ICONS -->
-<nav class="nav">
-  <div class="nav-inner">
-    <button class="nbtn on" id="n-mes" onclick="goPage('mes',this)">
-      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      Por Mes
-    </button>
-    <button class="nbtn" id="n-anual" onclick="goPage('anual',this)">
-      <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-      Anual
-    </button>
-    <button class="nbtn" id="n-analisis" onclick="goPage('analisis',this)">
-      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      Análisis
-    </button>
-    <button class="nbtn" id="n-movs" onclick="goPage('movs',this)">
-      <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-      Movimientos
-    </button>
-  </div>
-</nav>
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab on" id="t-mes" onclick="goTab('mes',this)">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Por Mes
+  </button>
+  <button class="tab" id="t-anual" onclick="goTab('anual',this)">
+    <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+    Anual
+  </button>
+  <button class="tab" id="t-analisis" onclick="goTab('analisis',this)">
+    <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    Análisis
+  </button>
+  <button class="tab" id="t-movs" onclick="goTab('movs',this)">
+    <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    Movimientos
+  </button>
+</div>
 
-<!-- MONTHS -->
-<div class="months" id="monthsRow"></div>
+<!-- MONTH PILLS -->
+<div class="pills" id="pills"></div>
 
 <!-- MAIN -->
 <div class="main">
 
-<!-- MES -->
-<div id="p-mes" class="page on">
-  <div class="kpis" id="kpiRow"></div>
-  <div class="stitle">Ingresos por categoría</div>
-  <div class="g2"><div class="card"><div class="chdr"><span class="ctitle">Desglose del mes</span><span id="catTot" style="font-family:'Playfair Display',serif;font-size:15px;color:var(--green)"></span></div><div class="cw h250"><canvas id="catC"></canvas></div></div>
-  <div class="card"><div class="chdr"><span class="ctitle">Ingreso vs Egreso</span></div><div class="cw h250"><canvas id="donutC"></canvas></div></div></div>
-  <div class="stitle">Egresos del mes</div>
-  <div class="g2b"><div class="card"><div class="chdr"><span class="ctitle">Por categoría</span><span id="egrTot" style="font-family:'DM Mono',monospace;font-size:14px;color:var(--red)"></span></div><div class="cbars" id="egrBars"></div></div>
-  <div class="card"><div class="chdr"><span class="ctitle">Distribución egresos</span></div><div class="cw h200"><canvas id="egrDonutC"></canvas></div></div></div>
-</div>
-
-<!-- ANUAL -->
-<div id="p-anual" class="page">
-  <div class="stitle">Evolución 2026</div>
-  <div class="card" style="margin-bottom:14px"><div class="ctitle">Ingresos · Egresos · Utilidad</div><div class="cw h280"><canvas id="lineC"></canvas></div></div>
-  <div class="g3" style="margin-bottom:14px">
-    <div class="card"><span class="ctitle">Ingresos</span><div class="cw h160"><canvas id="bIngC"></canvas></div></div>
-    <div class="card"><span class="ctitle">Egresos</span><div class="cw h160"><canvas id="bEgrC"></canvas></div></div>
-    <div class="card"><span class="ctitle">Utilidad</span><div class="cw h160"><canvas id="bUtilC"></canvas></div></div>
-  </div>
-  <div class="stitle">Resumen por mes</div>
-  <div class="card"><table class="atable" id="aTable"></table></div>
-</div>
-
-<!-- ANÁLISIS -->
-<div id="p-analisis" class="page">
-  <div class="stitle">Insights clave</div>
-  <div class="g-ins" id="insGrid"></div>
-  <div class="stitle">Acumulado por categoría</div>
-  <div class="g2" style="margin-bottom:14px">
-    <div class="card"><div class="ctitle">Total Feb–Mayo</div><div class="cw h250"><canvas id="acumC"></canvas></div></div>
-    <div class="card"><div class="ctitle">Mix de ingresos</div><div class="cw h250"><canvas id="mixC"></canvas></div></div>
-  </div>
-  <div class="stitle">Composición mes a mes</div>
-  <div class="card"><div class="ctitle">Ingresos apilados</div><div class="cw h280"><canvas id="stackC"></canvas></div></div>
-</div>
-
-<!-- MOVIMIENTOS -->
-<div id="p-movs" class="page">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
-    <div style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700">Movimientos — <span id="movMonth" style="color:var(--green)"></span></div>
-    <div class="frow">
-      <button class="fbtn on" id="fAll" onclick="filt('all')">Todos</button>
-      <button class="fbtn" id="fIng" onclick="filt('ing')">Ingresos</button>
-      <button class="fbtn" id="fEgr" onclick="filt('egr')">Egresos</button>
+  <!-- POR MES -->
+  <div id="p-mes" class="page on">
+    <div class="kpis" id="kpis"></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Ingresos por categoría</span>
+          <span id="ing-total" style="font-size:15px;font-weight:800;color:var(--green2)"></span>
+        </div>
+        <div class="barchart" id="bc-ing"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Ingreso vs Egreso</div>
+        <div class="donut-wrap" id="dw-ing"></div>
+      </div>
+    </div>
+    <div class="g2b">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Egresos por categoría</span>
+          <span id="egr-total" style="font-size:14px;font-weight:800;color:var(--red2)"></span>
+        </div>
+        <div class="barchart" id="bc-egr"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Distribución egresos</div>
+        <div class="donut-wrap" id="dw-egr"></div>
+      </div>
     </div>
   </div>
-  <div class="card"><div class="txlist" id="txList" style="max-height:600px"></div></div>
-</div>
+
+  <!-- ANUAL -->
+  <div id="p-anual" class="page">
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title">Evolución mensual</div>
+      <div class="anual-bars" id="anual-bars"></div>
+      <div class="legend-strip" style="margin-top:10px">
+        <div class="ls-item"><div class="ls-dot" style="background:var(--green)"></div>Ingresos</div>
+        <div class="ls-item"><div class="ls-dot" style="background:var(--red)"></div>Egresos</div>
+        <div class="ls-item"><div class="ls-dot" style="background:var(--orange)"></div>Utilidad</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Resumen anual — clic en un mes para verlo</div>
+      <table class="at">
+        <thead><tr><th>Mes</th><th>Ingresos</th><th>Egresos</th><th>Utilidad</th><th>Margen</th><th>Movtos.</th></tr></thead>
+        <tbody id="at-rows"></tbody>
+        <tfoot id="at-foot"></tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- ANÁLISIS -->
+  <div id="p-analisis" class="page">
+    <div class="g-ins" id="ins-grid"></div>
+    <div class="card">
+      <div class="card-title">Ingresos acumulados por categoría</div>
+      <div class="barchart" id="bc-acum"></div>
+    </div>
+  </div>
+
+  <!-- MOVIMIENTOS -->
+  <div id="p-movs" class="page">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:18px;font-weight:800">Movimientos &mdash; <span id="movs-mes" style="color:var(--green)"></span></div>
+      <div class="frow">
+        <button class="fb on" id="fa" onclick="setFil('all')">Todos</button>
+        <button class="fb" id="fi" onclick="setFil('ing')">Ingresos</button>
+        <button class="fb" id="fe" onclick="setFil('egr')">Egresos</button>
+      </div>
+    </div>
+    <div class="card"><div class="txlist" id="txlist" style="max-height:600px"></div></div>
+  </div>
 
 </div><!-- /main -->
 
@@ -262,317 +306,474 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
   <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
 </button>
 
-<!-- MODAL AGREGAR -->
-<div class="overlay" id="addModal"><div class="modal">
-  <div class="mhandle"></div>
-  <div class="mtitle">Nuevo movimiento</div>
-  <div class="trow">
-    <button class="tbtn ing on" id="tIng" onclick="setT('ing')">Ingreso</button>
-    <button class="tbtn egr" id="tEgr" onclick="setT('egr')">Egreso</button>
-  </div>
-  <div class="frow2">
-    <div class="fg"><label class="fl">Fecha</label><input type="date" class="fi" id="txF"></div>
-    <div class="fg"><label class="fl">Monto ($)</label><input type="number" class="fi" id="txM" placeholder="0.00" min="0" step="0.01"></div>
-  </div>
-  <div class="fg"><label class="fl">Concepto</label><input type="text" class="fi" id="txC" placeholder="Hydrafacial, Farmacia, Renta..."></div>
-  <div class="fg"><label class="fl">Categoría</label>
-    <select class="fs" id="txK">
-      <optgroup label="Ingresos">
-        <option value="FACIALES">Faciales / PRP</option>
-        <option value="CONSULTA">Consulta médica</option>
-        <option value="FARMACIA">Farmacia</option>
-        <option value="MULTIVITAMINICOS">Multivitamínicos</option>
-        <option value="ASTER">Aster</option>
-        <option value="EXTRAS">Extras / Comisiones</option>
-      </optgroup>
-      <optgroup label="Egresos">
-        <option value="FARMACIA_EGR">Farmacia (inversión)</option>
-        <option value="PERSONAL">Personal</option>
-        <option value="FIJOS">Gastos fijos</option>
-        <option value="SERVICIOS">Servicios</option>
-        <option value="OTROS">Otros</option>
-      </optgroup>
-    </select>
-  </div>
-  <button class="btnp" onclick="saveTx()">Guardar</button>
-  <button class="btns" onclick="close2('addModal')">Cancelar</button>
-</div></div>
+<!-- ── MODALS ── -->
 
-<!-- MODAL MES -->
-<div class="overlay" id="mesModal"><div class="modal">
-  <div class="mhandle"></div>
-  <div class="mtitle">Agregar mes</div>
-  <div class="fg"><label class="fl">Mes</label>
-    <select class="fs" id="newM">
-      <option value="Enero">Enero 2026</option>
-      <option value="Junio">Junio 2026</option>
-      <option value="Julio">Julio 2026</option>
-      <option value="Agosto">Agosto 2026</option>
-      <option value="Septiembre">Septiembre 2026</option>
-      <option value="Octubre">Octubre 2026</option>
-      <option value="Noviembre">Noviembre 2026</option>
-      <option value="Diciembre">Diciembre 2026</option>
-    </select>
+<!-- NUEVO MOVIMIENTO -->
+<div class="ov" id="addMod">
+  <div class="modal">
+    <div class="mhandle"></div>
+    <div class="mtitle">Nuevo movimiento</div>
+    <div class="ts">
+      <button class="tb ing on" id="btn-ing" onclick="setTT('ing')">Ingreso</button>
+      <button class="tb egr" id="btn-egr" onclick="setTT('egr')">Egreso</button>
+    </div>
+    <div class="frow2">
+      <div class="fgr"><label>Fecha</label><input type="date" class="fi" id="xf"></div>
+      <div class="fgr"><label>Monto $</label><input type="number" class="fi" id="xm" placeholder="0.00" min="0" step="0.01"></div>
+    </div>
+    <div class="fgr"><label>Concepto</label><input type="text" class="fi" id="xc" placeholder="Hydrafacial, Farmacia, Renta..."></div>
+    <div class="fgr"><label>Categoría</label>
+      <select class="fs" id="xk">
+        <optgroup label="Ingresos">
+          <option value="FACIALES">Faciales / PRP</option>
+          <option value="CONSULTA">Consulta médica</option>
+          <option value="FARMACIA">Farmacia</option>
+          <option value="MULTIVITAMINICOS">Multivitamínicos</option>
+          <option value="ASTER">Aster</option>
+          <option value="EXTRAS">Extras / Comisiones</option>
+        </optgroup>
+        <optgroup label="Egresos">
+          <option value="FARMACIA_EGR">Farmacia (inversión)</option>
+          <option value="PERSONAL">Personal</option>
+          <option value="FIJOS">Gastos fijos</option>
+          <option value="SERVICIOS">Servicios</option>
+          <option value="OTROS">Otros</option>
+        </optgroup>
+      </select>
+    </div>
+    <button class="bsave" onclick="saveTx()">Guardar movimiento</button>
+    <button class="bcancel" onclick="closeM('addMod')">Cancelar</button>
   </div>
-  <button class="btnp" onclick="addMes()">Crear mes</button>
-  <button class="btns" onclick="close2('mesModal')">Cancelar</button>
-</div></div>
+</div>
 
-<!-- MODAL EXPORT -->
-<div class="overlay" id="expModal"><div class="modal">
-  <div class="mhandle"></div>
-  <div class="mtitle">Exportar datos</div>
-  <div class="eopt" onclick="doExp('mes')">
-    <svg viewBox="0 0 24 24" style="color:var(--green)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-    <div><div style="font-weight:700;font-size:14px;color:var(--ink)">Mes actual — CSV</div><div style="font-size:12px;color:var(--muted);margin-top:3px">Movimientos del mes seleccionado</div></div>
+<!-- AGREGAR MES -->
+<div class="ov" id="mesMod">
+  <div class="modal">
+    <div class="mhandle"></div>
+    <div class="mtitle">Agregar mes</div>
+    <div class="fgr"><label>Mes</label>
+      <select class="fs" id="xmes">
+        <option value="Enero">Enero</option><option value="Febrero">Febrero</option>
+        <option value="Marzo">Marzo</option><option value="Abril">Abril</option>
+        <option value="Mayo">Mayo</option><option value="Junio">Junio</option>
+        <option value="Julio">Julio</option><option value="Agosto">Agosto</option>
+        <option value="Septiembre">Septiembre</option><option value="Octubre">Octubre</option>
+        <option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option>
+      </select>
+    </div>
+    <div class="fgr"><label>Año</label><input type="number" class="fi" id="xanio" value="2026" min="2024" max="2030"></div>
+    <button class="bsave" onclick="saveMes()">Crear mes</button>
+    <button class="bcancel" onclick="closeM('mesMod')">Cancelar</button>
   </div>
-  <div class="eopt" onclick="doExp('anual')">
-    <svg viewBox="0 0 24 24" style="color:var(--gold)"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-    <div><div style="font-weight:700;font-size:14px;color:var(--ink)">Resumen anual — CSV</div><div style="font-size:12px;color:var(--muted);margin-top:3px">Totales por mes para Excel/Numbers</div></div>
+</div>
+
+<!-- EXPORTAR -->
+<div class="ov" id="expMod">
+  <div class="modal">
+    <div class="mhandle"></div>
+    <div class="mtitle">Exportar datos</div>
+    <div class="eopt" onclick="doExp('mes')">
+      <svg viewBox="0 0 24 24" style="color:var(--green)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <div><div style="font-weight:700;font-size:14px">Mes actual — CSV</div><div style="font-size:12px;color:var(--gray);margin-top:2px">Todos los movimientos del mes seleccionado</div></div>
+    </div>
+    <div class="eopt" onclick="doExp('anual')">
+      <svg viewBox="0 0 24 24" style="color:var(--orange)"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      <div><div style="font-weight:700;font-size:14px">Resumen anual — CSV</div><div style="font-size:12px;color:var(--gray);margin-top:2px">Totales por mes para Excel / Numbers</div></div>
+    </div>
+    <div class="eopt" onclick="doExp('todo')">
+      <svg viewBox="0 0 24 24" style="color:var(--blue)"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      <div><div style="font-weight:700;font-size:14px">Todo el año — CSV</div><div style="font-size:12px;color:var(--gray);margin-top:2px">Cada movimiento de todos los meses</div></div>
+    </div>
+    <button class="bcancel" onclick="closeM('expMod')">Cerrar</button>
   </div>
-  <button class="btns" onclick="close2('expModal')">Cerrar</button>
-</div></div>
+</div>
 
 <script>
-const INITIAL_DATA = {"Febrero": {"ingresos": [{"id": 201, "fecha": "2026-01-31", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 202, "fecha": "2026-01-31", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 999}, {"id": 203, "fecha": "2026-01-31", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 700}, {"id": 204, "fecha": "2026-02-01", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 200}, {"id": 205, "fecha": "2026-02-01", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 400}, {"id": 206, "fecha": "2026-02-02", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 191}, {"id": 207, "fecha": "2026-02-02", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 999}, {"id": 208, "fecha": "2026-02-02", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 200}, {"id": 209, "fecha": "2026-02-03", "concepto": "COMISIONES", "categoria": "EXTRAS", "monto": 1600}, {"id": 210, "fecha": "2026-02-03", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 750}, {"id": 211, "fecha": "2026-02-03", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1000}, {"id": 212, "fecha": "2026-02-03", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 999}, {"id": 213, "fecha": "2026-02-04", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 250}, {"id": 214, "fecha": "2026-02-04", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 250}, {"id": 215, "fecha": "2026-02-06", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1299}, {"id": 216, "fecha": "2026-02-06", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 299}, {"id": 217, "fecha": "2026-02-07", "concepto": "PRP + HYDRA", "categoria": "FACIALES", "monto": 1299}, {"id": 218, "fecha": "2026-02-07", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 250}, {"id": 219, "fecha": "2026-02-09", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1998}, {"id": 220, "fecha": "2026-02-09", "concepto": "PRP + HYDRA", "categoria": "FACIALES", "monto": 999}, {"id": 221, "fecha": "2026-02-09", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1270}, {"id": 222, "fecha": "2026-02-10", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 500}, {"id": 223, "fecha": "2026-02-10", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 120}, {"id": 224, "fecha": "2026-02-10", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 350}, {"id": 225, "fecha": "2026-02-10", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 999}, {"id": 226, "fecha": "2026-02-11", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 900}, {"id": 227, "fecha": "2026-02-11", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 350}, {"id": 228, "fecha": "2026-02-11", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 550}, {"id": 229, "fecha": "2026-02-12", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 1900}, {"id": 230, "fecha": "2026-02-12", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1280}, {"id": 231, "fecha": "2026-02-16", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 850}, {"id": 232, "fecha": "2026-02-16", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 250}, {"id": 233, "fecha": "2026-02-17", "concepto": "PROTOCOLO 30", "categoria": "FACIALES", "monto": 1000}, {"id": 234, "fecha": "2026-02-18", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 400}, {"id": 235, "fecha": "2026-02-19", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 350}, {"id": 236, "fecha": "2026-02-19", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 750}, {"id": 237, "fecha": "2026-02-19", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 949}, {"id": 238, "fecha": "2026-02-19", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 3249}, {"id": 239, "fecha": "2026-02-19", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 950}, {"id": 240, "fecha": "2026-02-20", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 500}, {"id": 241, "fecha": "2026-02-20", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 705}, {"id": 242, "fecha": "2026-02-20", "concepto": "MVI VITAFUSIN", "categoria": "FARMACIA", "monto": 999}, {"id": 243, "fecha": "2026-02-20", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 249}, {"id": 244, "fecha": "2026-02-21", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 560}, {"id": 245, "fecha": "2026-02-21", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 250}, {"id": 246, "fecha": "2026-02-21", "concepto": "PRP + HYDRA", "categoria": "FACIALES", "monto": 1599}, {"id": 247, "fecha": "2026-02-23", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 590}, {"id": 248, "fecha": "2026-02-23", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 750}, {"id": 249, "fecha": "2026-02-24", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1200}, {"id": 250, "fecha": "2026-02-24", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 650}, {"id": 251, "fecha": "2026-02-24", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1249}, {"id": 252, "fecha": "2026-02-25", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 100}, {"id": 253, "fecha": "2026-02-25", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 500}, {"id": 254, "fecha": "2026-02-27", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 1250}, {"id": 255, "fecha": "2026-02-27", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1030}, {"id": 256, "fecha": "2026-02-27", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 3200}], "egresos": [{"id": 301, "fecha": "2026-01-31", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 2950}, {"id": 302, "fecha": "2026-02-03", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1150}, {"id": 303, "fecha": "2026-02-09", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 970}, {"id": 304, "fecha": "2026-02-09", "concepto": "PERSONAL", "categoria": "PERSONAL", "monto": 3000}, {"id": 305, "fecha": "2026-02-10", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1750}, {"id": 306, "fecha": "2026-02-23", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1200}]}, "Marzo": {"ingresos": [{"id": 401, "fecha": "2026-03-02", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 402, "fecha": "2026-03-02", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 590}, {"id": 403, "fecha": "2026-03-02", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1249}, {"id": 404, "fecha": "2026-03-03", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 830}, {"id": 405, "fecha": "2026-03-03", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 730}, {"id": 406, "fecha": "2026-03-04", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1200}, {"id": 407, "fecha": "2026-03-04", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 408, "fecha": "2026-03-04", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 950}, {"id": 409, "fecha": "2026-03-05", "concepto": "CONSULTA ASTER", "categoria": "ASTER", "monto": 1000}, {"id": 410, "fecha": "2026-03-05", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 700}, {"id": 411, "fecha": "2026-03-05", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 2248}, {"id": 412, "fecha": "2026-03-05", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 413, "fecha": "2026-03-06", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 414, "fecha": "2026-03-06", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 499}, {"id": 415, "fecha": "2026-03-06", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 680}, {"id": 416, "fecha": "2026-03-07", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 400}, {"id": 417, "fecha": "2026-03-07", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 418, "fecha": "2026-03-09", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 1250}, {"id": 419, "fecha": "2026-03-09", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1850}, {"id": 420, "fecha": "2026-03-10", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 750}, {"id": 421, "fecha": "2026-03-11", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 422, "fecha": "2026-03-11", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 650}, {"id": 423, "fecha": "2026-03-12", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 699}, {"id": 424, "fecha": "2026-03-13", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1260}, {"id": 425, "fecha": "2026-03-13", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 450}, {"id": 426, "fecha": "2026-03-14", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 700}, {"id": 427, "fecha": "2026-03-16", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 428, "fecha": "2026-03-17", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 540}, {"id": 429, "fecha": "2026-03-17", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 1298}, {"id": 430, "fecha": "2026-03-18", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1250}, {"id": 431, "fecha": "2026-03-18", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 750}, {"id": 432, "fecha": "2026-03-19", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 360}, {"id": 433, "fecha": "2026-03-19", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 800}, {"id": 434, "fecha": "2026-03-20", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 435, "fecha": "2026-03-20", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 500}, {"id": 436, "fecha": "2026-03-21", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 690}, {"id": 437, "fecha": "2026-03-23", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 1000}, {"id": 438, "fecha": "2026-03-23", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1250}, {"id": 439, "fecha": "2026-03-24", "concepto": "PRP + HYDRA MEMBRESIAS", "categoria": "FACIALES", "monto": 3449}, {"id": 440, "fecha": "2026-03-25", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1100}, {"id": 441, "fecha": "2026-03-25", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 375}, {"id": 442, "fecha": "2026-03-25", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 443, "fecha": "2026-03-26", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1849}, {"id": 444, "fecha": "2026-03-26", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 200}, {"id": 445, "fecha": "2026-03-26", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 80}, {"id": 446, "fecha": "2026-03-26", "concepto": "HYDRAFACIAL MEMBRESIA", "categoria": "FACIALES", "monto": 699}, {"id": 447, "fecha": "2026-03-27", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 448, "fecha": "2026-03-27", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 325}, {"id": 449, "fecha": "2026-03-28", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 490}, {"id": 450, "fecha": "2026-03-28", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1300}, {"id": 451, "fecha": "2026-03-28", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 400}], "egresos": [{"id": 501, "fecha": "2026-03-03", "concepto": "PERSONAL AUTO", "categoria": "PERSONAL", "monto": 6000}, {"id": 502, "fecha": "2026-03-03", "concepto": "DENTISTA", "categoria": "PERSONAL", "monto": 700}, {"id": 503, "fecha": "2026-03-05", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 2000}, {"id": 504, "fecha": "2026-03-07", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1100}, {"id": 505, "fecha": "2026-03-12", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1200}, {"id": 506, "fecha": "2026-03-18", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1900}, {"id": 507, "fecha": "2026-03-23", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1050}, {"id": 508, "fecha": "2026-03-27", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1590}]}, "Abril": {"ingresos": [{"id": 601, "fecha": "2026-04-01", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 602, "fecha": "2026-04-01", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 800}, {"id": 603, "fecha": "2026-04-01", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1249}, {"id": 604, "fecha": "2026-04-01", "concepto": "CONSULTA ASTER", "categoria": "ASTER", "monto": 1700}, {"id": 605, "fecha": "2026-04-01", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 1398}, {"id": 606, "fecha": "2026-04-02", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 2048}, {"id": 607, "fecha": "2026-04-06", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 608, "fecha": "2026-04-06", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 770}, {"id": 609, "fecha": "2026-04-07", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 599}, {"id": 610, "fecha": "2026-04-08", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 611, "fecha": "2026-04-08", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1175}, {"id": 612, "fecha": "2026-04-09", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 1300}, {"id": 613, "fecha": "2026-04-09", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 400}, {"id": 614, "fecha": "2026-04-09", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 635}, {"id": 615, "fecha": "2026-04-10", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 200}, {"id": 616, "fecha": "2026-04-10", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 699}, {"id": 617, "fecha": "2026-04-10", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 800}, {"id": 618, "fecha": "2026-04-10", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 610}, {"id": 619, "fecha": "2026-04-10", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1249}, {"id": 620, "fecha": "2026-04-11", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 621, "fecha": "2026-04-11", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 700}, {"id": 622, "fecha": "2026-04-11", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 699}, {"id": 623, "fecha": "2026-04-13", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 624, "fecha": "2026-04-13", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 640}, {"id": 625, "fecha": "2026-04-14", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 750}, {"id": 626, "fecha": "2026-04-14", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 450}, {"id": 627, "fecha": "2026-04-14", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 660}, {"id": 628, "fecha": "2026-04-15", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 570}, {"id": 629, "fecha": "2026-04-15", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 630, "fecha": "2026-04-15", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1249}, {"id": 631, "fecha": "2026-04-16", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 700}, {"id": 632, "fecha": "2026-04-16", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 633, "fecha": "2026-04-16", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 1299}, {"id": 634, "fecha": "2026-04-17", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 699}, {"id": 635, "fecha": "2026-04-17", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 636, "fecha": "2026-04-17", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 550}, {"id": 637, "fecha": "2026-04-18", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1250}, {"id": 638, "fecha": "2026-04-18", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 910}, {"id": 639, "fecha": "2026-04-18", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 150}, {"id": 640, "fecha": "2026-04-18", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 699}, {"id": 641, "fecha": "2026-04-21", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 642, "fecha": "2026-04-21", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 699}, {"id": 643, "fecha": "2026-04-21", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1700}, {"id": 644, "fecha": "2026-04-22", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 290}, {"id": 645, "fecha": "2026-04-22", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 350}, {"id": 646, "fecha": "2026-04-22", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 699}, {"id": 647, "fecha": "2026-04-23", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 1398}, {"id": 648, "fecha": "2026-04-23", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 649, "fecha": "2026-04-23", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1321}, {"id": 650, "fecha": "2026-04-24", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 4194}, {"id": 651, "fecha": "2026-04-24", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 750}, {"id": 652, "fecha": "2026-04-24", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1600}, {"id": 653, "fecha": "2026-04-25", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 500}, {"id": 654, "fecha": "2026-04-25", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1000}, {"id": 655, "fecha": "2026-04-27", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 900}, {"id": 656, "fecha": "2026-04-27", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 657, "fecha": "2026-04-28", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 550}, {"id": 658, "fecha": "2026-04-28", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1030}, {"id": 659, "fecha": "2026-04-29", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 2170}, {"id": 660, "fecha": "2026-04-29", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 550}, {"id": 661, "fecha": "2026-04-29", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 1898}, {"id": 662, "fecha": "2026-04-30", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 663, "fecha": "2026-04-30", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 650}], "egresos": [{"id": 701, "fecha": "2026-04-01", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1250}, {"id": 702, "fecha": "2026-04-10", "concepto": "PERSONAL", "categoria": "PERSONAL", "monto": 1000}, {"id": 703, "fecha": "2026-04-11", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 3950}, {"id": 704, "fecha": "2026-04-15", "concepto": "PERSONAL FIJOS", "categoria": "FIJOS", "monto": 1300}, {"id": 705, "fecha": "2026-04-16", "concepto": "PERSONAL", "categoria": "PERSONAL", "monto": 1140}, {"id": 706, "fecha": "2026-04-17", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 2050}, {"id": 707, "fecha": "2026-04-19", "concepto": "PERSONAL", "categoria": "PERSONAL", "monto": 14000}, {"id": 708, "fecha": "2026-04-24", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 2450}, {"id": 709, "fecha": "2026-04-24", "concepto": "INSUMOS FACIALES", "categoria": "FACIALES", "monto": 1600}, {"id": 710, "fecha": "2026-04-24", "concepto": "PERSONAL", "categoria": "PERSONAL", "monto": 1090}, {"id": 711, "fecha": "2026-04-28", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 700}, {"id": 712, "fecha": "2026-04-29", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 1200}]}, "Mayo": {"ingresos": [{"id": 1, "fecha": "2026-05-01", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 699}, {"id": 2, "fecha": "2026-05-02", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1249}, {"id": 3, "fecha": "2026-05-02", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 350}, {"id": 4, "fecha": "2026-05-02", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 5, "fecha": "2026-05-03", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 540}, {"id": 6, "fecha": "2026-05-04", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 710}, {"id": 7, "fecha": "2026-05-04", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 750}, {"id": 8, "fecha": "2026-05-05", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 150}, {"id": 9, "fecha": "2026-05-05", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 490}, {"id": 10, "fecha": "2026-05-05", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 1398}, {"id": 11, "fecha": "2026-05-06", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 12, "fecha": "2026-05-06", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 570}, {"id": 13, "fecha": "2026-05-07", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 700}, {"id": 14, "fecha": "2026-05-07", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 120}, {"id": 15, "fecha": "2026-05-08", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 499}, {"id": 16, "fecha": "2026-05-08", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 900}, {"id": 17, "fecha": "2026-05-08", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 850}, {"id": 18, "fecha": "2026-05-09", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 700}, {"id": 19, "fecha": "2026-05-11", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 700}, {"id": 20, "fecha": "2026-05-11", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 300}, {"id": 21, "fecha": "2026-05-11", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1348}, {"id": 22, "fecha": "2026-05-11", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 630}, {"id": 23, "fecha": "2026-05-12", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 390}, {"id": 24, "fecha": "2026-05-12", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 1298}, {"id": 25, "fecha": "2026-05-12", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 500}, {"id": 26, "fecha": "2026-05-13", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 1150}, {"id": 27, "fecha": "2026-05-14", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 700}, {"id": 28, "fecha": "2026-05-14", "concepto": "MVI VITAFUSIN", "categoria": "MULTIVITAMINICOS", "monto": 1000}, {"id": 29, "fecha": "2026-05-14", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 649}, {"id": 30, "fecha": "2026-05-14", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 1110}, {"id": 31, "fecha": "2026-05-15", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 700}, {"id": 32, "fecha": "2026-05-15", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 230}, {"id": 33, "fecha": "2026-05-15", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 34, "fecha": "2026-05-15", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 600}, {"id": 35, "fecha": "2026-05-15", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 290}, {"id": 36, "fecha": "2026-05-16", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 450}, {"id": 37, "fecha": "2026-05-18", "concepto": "CONSULTA", "categoria": "CONSULTA", "monto": 750}, {"id": 38, "fecha": "2026-05-18", "concepto": "FARMACIA", "categoria": "FARMACIA", "monto": 630}, {"id": 39, "fecha": "2026-05-18", "concepto": "HYDRAFACIAL", "categoria": "FACIALES", "monto": 600}, {"id": 40, "fecha": "2026-05-18", "concepto": "CONSULTA ASTER", "categoria": "ASTER", "monto": 3000}], "egresos": [{"id": 101, "fecha": "2026-05-06", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 2120}, {"id": 102, "fecha": "2026-05-11", "concepto": "PERSONAL", "categoria": "PERSONAL", "monto": 4500}, {"id": 103, "fecha": "2026-05-14", "concepto": "PERSONAL", "categoria": "PERSONAL", "monto": 2200}, {"id": 104, "fecha": "2026-05-16", "concepto": "FARMACIA", "categoria": "FARMACIA_EGR", "monto": 2300}]}};
+// ── CONFIGURACIÓN ──
+const CAT_LABEL = {
+  FACIALES:'Faciales/PRP', CONSULTA:'Consulta', FARMACIA:'Farmacia',
+  MULTIVITAMINICOS:'Multivit.', ASTER:'Aster', EXTRAS:'Extras',
+  FARMACIA_EGR:'Farm.Inversión', PERSONAL:'Personal', FIJOS:'Gastos Fijos',
+  SERVICIOS:'Servicios', OTROS:'Otros'
+};
+const CAT_COLOR = {
+  FACIALES:'#30d158', CONSULTA:'#ff9500', FARMACIA:'#007aff',
+  MULTIVITAMINICOS:'#af52de', ASTER:'#ff2d55', EXTRAS:'#8e8e93',
+  FARMACIA_EGR:'#ff3b30', PERSONAL:'#ff6b00', FIJOS:'#34aadc',
+  SERVICIOS:'#5ac8fa', OTROS:'#aeaeb2'
+};
+const STORAGE_KEY = 'mb_finanzas_v1';
 
-// COLORS
-const C={FACIALES:'#2dbe7a',CONSULTA:'#f0b429',FARMACIA:'#4a9eff',MULTIVITAMINICOS:'#a78bfa',ASTER:'#f472b6',EXTRAS:'#6b7a96',FARMACIA_EGR:'#e85555',PERSONAL:'#fb923c',FIJOS:'#34d399',SERVICIOS:'#60a5fa',OTROS:'#94a3b8'};
-const CL={FACIALES:'Faciales',CONSULTA:'Consulta',FARMACIA:'Farmacia',MULTIVITAMINICOS:'Multivit.',ASTER:'Aster',EXTRAS:'Extras',FARMACIA_EGR:'Farm.Inv.',PERSONAL:'Personal',FIJOS:'Fijos',SERVICIOS:'Servicios',OTROS:'Otros'};
-const GR='rgba(30,42,61,.5)';
-Chart.defaults.color='#6b7a96';Chart.defaults.font.family="'DM Mono',monospace";Chart.defaults.font.size=10;
+// ── ESTADO ──
+let D = {};         // { "Enero 2026": { ingresos:[], egresos:[] }, ... }
+let months = [];    // orden de meses
+let active = '';    // mes activo
+let fil = 'all';    // filtro movimientos
+let tt = 'ing';     // tipo tx
+let nid = 1000;     // next id
 
-// STATE
-let data={},months=[],active='Mayo',txF2='all',txT='ing',nid=3000,charts={};
-
-// STORAGE — localStorage only, simple & reliable
-function save(){try{localStorage.setItem('mb_fin_4',JSON.stringify({data,months}));}catch(e){}}
-function load(){
-  // Always start with INITIAL_DATA as the base
-  const base = JSON.parse(JSON.stringify(INITIAL_DATA));
-  const baseMonths = ['Febrero','Marzo','Abril','Mayo'];
-  
-  try{
-    const s = localStorage.getItem('mb_fin_4');
-    if(s){
+// ── STORAGE ──
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ D, months })); } catch(e) {}
+}
+function load() {
+  try {
+    const s = localStorage.getItem(STORAGE_KEY);
+    if (s) {
       const p = JSON.parse(s);
-      // Merge: use localStorage but keep INITIAL_DATA months that might be missing
-      data = p.data || base;
-      months = p.months || baseMonths;
-      // Make sure base months always exist
-      baseMonths.forEach(m => {
-        if(!data[m]) data[m] = base[m] || {ingresos:[],egresos:[]};
-        if(!months.includes(m)) months.unshift(m);
-      });
-    } else {
-      data = base;
-      months = baseMonths;
-      save();
+      if (p && p.D && p.months && p.months.length) {
+        D = p.D; months = p.months;
+        let mx = 1000;
+        Object.values(D).forEach(m => [...(m.ingresos||[]),...(m.egresos||[])].forEach(t => { if(t.id>mx) mx=t.id; }));
+        nid = mx + 1;
+        active = months[months.length - 1];
+        return;
+      }
     }
-  } catch(e) {
-    data = base;
-    months = baseMonths;
+  } catch(e) {}
+  // Empty — no months yet
+  D = {}; months = []; active = '';
+}
+
+// ── HELPERS ──
+const el = id => document.getElementById(id);
+const fmt = n => '$' + Number(n).toLocaleString('es-MX', {minimumFractionDigits:0, maximumFractionDigits:0});
+const fmtD = d => {
+  if (!d) return '';
+  const [y,m,day] = d.split('-');
+  return day + ' ' + ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][+m-1];
+};
+const tI = m => (D[m]?.ingresos||[]).reduce((s,x) => s+x.monto, 0);
+const tE = m => (D[m]?.egresos||[]).reduce((s,x) => s+x.monto, 0);
+const mo = () => D[active] || { ingresos:[], egresos:[] };
+
+// ── MODALS ──
+function openM(id) { el(id).classList.add('open'); }
+function closeM(id) { el(id).classList.remove('open'); }
+document.querySelectorAll('.ov').forEach(e => e.addEventListener('click', ev => { if(ev.target===e) e.classList.remove('open'); }));
+
+// ── TABS ──
+function goTab(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  el('p-'+name).classList.add('on');
+  btn.classList.add('on');
+  if (name === 'anual') renderAnual();
+  if (name === 'analisis') renderAnalisis();
+  if (name === 'movs') { el('movs-mes').textContent = active; renderTx(); }
+}
+
+// ── PILLS ──
+function renderPills() {
+  if (!months.length) {
+    el('pills').innerHTML = `<button class="pill add" onclick="openM('mesMod')">+ Agregar primer mes</button>`;
+    return;
   }
-  
-  let mx = 3000;
-  Object.values(data).forEach(m=>[...(m.ingresos||[]),...(m.egresos||[])].forEach(t=>{if(t.id>mx)mx=t.id;}));
-  nid = mx + 1;
-  active = months[months.length-1];
+  el('pills').innerHTML = months.map(m =>
+    `<button class="pill ${m===active?'on':''}" onclick="setMes('${m}')">${m}</button>`
+  ).join('') + `<button class="pill add" onclick="openM('mesMod')">+ Mes</button>`;
+}
+function setMes(m) { active = m; fil = 'all'; renderPills(); renderMes(); }
+
+// ── SVG DONUT ──
+function makeDonut(cid, slices) {
+  const e = el(cid);
+  const total = slices.reduce((s,x) => s+x.v, 0);
+  if (!total) { e.innerHTML = '<div class="no-data">Sin datos</div>'; return; }
+  const R=50, r=31, cx=58, cy=58;
+  let a = -Math.PI/2, paths = '';
+  slices.forEach(s => {
+    const ang = (s.v/total)*Math.PI*2;
+    const x1=cx+R*Math.cos(a), y1=cy+R*Math.sin(a);
+    const x2=cx+R*Math.cos(a+ang), y2=cy+R*Math.sin(a+ang);
+    const xi1=cx+r*Math.cos(a), yi1=cy+r*Math.sin(a);
+    const xi2=cx+r*Math.cos(a+ang), yi2=cy+r*Math.sin(a+ang);
+    const lg = ang>Math.PI?1:0;
+    paths += `<path d="M${x1.toFixed(1)},${y1.toFixed(1)} A${R},${R} 0 ${lg},1 ${x2.toFixed(1)},${y2.toFixed(1)} L${xi2.toFixed(1)},${yi2.toFixed(1)} A${r},${r} 0 ${lg},0 ${xi1.toFixed(1)},${yi1.toFixed(1)} Z" fill="${s.c}" opacity=".92"/>`;
+    a += ang;
+  });
+  const svg = `<svg viewBox="0 0 116 116" style="width:108px;height:108px;flex-shrink:0">${paths}<circle cx="${cx}" cy="${cy}" r="${r-1}" fill="white"/></svg>`;
+  const legend = slices.map(s => {
+    const pct = Math.round(s.v/total*100);
+    return `<div class="leg-row"><div class="leg-dot" style="background:${s.c}"></div><div class="leg-lbl">${s.l}</div><div class="leg-val" style="color:${s.c}">${fmt(s.v)}</div><div class="leg-pct">${pct}%</div></div>`;
+  }).join('');
+  e.innerHTML = svg + `<div class="donut-legend">${legend}</div>`;
 }
 
-// HELPERS
-const $=id=>document.getElementById(id);
-function fmt(n){return'$'+Number(n).toLocaleString('es-MX',{minimumFractionDigits:0,maximumFractionDigits:0});}
-function fmtD(d){if(!d)return'';const p=d.split('-'),ms=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];return p[2]+' '+ms[parseInt(p[1])-1];}
-function tI(m){return(data[m]?.ingresos||[]).reduce((s,x)=>s+x.monto,0);}
-function tE(m){return(data[m]?.egresos||[]).reduce((s,x)=>s+x.monto,0);}
-function mo(){return data[active]||{ingresos:[],egresos:[]};}
-function dc(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
-
-// NAVIGATION
-function goPage(name,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
-  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('on'));
-  $('p-'+name).classList.add('on');
-  if(btn)btn.classList.add('on');
-  if(name==='anual')renderAnual();
-  if(name==='analisis')renderAnalisis();
-  if(name==='movs'){$('movMonth').textContent=active;renderTx();}
+// ── BAR CHART ──
+function makeBars(cid, items) {
+  const e = el(cid);
+  if (!items.length) { e.innerHTML = '<div class="no-data">Sin datos este mes</div>'; return; }
+  const max = Math.max(...items.map(x => x.v));
+  e.innerHTML = items.map(({l,v,c}) => {
+    const pct = max > 0 ? Math.round(v/max*100) : 0;
+    const inside = pct > 32;
+    return `<div class="bar-row">
+      <div class="bar-name" style="color:${c}">${l}</div>
+      <div class="bar-bg">
+        <div class="bar-fg" style="width:${pct}%;background:${c}cc">
+          ${inside ? `<span>${fmt(v)}</span>` : ''}
+        </div>
+      </div>
+      ${!inside ? `<div class="bar-ext">${fmt(v)}</div>` : '<div class="bar-ext"></div>'}
+    </div>`;
+  }).join('');
 }
 
-// MONTH PILLS
-function renderMonths(){
-  $('monthsRow').innerHTML=months.map(m=>
-    `<button class="mpill ${m===active?'on':''}" onclick="setMes('${m}')">${m}</button>`
-  ).join('')+`<button class="mpill add" onclick="$('mesModal').classList.add('open')">+ Mes</button>`;
+// ── EMPTY STATE ──
+function showEmpty(msg1, msg2) {
+  return `<div class="empty"><div class="empty-icon">📊</div><div class="empty-title">${msg1}</div><div class="empty-sub">${msg2}</div></div>`;
 }
-function setMes(m){active=m;txF2='all';renderMonths();renderMes();}
 
-// MES
-function renderMes(){renderMonths();renderKPIs();renderCat();renderDonut();renderEgrBars();renderEgrDonut();}
+// ── RENDER MES ──
+function renderMes() {
+  renderPills();
+  if (!active) {
+    el('kpis').innerHTML = '';
+    el('bc-ing').innerHTML = showEmpty('Sin meses aún', 'Agrega tu primer mes con el botón + Mes');
+    el('dw-ing').innerHTML = '';
+    el('bc-egr').innerHTML = '';
+    el('dw-egr').innerHTML = '';
+    el('ing-total').textContent = '';
+    el('egr-total').textContent = '';
+    return;
+  }
 
-function renderKPIs(){
-  const m=mo();
-  const ing=m.ingresos.reduce((s,x)=>s+x.monto,0);
-  const egr=m.egresos.reduce((s,x)=>s+x.monto,0);
-  const util=ing-egr,pct=ing>0?Math.round(util/ing*100):0;
-  const idx=months.indexOf(active),prev=idx>0?months[idx-1]:null;
-  const pi=prev?tI(prev):0,delta=prev&&pi>0?Math.round((ing-pi)/pi*100):null;
-  $('kpiRow').innerHTML=`
-    <div class="kpi g"><span class="klbl">Ingresos — ${active}</span><span class="kval g">${fmt(ing)}</span>
-      <span class="ksub">${m.ingresos.length} movimientos</span>
-      ${delta!==null?`<span class="kbadge ${delta>=0?'up':'dn'}">${delta>=0?'↑':'↓'} ${Math.abs(delta)}% vs ${prev}</span>`:''}
+  const m = mo();
+  const ing = m.ingresos.reduce((s,x) => s+x.monto, 0);
+  const egr = m.egresos.reduce((s,x) => s+x.monto, 0);
+  const util = ing - egr;
+  const pct = ing > 0 ? Math.round(util/ing*100) : 0;
+  const idx = months.indexOf(active);
+  const prev = idx > 0 ? months[idx-1] : null;
+  const pi = prev ? tI(prev) : 0;
+  const delta = prev && pi > 0 ? Math.round((ing-pi)/pi*100) : null;
+
+  el('kpis').innerHTML = `
+    <div class="kpi k-green">
+      <div class="kpi-lbl">Ingresos — ${active}</div>
+      <div class="kpi-val green">${fmt(ing)}</div>
+      <div class="kpi-sub">${m.ingresos.length} movimientos</div>
+      ${delta !== null ? `<span class="kpi-badge ${delta>=0?'badge-green':'badge-red'}">${delta>=0?'↑':'↓'} ${Math.abs(delta)}% vs ${prev}</span>` : ''}
     </div>
-    <div class="kpi r"><span class="klbl">Egresos — ${active}</span><span class="kval r">${fmt(egr)}</span><span class="ksub">${m.egresos.length} movimientos</span></div>
-    <div class="kpi gd feat"><span class="klbl">Utilidad neta</span><span class="kval gd">${fmt(util)}</span><span class="ksub">${pct}% del ingreso</span></div>
-    <div class="kpi b"><span class="klbl">Margen operativo</span><span class="kval b">${pct}%</span><span class="ksub" style="color:${pct>=50?'var(--green)':pct>=30?'var(--gold)':'var(--red)'}">${pct>=50?'Saludable':pct>=30?'Moderado':'Bajo'}</span></div>
+    <div class="kpi k-red">
+      <div class="kpi-lbl">Egresos — ${active}</div>
+      <div class="kpi-val red">${fmt(egr)}</div>
+      <div class="kpi-sub">${m.egresos.length} movimientos</div>
+    </div>
+    <div class="kpi k-orange" style="border-color:#ff9500">
+      <div class="kpi-lbl">Utilidad neta</div>
+      <div class="kpi-val orange">${fmt(util)}</div>
+      <div class="kpi-sub">${pct}% del ingreso</div>
+    </div>
+    <div class="kpi k-blue">
+      <div class="kpi-lbl">Margen operativo</div>
+      <div class="kpi-val blue">${pct}%</div>
+      <div class="kpi-sub" style="color:${pct>=50?'var(--green2)':pct>=30?'var(--orange)':'var(--red2)'};font-weight:700">
+        ${pct>=50?'✓ Saludable':pct>=30?'Moderado':'Por debajo'}
+      </div>
+    </div>
   `;
+
+  // Ingresos
+  const catsI = {};
+  m.ingresos.forEach(x => { catsI[x.categoria] = (catsI[x.categoria]||0) + x.monto; });
+  const sortI = Object.entries(catsI).sort((a,b) => b[1]-a[1]);
+  el('ing-total').textContent = fmt(ing);
+  makeBars('bc-ing', sortI.map(([k,v]) => ({l:CAT_LABEL[k]||k, v, c:CAT_COLOR[k]||'#8e8e93'})));
+  makeDonut('dw-ing', [{l:'Utilidad',v:Math.max(0,util),c:'#30d158'},{l:'Egresos',v:egr,c:'#ff3b30'}]);
+
+  // Egresos
+  const catsE = {};
+  m.egresos.forEach(x => { catsE[x.categoria] = (catsE[x.categoria]||0) + x.monto; });
+  const sortE = Object.entries(catsE).sort((a,b) => b[1]-a[1]);
+  el('egr-total').textContent = fmt(egr);
+  makeBars('bc-egr', sortE.map(([k,v]) => ({l:CAT_LABEL[k]||k, v, c:CAT_COLOR[k]||'#8e8e93'})));
+  makeDonut('dw-egr', sortE.map(([k,v]) => ({l:CAT_LABEL[k]||k, v, c:CAT_COLOR[k]||'#8e8e93'})));
 }
 
-function renderCat(){
-  const m=mo(),cats={};
-  m.ingresos.forEach(x=>{cats[x.categoria]=(cats[x.categoria]||0)+x.monto;});
-  const s=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
-  const tot=s.reduce((t,[,v])=>t+v,0);
-  $('catTot').textContent=fmt(tot);
-  dc('catC');
-  if(!s.length)return;
-  charts.catC=new Chart($('catC'),{type:'bar',data:{labels:s.map(([k])=>CL[k]||k),datasets:[{data:s.map(([,v])=>v),backgroundColor:s.map(([k])=>C[k]+'bb'),borderColor:s.map(([k])=>C[k]),borderWidth:1,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fmt(c.parsed.y)} (${Math.round(c.parsed.y/tot*100)}%)`}}},scales:{x:{grid:{color:GR},ticks:{color:'#6b7a96'}},y:{grid:{color:GR},ticks:{callback:v=>'$'+v/1000+'k',color:'#6b7a96'},beginAtZero:true}}}});
-}
-
-function renderDonut(){
-  const m=mo();
-  const ing=m.ingresos.reduce((s,x)=>s+x.monto,0),egr=m.egresos.reduce((s,x)=>s+x.monto,0);
-  dc('donutC');
-  charts.donutC=new Chart($('donutC'),{type:'doughnut',data:{labels:['Utilidad','Egresos'],datasets:[{data:[Math.max(0,ing-egr),egr],backgroundColor:['rgba(45,190,122,.8)','rgba(232,85,85,.7)'],borderColor:['#2dbe7a','#e85555'],borderWidth:2,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{position:'bottom',labels:{color:'#6b7a96',padding:16,usePointStyle:true,font:{size:12}}},tooltip:{callbacks:{label:c=>{const t=c.dataset.data.reduce((s,v)=>s+v,0);return ` ${c.label}: ${fmt(c.parsed)} (${Math.round(c.parsed/t*100)}%)`;}}}}}});
-}
-
-function renderEgrBars(){
-  const m=mo(),cats={};
-  m.egresos.forEach(x=>{cats[x.categoria]=(cats[x.categoria]||0)+x.monto;});
-  const tot=Object.values(cats).reduce((s,v)=>s+v,0);
-  const s=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
-  $('egrTot').textContent=fmt(tot);
-  $('egrBars').innerHTML=s.length?s.map(([k,v])=>{const p=tot>0?v/tot*100:0;return`<div class="crow"><div class="cname" style="color:${C[k]||'#6b7a96'}">${CL[k]||k}</div><div class="ctrack"><div class="cfill" style="width:${p}%;background:${C[k]||'#6b7a96'}"></div></div><div class="camt">${fmt(v)}</div></div>`}).join(''):'<div style="color:var(--faint);font-size:13px;padding:12px 0">Sin egresos este mes</div>';
-}
-
-function renderEgrDonut(){
-  const m=mo(),cats={};
-  m.egresos.forEach(x=>{cats[x.categoria]=(cats[x.categoria]||0)+x.monto;});
-  const s=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
-  dc('egrDonutC');
-  if(!s.length)return;
-  charts.egrDonutC=new Chart($('egrDonutC'),{type:'doughnut',data:{labels:s.map(([k])=>CL[k]||k),datasets:[{data:s.map(([,v])=>v),backgroundColor:s.map(([k])=>C[k]+'bb'),borderColor:s.map(([k])=>C[k]),borderWidth:1.5,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:'#6b7a96',padding:10,usePointStyle:true,font:{size:10}}},tooltip:{callbacks:{label:c=>{const t=c.dataset.data.reduce((s,v)=>s+v,0);return ` ${c.label}: ${fmt(c.parsed)} (${Math.round(c.parsed/t*100)}%)`;}}}}}}); 
-}
-
-// TX LIST
-function renderTx(){
-  const m=mo();let txs=[];
-  if(txF2==='all'||txF2==='ing')m.ingresos.forEach(x=>txs.push({...x,_t:'ing'}));
-  if(txF2==='all'||txF2==='egr')m.egresos.forEach(x=>txs.push({...x,_t:'egr'}));
-  txs.sort((a,b)=>a.fecha.localeCompare(b.fecha));
-  const el=$('txList');
-  if(!txs.length){el.innerHTML='<div style="text-align:center;padding:48px;color:var(--faint)">Sin movimientos</div>';return;}
-  el.innerHTML=txs.map(x=>{const col=C[x.categoria]||'#6b7a96';return`<div class="txi ${x._t}" onclick="delTx('${x._t}',${x.id})"><div class="txdate">${fmtD(x.fecha)}</div><div><div class="txcon">${x.concepto}</div><span class="txbadge" style="background:${col}22;color:${col}">${CL[x.categoria]||x.categoria}</span></div><div class="txamt ${x._t}">${x._t==='ing'?'+':'-'}${fmt(x.monto)}</div></div>`;}).join('');
-}
-function filt(f){txF2=f;['All','Ing','Egr'].forEach(l=>{const b=$('f'+l);if(b)b.classList.toggle('on',f===l.toLowerCase());});renderTx();}
-
-// ANUAL
-function renderAnual(){
-  const L=months;
-  dc('lineC');
-  charts.lineC=new Chart($('lineC'),{type:'line',data:{labels:L,datasets:[{label:'Ingresos',data:L.map(m=>tI(m)),borderColor:'#2dbe7a',backgroundColor:'rgba(45,190,122,.07)',borderWidth:2.5,fill:true,tension:.35,pointBackgroundColor:'#2dbe7a',pointRadius:5,pointHoverRadius:8},{label:'Egresos',data:L.map(m=>tE(m)),borderColor:'#e85555',backgroundColor:'rgba(232,85,85,.05)',borderWidth:2,fill:true,tension:.35,pointBackgroundColor:'#e85555',pointRadius:4},{label:'Utilidad',data:L.map(m=>tI(m)-tE(m)),borderColor:'#f0b429',backgroundColor:'transparent',borderWidth:2,borderDash:[5,4],tension:.35,pointBackgroundColor:'#f0b429',pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#6b7a96',padding:18,usePointStyle:true,font:{size:11}}},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>` ${c.dataset.label}: ${fmt(c.parsed.y)}`}}},scales:{x:{grid:{color:GR},ticks:{color:'#6b7a96'}},y:{grid:{color:GR},ticks:{callback:v=>'$'+v/1000+'k',color:'#6b7a96'},beginAtZero:true}}}});
-  [['bIngC','#2dbe7a',L.map(m=>tI(m))],['bEgrC','#e85555',L.map(m=>tE(m))],['bUtilC','#f0b429',L.map(m=>tI(m)-tE(m))]].forEach(([id,col,d])=>{dc(id);charts[id]=new Chart($(id),{type:'bar',data:{labels:L,datasets:[{data:d,backgroundColor:col+'99',borderColor:col,borderWidth:1,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fmt(c.parsed.y)}`}}},scales:{x:{grid:{color:GR},ticks:{color:'#6b7a96'}},y:{grid:{color:GR},ticks:{callback:v=>'$'+v/1000+'k',color:'#6b7a96'},beginAtZero:true}}}});});
-  let tTI=0,tTE=0;
-  const rows=months.map(m=>{const i=tI(m),e=tE(m),u=i-e,p=i>0?Math.round(u/i*100):0;tTI+=i;tTE+=e;return`<tr class="${m===active?'cur':''}" onclick="setMes('${m}');goPage('mes',document.getElementById('n-mes'))"><td>${m} 2026 ${m===active?'◀':''}</td><td class="g">${fmt(i)}</td><td class="r">${fmt(e)}</td><td class="gd">${fmt(u)}</td><td style="color:${p>=50?'var(--green)':p>=30?'var(--gold)':'var(--red)'}">${p}%</td><td>${(data[m]?.ingresos||[]).length+(data[m]?.egresos||[]).length}</td></tr>`;}).join('');
-  const tU=tTI-tTE,tp=tTI>0?Math.round(tU/tTI*100):0;
-  $('aTable').innerHTML=`<thead><tr><th>Mes</th><th>Ingresos</th><th>Egresos</th><th>Utilidad</th><th>Margen</th><th>Movtos.</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td>TOTAL 2026</td><td class="g">${fmt(tTI)}</td><td class="r">${fmt(tTE)}</td><td class="gd">${fmt(tU)}</td><td style="color:var(--green)">${tp}%</td><td></td></tr></tfoot>`;
-}
-
-// ANÁLISIS
-function renderAnalisis(){
-  const bM=months.reduce((a,m)=>tI(m)>tI(a)?m:a,months[0]);
-  const avgI=months.reduce((s,m)=>s+tI(m),0)/months.length;
-  const avgE=months.reduce((s,m)=>s+tE(m),0)/months.length;
-  const allC={};months.forEach(m=>(data[m]?.ingresos||[]).forEach(x=>{allC[x.categoria]=(allC[x.categoria]||0)+x.monto;}));
-  const top=Object.entries(allC).sort((a,b)=>b[1]-a[1])[0];
-  const tTI=months.reduce((s,m)=>s+tI(m),0),tTE=months.reduce((s,m)=>s+tE(m),0),tU=tTI-tTE;
-  const ci=tI(active);
-  $('insGrid').innerHTML=`
-    <div class="ins"><span class="ins-icon">🏆</span><div class="ins-lbl">Mejor mes</div><div class="ins-val" style="color:var(--green)">${bM}</div><div class="ins-desc">${fmt(tI(bM))} en ingresos</div></div>
-    <div class="ins"><span class="ins-icon">💊</span><div class="ins-lbl">Categoría líder</div><div class="ins-val" style="color:var(--blue)">${CL[top[0]]||top[0]}</div><div class="ins-desc">${fmt(top[1])} acumulado</div></div>
-    <div class="ins"><span class="ins-icon">📈</span><div class="ins-lbl">Promedio mensual</div><div class="ins-val" style="color:var(--gold)">${fmt(Math.round(avgI))}</div><div class="ins-desc">${fmt(Math.round(avgE))} prom. egresos</div></div>
-    <div class="ins"><span class="ins-icon">💰</span><div class="ins-lbl">Utilidad acumulada</div><div class="ins-val" style="color:var(--green)">${fmt(tU)}</div><div class="ins-desc">${Math.round(tU/tTI*100)}% margen global</div></div>
-    <div class="ins"><span class="ins-icon">📊</span><div class="ins-lbl">Total ingresos 2026</div><div class="ins-val" style="color:var(--green)">${fmt(tTI)}</div><div class="ins-desc">${months.length} meses registrados</div></div>
-    <div class="ins"><span class="ins-icon">🎯</span><div class="ins-lbl">${active} vs promedio</div><div class="ins-val" style="color:${ci>=avgI?'var(--green)':'var(--red)'}">${ci>=avgI?'↑ Sobre':'↓ Bajo'}</div><div class="ins-desc">${fmt(ci)} vs ${fmt(Math.round(avgI))}</div></div>
-  `;
-  const s=Object.entries(allC).sort((a,b)=>b[1]-a[1]);
-  dc('acumC');charts.acumC=new Chart($('acumC'),{type:'bar',data:{labels:s.map(([k])=>CL[k]||k),datasets:[{data:s.map(([,v])=>v),backgroundColor:s.map(([k])=>C[k]+'bb'),borderColor:s.map(([k])=>C[k]),borderWidth:1,borderRadius:5}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${fmt(c.parsed.x)}`}}},scales:{x:{grid:{color:GR},ticks:{callback:v=>'$'+v/1000+'k',color:'#6b7a96'}},y:{grid:{display:false},ticks:{color:'#e8edf5',font:{size:11}}}}}});
-  dc('mixC');charts.mixC=new Chart($('mixC'),{type:'doughnut',data:{labels:s.map(([k])=>CL[k]||k),datasets:[{data:s.map(([,v])=>v),backgroundColor:s.map(([k])=>C[k]+'cc'),borderColor:s.map(([k])=>C[k]),borderWidth:2,hoverOffset:10}]},options:{responsive:true,maintainAspectRatio:false,cutout:'58%',plugins:{legend:{position:'bottom',labels:{color:'#6b7a96',padding:10,usePointStyle:true,font:{size:10}}},tooltip:{callbacks:{label:c=>{const t=c.dataset.data.reduce((s,v)=>s+v,0);return ` ${c.label}: ${fmt(c.parsed)} (${Math.round(c.parsed/t*100)}%)`;}}}}}}); 
-  const cats=[...new Set(months.flatMap(m=>(data[m]?.ingresos||[]).map(x=>x.categoria)))];
-  dc('stackC');charts.stackC=new Chart($('stackC'),{type:'bar',data:{labels:months,datasets:cats.map(cat=>({label:CL[cat]||cat,data:months.map(m=>(data[m]?.ingresos||[]).filter(x=>x.categoria===cat).reduce((s,x)=>s+x.monto,0)),backgroundColor:C[cat]+'aa',borderColor:C[cat],borderWidth:1}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'#6b7a96',padding:12,usePointStyle:true,font:{size:10}}},tooltip:{mode:'index',callbacks:{label:c=>c.parsed.y>0?` ${c.dataset.label}: ${fmt(c.parsed.y)}`:null}}},scales:{x:{stacked:true,grid:{color:GR},ticks:{color:'#6b7a96'}},y:{stacked:true,grid:{color:GR},ticks:{callback:v=>'$'+v/1000+'k',color:'#6b7a96'},beginAtZero:true}}}});
-}
-
-// ADD TX
-function openAdd(){
-  $('txF').value=new Date().toISOString().split('T')[0];
-  $('txM').value='';$('txC').value='';$('txK').value='FACIALES';
-  setT('ing');$('addModal').classList.add('open');
-  setTimeout(()=>$('txM').focus(),300);
-}
-function setT(t){txT=t;$('tIng').classList.toggle('on',t==='ing');$('tEgr').classList.toggle('on',t==='egr');}
-function saveTx(){
-  const f=$('txF').value,m=parseFloat($('txM').value),c=$('txC').value.trim().toUpperCase(),k=$('txK').value;
-  if(!f||!m||!c){toast('Completa todos los campos');return;}
-  const tx={id:nid++,fecha:f,concepto:c,categoria:k,monto:m};
-  if(!data[active])data[active]={ingresos:[],egresos:[]};
-  if(txT==='ing')data[active].ingresos.push(tx);else data[active].egresos.push(tx);
-  save();renderMes();close2('addModal');toast('Guardado: '+fmt(m));
-}
-function delTx(tipo,id){
-  if(!confirm('¿Eliminar este movimiento?'))return;
-  if(tipo==='ing')data[active].ingresos=data[active].ingresos.filter(x=>x.id!==id);
-  else data[active].egresos=data[active].egresos.filter(x=>x.id!==id);
-  save();renderMes();renderTx();toast('Eliminado');
-}
-
-// MONTHS
-function addMes(){
-  const m=$('newM').value;
-  if(months.includes(m)){toast('Ese mes ya existe');return;}
-  months.push(m);data[m]={ingresos:[],egresos:[]};active=m;
-  save();renderMes();close2('mesModal');toast('Mes creado: '+m);
-}
-
-// EXPORT
-function doExp(type){
-  let csv='',fn='';
-  if(type==='mes'){
-    fn=`medbeauty-${active}-2026.csv`;csv='Fecha,Tipo,Concepto,Categoria,Monto
-';
-    const m=mo();
-    m.ingresos.forEach(x=>{csv+=`"${x.fecha}","INGRESO","${x.concepto}","${x.categoria}",${x.monto}
-`;});
-    m.egresos.forEach(x=>{csv+=`"${x.fecha}","EGRESO","${x.concepto}","${x.categoria}",-${x.monto}
-`;});
-  }else{
-    fn='medbeauty-anual-2026.csv';csv='Mes,Ingresos,Egresos,Utilidad,Margen
-';
-    months.forEach(m=>{const i=tI(m),e=tE(m),u=i-e,p=i>0?Math.round(u/i*100):0;csv+=`"${m}",${i},${e},${u},${p}%
-`;});
+// ── RENDER ANUAL ──
+function renderAnual() {
+  if (!months.length) {
+    el('anual-bars').innerHTML = showEmpty('Sin datos', 'Agrega meses y movimientos primero');
+    el('at-rows').innerHTML = '';
+    el('at-foot').innerHTML = '';
+    return;
   }
-  const b=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
-  const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=fn;a.click();
-  URL.revokeObjectURL(u);close2('expModal');toast('Descargado: '+fn);
+  const maxV = Math.max(...months.map(m => Math.max(tI(m), tE(m))), 1);
+  el('anual-bars').innerHTML = months.map(m => {
+    const i=tI(m), e=tE(m), u=Math.max(0,i-e);
+    const hi=Math.round(i/maxV*100), he=Math.round(e/maxV*100), hu=Math.round(u/maxV*100);
+    return `<div class="ag">
+      <div class="ac">
+        <div class="ab" style="height:${hi}px;background:var(--green);flex:1"></div>
+        <div class="ab" style="height:${he}px;background:var(--red);flex:1"></div>
+        <div class="ab" style="height:${hu}px;background:var(--orange);flex:1"></div>
+      </div>
+      <div class="al">${m.split(' ')[0].substring(0,3)}</div>
+    </div>`;
+  }).join('');
+
+  let tI2=0, tE2=0;
+  const rows = months.map(m => {
+    const i=tI(m), e=tE(m), u=i-e, p=i>0?Math.round(u/i*100):0;
+    tI2+=i; tE2+=e;
+    return `<tr class="${m===active?'cur':''}" onclick="setMes('${m}');goTab('mes',document.getElementById('t-mes'))">
+      <td>${m} ${m===active?'◀':''}</td>
+      <td class="g">${fmt(i)}</td><td class="r">${fmt(e)}</td><td class="o">${fmt(u)}</td>
+      <td style="color:${p>=50?'var(--green2)':p>=30?'var(--orange)':'var(--red2)'}">${p}%</td>
+      <td style="color:var(--gray)">${(D[m]?.ingresos||[]).length+(D[m]?.egresos||[]).length}</td>
+    </tr>`;
+  }).join('');
+  const tU=tI2-tE2, tp=tI2>0?Math.round(tU/tI2*100):0;
+  el('at-rows').innerHTML = rows;
+  el('at-foot').innerHTML = `<tr>
+    <td>TOTAL</td>
+    <td class="g">${fmt(tI2)}</td><td class="r">${fmt(tE2)}</td><td class="o">${fmt(tU)}</td>
+    <td class="g">${tp}%</td><td></td>
+  </tr>`;
 }
 
-// UTILS
-function close2(id){$(id).classList.remove('open');}
-document.querySelectorAll('.overlay').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});});
-function toast(msg){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;z-index:999;box-shadow:0 4px 16px rgba(45,190,122,.4);white-space:nowrap;font-family:DM Sans,sans-serif';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+// ── RENDER ANÁLISIS ──
+function renderAnalisis() {
+  if (!months.length) {
+    el('ins-grid').innerHTML = '';
+    el('bc-acum').innerHTML = showEmpty('Sin datos aún', 'Registra movimientos para ver el análisis');
+    return;
+  }
+  const bM = months.reduce((a,m) => tI(m)>tI(a)?m:a, months[0]);
+  const avgI = Math.round(months.reduce((s,m) => s+tI(m), 0) / months.length);
+  const avgE = Math.round(months.reduce((s,m) => s+tE(m), 0) / months.length);
+  const allC = {};
+  months.forEach(m => (D[m]?.ingresos||[]).forEach(x => { allC[x.categoria]=(allC[x.categoria]||0)+x.monto; }));
+  const top = Object.entries(allC).sort((a,b) => b[1]-a[1])[0] || ['—',0];
+  const tTI = months.reduce((s,m) => s+tI(m), 0);
+  const tTE = months.reduce((s,m) => s+tE(m), 0);
+  const tU = tTI-tTE;
+  const ci = active ? tI(active) : 0;
 
-// INIT — instant, no Firebase, no waiting
+  el('ins-grid').innerHTML = `
+    <div class="ins"><div class="ins-ic">🏆</div><div class="ins-lbl">Mejor mes</div><div class="ins-val" style="color:var(--green2)">${bM}</div><div class="ins-desc">${fmt(tI(bM))} en ingresos</div></div>
+    <div class="ins"><div class="ins-ic">💊</div><div class="ins-lbl">Categoría líder</div><div class="ins-val" style="color:var(--blue)">${CAT_LABEL[top[0]]||top[0]}</div><div class="ins-desc">${fmt(top[1])} acumulado</div></div>
+    <div class="ins"><div class="ins-ic">📈</div><div class="ins-lbl">Promedio mensual</div><div class="ins-val" style="color:var(--orange)">${fmt(avgI)}</div><div class="ins-desc">${fmt(avgE)} prom. egresos</div></div>
+    <div class="ins"><div class="ins-ic">💰</div><div class="ins-lbl">Utilidad acumulada</div><div class="ins-val" style="color:var(--green2)">${fmt(tU)}</div><div class="ins-desc">${tTI>0?Math.round(tU/tTI*100):0}% margen global</div></div>
+    <div class="ins"><div class="ins-ic">📊</div><div class="ins-lbl">Total ingresos</div><div class="ins-val" style="color:var(--green2)">${fmt(tTI)}</div><div class="ins-desc">${months.length} mes${months.length!==1?'es':''} registrados</div></div>
+    <div class="ins"><div class="ins-ic">🎯</div><div class="ins-lbl">${active||'—'} vs promedio</div>
+      <div class="ins-val" style="color:${ci>=avgI?'var(--green2)':'var(--red2)'}">${ci>=avgI?'↑ Sobre':'↓ Bajo'}</div>
+      <div class="ins-desc">${fmt(ci)} vs ${fmt(avgI)} prom.</div>
+    </div>
+  `;
+  const acum = Object.entries(allC).sort((a,b) => b[1]-a[1]);
+  makeBars('bc-acum', acum.map(([k,v]) => ({l:CAT_LABEL[k]||k, v, c:CAT_COLOR[k]||'#8e8e93'})));
+}
+
+// ── RENDER TX ──
+function renderTx() {
+  if (!active) { el('txlist').innerHTML = showEmpty('Sin mes activo','Selecciona un mes'); return; }
+  const m = mo(); let txs = [];
+  if (fil==='all'||fil==='ing') m.ingresos.forEach(x => txs.push({...x,_t:'ing'}));
+  if (fil==='all'||fil==='egr') m.egresos.forEach(x => txs.push({...x,_t:'egr'}));
+  txs.sort((a,b) => a.fecha.localeCompare(b.fecha));
+  if (!txs.length) { el('txlist').innerHTML = showEmpty('Sin movimientos','Agrega uno con el botón + Registro'); return; }
+  el('txlist').innerHTML = txs.map(x => {
+    const c = CAT_COLOR[x.categoria]||'#8e8e93';
+    return `<div class="tx ${x._t}" onclick="delTx('${x._t}',${x.id})">
+      <div class="tx-date">${fmtD(x.fecha)}</div>
+      <div><div class="tx-name">${x.concepto}</div><span class="tx-cat" style="background:${c}18;color:${c}">${CAT_LABEL[x.categoria]||x.categoria}</span></div>
+      <div class="tx-amt ${x._t}">${x._t==='ing'?'+':'-'}${fmt(x.monto)}</div>
+    </div>`;
+  }).join('');
+}
+function setFil(f) {
+  fil = f;
+  ['all','ing','egr'].forEach((v,i) => el(['fa','fi','fe'][i]).classList.toggle('on', f===v));
+  renderTx();
+}
+
+// ── ADD TX ──
+function openAdd() {
+  if (!active) { openM('mesMod'); return; }
+  el('xf').value = new Date().toISOString().split('T')[0];
+  el('xm').value = ''; el('xc').value = ''; el('xk').value = 'FACIALES';
+  setTT('ing'); openM('addMod');
+  setTimeout(() => el('xm').focus(), 300);
+}
+function setTT(t) {
+  tt = t;
+  el('btn-ing').classList.toggle('on', t==='ing');
+  el('btn-egr').classList.toggle('on', t==='egr');
+}
+function saveTx() {
+  const f=el('xf').value, m=parseFloat(el('xm').value);
+  const c=el('xc').value.trim().toUpperCase(), k=el('xk').value;
+  if (!f||!m||!c) { toast('Completa todos los campos'); return; }
+  const tx = { id:nid++, fecha:f, concepto:c, categoria:k, monto:m };
+  if (!D[active]) D[active] = {ingresos:[], egresos:[]};
+  tt==='ing' ? D[active].ingresos.push(tx) : D[active].egresos.push(tx);
+  save(); renderMes(); closeM('addMod');
+  toast((tt==='ing'?'Ingreso':'Egreso') + ' guardado: ' + fmt(m));
+}
+function delTx(tipo, id) {
+  if (!confirm('¿Eliminar este movimiento?')) return;
+  if (tipo==='ing') D[active].ingresos = D[active].ingresos.filter(x => x.id!==id);
+  else D[active].egresos = D[active].egresos.filter(x => x.id!==id);
+  save(); renderMes(); renderTx(); toast('Movimiento eliminado');
+}
+
+// ── ADD MES ──
+function saveMes() {
+  const m = el('xmes').value;
+  const y = el('xanio').value;
+  const key = m + ' ' + y;
+  if (months.includes(key)) { toast('Ese mes ya existe'); return; }
+  months.push(key);
+  D[key] = {ingresos:[], egresos:[]};
+  active = key;
+  save(); renderPills(); renderMes(); closeM('mesMod');
+  toast('Mes creado: ' + key);
+}
+
+// ── EXPORT ──
+function doExp(type) {
+  let csv = '', fn = '';
+  if (type === 'mes') {
+    fn = `medbeauty-${active}.csv`;
+    csv = 'Fecha,Tipo,Concepto,Categoria,Monto\n';
+    mo().ingresos.forEach(x => { csv += `"${x.fecha}","INGRESO","${x.concepto}","${x.categoria}",${x.monto}\n`; });
+    mo().egresos.forEach(x => { csv += `"${x.fecha}","EGRESO","${x.concepto}","${x.categoria}",-${x.monto}\n`; });
+  } else if (type === 'anual') {
+    fn = 'medbeauty-resumen-anual.csv';
+    csv = 'Mes,Ingresos,Egresos,Utilidad,Margen %\n';
+    months.forEach(m => {
+      const i=tI(m),e=tE(m),u=i-e,p=i>0?Math.round(u/i*100):0;
+      csv += `"${m}",${i},${e},${u},${p}%\n`;
+    });
+  } else {
+    fn = 'medbeauty-todos-movimientos.csv';
+    csv = 'Mes,Fecha,Tipo,Concepto,Categoria,Monto\n';
+    months.forEach(m => {
+      (D[m]?.ingresos||[]).forEach(x => { csv += `"${m}","${x.fecha}","INGRESO","${x.concepto}","${x.categoria}",${x.monto}\n`; });
+      (D[m]?.egresos||[]).forEach(x => { csv += `"${m}","${x.fecha}","EGRESO","${x.concepto}","${x.categoria}",-${x.monto}\n`; });
+    });
+  }
+  const b = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const u = URL.createObjectURL(b);
+  const a = document.createElement('a'); a.href=u; a.download=fn; a.click();
+  URL.revokeObjectURL(u); closeM('expMod'); toast('Descargado: ' + fn);
+}
+
+// ── TOAST ──
+function toast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:92px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:700;z-index:999;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.25);font-family:inherit';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+// ── INIT ──
 load();
+renderPills();
 renderMes();
 </script>
 </body>
