@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MedBeautyMX · Protocolos Faciales</title>
+<style>
+:root{
+  --bg:#06080a;--s1:#0d1014;--s2:#111519;--s3:#161b20;--s4:#1c2228;
+  --ink:#eef1f5;--mu:rgba(238,241,245,.5);--fa:rgba(238,241,245,.18);
+  --teal:#2a9d8f;--teal2:#3db8a8;--teal3:rgba(42,157,143,.12);
+  --gold:#c8a96e;--gold2:#e2c48a;
+  --red:#e05555;--red2:rgba(224,85,85,.12);
+  --green:#3aae7a;--green2:rgba(58,174,122,.12);
+  --border:rgba(238,241,245,.06);--border2:rgba(42,157,143,.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
+
+/* MARBLE BG */
+body::before{content:'';position:fixed;inset:0;background:
+  linear-gradient(127deg,transparent 0%,transparent 30%,rgba(200,169,110,.015) 30%,rgba(200,169,110,.015) 31%,transparent 31%),
+  linear-gradient(230deg,transparent 45%,rgba(42,157,143,.01) 45%,rgba(42,157,143,.01) 46.5%,transparent 46.5%),
+  linear-gradient(167deg,transparent 55%,rgba(238,241,245,.01) 55%,rgba(238,241,245,.01) 56%,transparent 56%);
+  pointer-events:none;z-index:0}
+
+/* HEADER */
+.hdr{background:rgba(6,8,10,.95);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;padding:0 24px}
+.hdr-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;height:58px;gap:12px}
+.brand{font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
+.brand em{color:var(--teal);font-style:normal}
+.brand-sub{font-size:10px;font-family:'DM Mono',monospace;color:var(--mu);letter-spacing:2px;text-transform:uppercase}
+.hdr-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.hbtn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--mu);transition:.15s;font-family:inherit}
+.hbtn:hover{border-color:var(--teal);color:var(--teal)}
+.hbtn-stats{display:flex;gap:20px}
+.stat-pill{display:flex;flex-direction:column;align-items:center;gap:1px}
+.stat-pill-n{font-size:16px;font-weight:700;line-height:1}
+.stat-pill-l{font-size:9px;color:var(--mu);letter-spacing:1px;text-transform:uppercase}
+
+/* MAIN */
+.main{max-width:1200px;margin:0 auto;padding:20px 24px 100px;position:relative;z-index:1}
+
+/* SEARCH & FILTERS */
+.controls{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.search-box{flex:1;min-width:200px;position:relative}
+.search-box input{width:100%;padding:10px 14px 10px 36px;background:var(--s1);border:1px solid var(--border);border-radius:10px;color:var(--ink);font-size:14px;font-family:inherit;transition:.15s}
+.search-box input:focus{outline:none;border-color:var(--teal)}
+.search-box input::placeholder{color:var(--fa)}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--fa)}
+.filter-btn{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--mu);transition:.15s;font-family:inherit;white-space:nowrap}
+.filter-btn:hover,.filter-btn.on{border-color:var(--teal);color:var(--teal);background:var(--teal3)}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
+
+/* PATIENT CARD */
+.pcard{background:var(--s1);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:.2s;position:relative}
+.pcard:hover{border-color:rgba(42,157,143,.25);transform:translateY(-2px)}
+.pcard-top{padding:18px 20px 14px;border-bottom:1px solid var(--border)}
+.pcard-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.pcard-name{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.pcard-proto{font-size:11px;font-weight:600;padding:3px 10px;border-radius:6px}
+.proto-acne{background:rgba(224,85,85,.15);color:#e05555}
+.proto-regen{background:rgba(42,157,143,.15);color:#2a9d8f}
+.proto-premium{background:rgba(200,169,110,.15);color:#c8a96e}
+.proto-custom{background:rgba(167,139,250,.15);color:#a78bfa}
+.pcard-meta{display:flex;gap:16px;flex-wrap:wrap}
+.pmeta{display:flex;flex-direction:column;gap:1px}
+.pmeta-l{font-size:9px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase}
+.pmeta-v{font-size:13px;font-weight:600;color:var(--ink)}
+.pmeta-v.green{color:var(--green)}.pmeta-v.red{color:var(--red)}.pmeta-v.gold{color:var(--gold2)}
+
+/* SESIONES */
+.pcard-sesiones{padding:14px 20px;border-bottom:1px solid var(--border)}
+.ses-title{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.ses-grid{display:flex;flex-direction:column;gap:6px}
+.sesion{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;background:var(--s2);transition:.15s;cursor:pointer}
+.sesion:hover{background:var(--s3)}
+.sesion.done{background:rgba(42,157,143,.08)}
+.sesion.done .ses-name{text-decoration:line-through;color:var(--mu)}
+.ses-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s}
+.sesion.done .ses-check{background:var(--teal);border-color:var(--teal)}
+.ses-check svg{width:10px;height:10px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;display:none}
+.sesion.done .ses-check svg{display:block}
+.ses-name{font-size:12px;color:var(--ink);flex:1;font-weight:500}
+.ses-date{font-size:10px;color:var(--mu);white-space:nowrap}
+.ses-price{font-size:11px;color:var(--gold);font-weight:600;white-space:nowrap}
+
+/* FINANZAS */
+.pcard-fin{padding:14px 20px}
+.fin-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.fin-label{font-size:12px;color:var(--mu)}
+.fin-value{font-size:13px;font-weight:700}
+.fin-bar{height:5px;background:var(--s3);border-radius:3px;overflow:hidden;margin-bottom:10px}
+.fin-bar-fill{height:100%;border-radius:3px;background:var(--teal);transition:width .5s ease}
+
+/* ACTIONS */
+.pcard-actions{display:flex;gap:6px;padding:12px 20px;background:var(--s2);border-top:1px solid var(--border)}
+.act-btn{flex:1;padding:8px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--mu);transition:.15s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px}
+.act-btn:hover{border-color:var(--teal);color:var(--teal);background:var(--teal3)}
+.act-btn.danger:hover{border-color:var(--red);color:var(--red);background:var(--red2)}
+.act-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* STATUS BADGE */
+.status-badge{position:absolute;top:18px;right:20px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;padding:3px 8px;border-radius:5px}
+.status-active{background:rgba(42,157,143,.15);color:var(--teal)}
+.status-pending{background:rgba(200,169,110,.12);color:var(--gold)}
+.status-complete{background:rgba(58,174,122,.12);color:var(--green)}
+
+/* FAB */
+.fab{position:fixed;bottom:28px;right:28px;width:54px;height:54px;border-radius:50%;background:var(--teal);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(42,157,143,.4);display:flex;align-items:center;justify-content:center;z-index:90;transition:.15s}
+.fab:hover{transform:scale(1.08);background:var(--teal2)}
+.fab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:80px 20px;color:var(--mu)}
+.empty-icon{font-size:48px;margin-bottom:16px}
+.empty-title{font-size:18px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.empty-sub{font-size:13px;color:var(--mu)}
+
+/* OVERLAY / MODAL */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.ov.open{display:flex}
+.modal{background:var(--s1);border:1px solid var(--border2);border-radius:20px 20px 0 0;padding:24px 24px 44px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;animation:su .22s ease}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@media(min-width:640px){.ov{align-items:center;padding:20px}.modal{border-radius:16px}}
+.mh{width:34px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 22px}
+.mtitle{font-size:19px;font-weight:700;margin-bottom:6px;color:var(--ink)}
+.msub{font-size:12px;color:var(--mu);margin-bottom:22px}
+.fg{margin-bottom:14px}
+.fl{display:block;font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.fi,.fs{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:inherit;color:var(--ink);background:var(--s2);-webkit-appearance:none;transition:.15s}
+.fi:focus,.fs:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal3)}
+.fi::placeholder{color:var(--fa)}
+.frow2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bsave{width:100%;padding:13px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;transition:.15s}
+.bsave:hover{background:var(--teal2)}
+.bcancel{width:100%;padding:11px;background:transparent;color:var(--mu);border:1.5px solid var(--border);border-radius:10px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:7px}
+
+/* PROTO SELECTOR */
+.proto-options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.proto-opt{padding:14px 16px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:.15s;display:flex;justify-content:space-between;align-items:center}
+.proto-opt:hover{border-color:var(--teal)}
+.proto-opt.selected{border-color:var(--teal);background:var(--teal3)}
+.proto-opt-name{font-size:14px;font-weight:600;color:var(--ink)}
+.proto-opt-desc{font-size:11px;color:var(--mu);margin-top:2px}
+.proto-opt-price{font-size:14px;font-weight:700;color:var(--gold2)}
+
+/* SESIONES CUSTOM LIST */
+.ses-custom-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.ses-custom-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--s2);border-radius:8px}
+.ses-custom-name{flex:1;font-size:12px;color:var(--ink)}
+.ses-remove{background:none;border:none;color:var(--mu);cursor:pointer;font-size:14px;padding:0;transition:.15s}
+.ses-remove:hover{color:var(--red)}
+.ses-add-row{display:flex;gap:6px}
+.ses-add-input{flex:1;padding:8px 11px;background:var(--s2);border:1px solid var(--border);border-radius:8px;color:var(--ink);font-size:12px;font-family:inherit}
+.ses-add-input:focus{outline:none;border-color:var(--teal)}
+.ses-add-btn{padding:8px 14px;background:var(--teal3);border:1px solid var(--teal);color:var(--teal);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
+
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--teal);color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:999;opacity:0;transition:.3s;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .hdr-inner{flex-wrap:wrap;height:auto;padding:10px 0}
+  .hbtn-stats{display:none}
+  .grid{grid-template-columns:1fr}
+  .frow2{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-inner">
+    <div>
+      <div class="brand">MedBeauty<em>MX</em></div>
+      <div class="brand-sub">Control de Protocolos Faciales</div>
+    </div>
+    <div class="hdr-right">
+      <div class="hbtn-stats" id="globalStats"></div>
+      <button class="hbtn" onclick="openExport()">Exportar</button>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <div class="search-box">
+      <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Buscar paciente..." oninput="renderCards()">
+    </div>
+    <button class="filter-btn on" id="f-all" onclick="setFilter('all',this)">Todos</button>
+    <button class="filter-btn" id="f-active" onclick="setFilter('active',this)">Activos</button>
+    <button class="filter-btn" id="f-pending" onclick="setFilter('pending',this)">Pago pendiente</button>
+    <button class="filter-btn" id="f-complete" onclick="setFilter('complete',this)">Completados</button>
+  </div>
+
+  <!-- CARDS -->
+  <div class="grid" id="cardsGrid"></div>
+</div>
+
+<!-- FAB -->
+<button class="fab" onclick="openNewPatient()" title="Nuevo paciente">
+  <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL NUEVO PACIENTE -->
+<div class="ov" id="patientModal">
+  <div class="modal">
+    <div class="mh"></div>
+    <div class="mtitle" id="modalTitle">Nuevo paciente</div>
+    <div class="msub" id="modalSub">Selecciona un protocolo o crea uno personalizado</div>
+
+    <!-- STEP 1: Datos básicos -->
+    <div id="step1">
+      <div class="fg">
+        <label class="fl">Nombre completo</label>
+        <input type="text" class="fi" id="pNombre" placeholder="Ej: María García López">
+      </div>
+      <div class="frow2">
+        <div class="fg">
+          <label class="fl">Fecha de inicio</label>
+          <input type="date" class="fi" id="pFechaInicio">
+        </div>
+        <div class="fg">
+          <label class="fl">Teléfono (opcional)</label>
+          <input type="tel" class="fi" id="pTel" placeholder="771 000 0000">
+        </div>
+      </div>
+
+      <label class="fl" style="margin-bottom:10px">Protocolo</label>
+      <div class="proto-options" id="protoOptions">
+        <div class="proto-opt" onclick="selectProto('acne',this)">
+          <div>
+            <div class="proto-opt-name">🧬 Control de Acné</div>
+            <div class="proto-opt-desc">4 sesiones · Hydradermoabrasión avanzada</div>
+          </div>
+          <div class="proto-opt-price">$599/ses</div>
+        </div>
+        <div class="proto-opt" onclick="selectProto('regen',this)">
+          <div>
+            <div class="proto-opt-name">✨ Regeneración Facial</div>
+            <div class="proto-opt-desc">Mantenimiento + Avanzado + Mantenimiento con PRP</div>
+          </div>
+          <div class="proto-opt-price">$699/mes</div>
+        </div>
+        <div class="proto-opt" onclick="selectProto('premium',this)">
+          <div>
+            <div class="proto-opt-name">💎 Protocolo Premium</div>
+            <div class="proto-opt-desc">Mantenimiento · PRP · Avanzado · PRP (ciclo)</div>
+          </div>
+          <div class="proto-opt-price">$899/mes</div>
+        </div>
+        <div class="proto-opt" onclick="selectProto('custom',this)">
+          <div>
+            <div class="proto-opt-name">⚙️ Protocolo personalizado</div>
+            <div class="proto-opt-desc">Define las sesiones y costo manualmente</div>
+          </div>
+          <div class="proto-opt-price">Custom</div>
+        </div>
+      </div>
+
+      <!-- CUSTOM SESIONES -->
+      <div id="customSes" style="display:none;margin-bottom:14px">
+        <label class="fl">Sesiones del protocolo</label>
+        <div class="ses-custom-list" id="customSesList"></div>
+        <div class="ses-add-row">
+          <input type="text" class="ses-add-input" id="newSesName" placeholder="Ej: Hydradermoabrasión avanzada">
+          <button class="ses-add-btn" onclick="addCustomSes()">+ Agregar</button>
+        </div>
+      </div>
+
+      <div class="frow2">
+        <div class="fg">
+          <label class="fl">Costo total del protocolo ($)</label>
+          <input type="number" class="fi" id="pCostoTotal" placeholder="0" min="0" step="0.01">
+        </div>
+        <div class="fg">
+          <label class="fl">Pagado hasta ahora ($)</label>
+          <input type="number" class="fi" id="pPagado" placeholder="0" min="0" step="0.01">
+        </div>
+      </div>
+      <div class="fg">
+        <label class="fl">Notas (opcional)</label>
+        <input type="text" class="fi" id="pNotas" placeholder="Tipo de piel, observaciones, etc.">
+      </div>
+
+      <button class="bsave" onclick="savePatient()">Guardar paciente</button>
+      <button class="bcancel" onclick="closeModal('patientModal')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR PAGO -->
+<div class="ov" id="pagoModal">
+  <div class="modal">
+    <div class="mh"></div>
+    <div class="mtitle">Registrar pago</div>
+    <div class="msub" id="pagoSub"></div>
+    <div class="fg">
+      <label class="fl">Monto abonado ($)</label>
+      <input type="number" class="fi" id="pagoMonto" placeholder="0" min="0" step="0.01">
+    </div>
+    <div class="fg">
+      <label class="fl">Nota del pago (opcional)</label>
+      <input type="text" class="fi" id="pagoNota" placeholder="Transferencia, efectivo, etc.">
+    </div>
+    <button class="bsave" onclick="savePago()">Registrar abono</button>
+    <button class="bcancel" onclick="closeModal('pagoModal')">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL AGENDAR SESIÓN -->
+<div class="ov" id="agendaModal">
+  <div class="modal">
+    <div class="mh"></div>
+    <div class="mtitle">Agendar sesión</div>
+    <div class="msub" id="agendaSub"></div>
+    <div class="fg">
+      <label class="fl">Fecha</label>
+      <input type="date" class="fi" id="agendaFecha">
+    </div>
+    <div class="fg">
+      <label class="fl">Sesión</label>
+      <select class="fs" id="agendaSes"></select>
+    </div>
+    <button class="bsave" onclick="saveAgenda()">Guardar fecha</button>
+    <button class="bcancel" onclick="closeModal('agendaModal')">Cancelar</button>
+  </div>
+</div>
+
+<script>
+// ── PROTOCOLOS BASE ──
+const PROTOS = {
+  acne: {
+    nombre: 'Control de Acné',
+    color: 'proto-acne',
+    precioPorSesion: 599,
+    sesiones: [
+      'Hydradermoabrasión avanzada #1',
+      'Hydradermoabrasión avanzada #2',
+      'Hydradermoabrasión avanzada #3',
+      'Hydradermoabrasión avanzada #4',
+    ]
+  },
+  regen: {
+    nombre: 'Regeneración Facial',
+    color: 'proto-regen',
+    precioPorSesion: 699,
+    sesiones: [
+      'Sesión de mantenimiento',
+      'Sesión avanzada',
+      'Sesión de mantenimiento con PRP',
+    ]
+  },
+  premium: {
+    nombre: 'Protocolo Premium',
+    color: 'proto-premium',
+    precioPorSesion: 899,
+    sesiones: [
+      'Sesión de mantenimiento',
+      'PRP — Plasma Rico en Plaquetas #1',
+      'Sesión avanzada',
+      'PRP — Plasma Rico en Plaquetas #2',
+    ]
+  },
+  custom: {
+    nombre: 'Protocolo Personalizado',
+    color: 'proto-custom',
+    precioPorSesion: 0,
+    sesiones: []
+  }
+};
+
+// ── STATE ──
+let patients = [];
+let filter = 'all';
+let editingId = null;
+let editingPayId = null;
+let editingAgendaId = null;
+let selectedProto = null;
+let customSesiones = [];
+let nextId = 1;
+
+// ── STORAGE ──
+function save() {
+  try { localStorage.setItem('mb_protos_v1', JSON.stringify({ patients, nextId })); } catch(e) {}
+}
+function load() {
+  try {
+    const s = localStorage.getItem('mb_protos_v1');
+    if (s) { const p = JSON.parse(s); patients = p.patients || []; nextId = p.nextId || 1; }
+  } catch(e) {}
+}
+
+// ── HELPERS ──
+const $ = id => document.getElementById(id);
+const fmt = n => '$' + Number(n).toLocaleString('es-MX', {minimumFractionDigits:0, maximumFractionDigits:0});
+const fmtDate = d => { if(!d) return '—'; const [y,m,day]=d.split('-'); return `${day}/${m}/${y}`; };
+const today = () => new Date().toISOString().split('T')[0];
+
+// ── FILTER ──
+function setFilter(f, btn) {
+  filter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderCards();
+}
+
+// ── RENDER ──
+function renderCards() {
+  const q = $('searchInput').value.toLowerCase();
+  let filtered = patients.filter(p => {
+    if (q && !p.nombre.toLowerCase().includes(q)) return false;
+    if (filter === 'active') return getStatus(p) === 'active';
+    if (filter === 'pending') return getStatus(p) === 'pending';
+    if (filter === 'complete') return getStatus(p) === 'complete';
+    return true;
+  });
+
+  const grid = $('cardsGrid');
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
+      <div class="empty-icon">🧬</div>
+      <div class="empty-title">${patients.length ? 'Sin resultados' : 'Sin pacientes aún'}</div>
+      <div class="empty-sub">${patients.length ? 'Prueba con otro nombre o filtro' : 'Agrega tu primer paciente con el botón +'}</div>
+    </div>`;
+    updateStats();
+    return;
+  }
+
+  grid.innerHTML = filtered.map(p => cardHTML(p)).join('');
+  updateStats();
+}
+
+function getStatus(p) {
+  const sesCompletas = (p.sesiones || []).filter(s => s.done).length;
+  const totalSes = (p.sesiones || []).length;
+  if (sesCompletas === totalSes && totalSes > 0 && p.pagado >= p.costoTotal) return 'complete';
+  if (p.pagado < p.costoTotal && p.pagado > 0) return 'pending';
+  if (p.pagado === 0) return 'pending';
+  return 'active';
+}
+
+function cardHTML(p) {
+  const proto = PROTOS[p.protoKey] || PROTOS.custom;
+  const sesCompletas = (p.sesiones || []).filter(s => s.done).length;
+  const totalSes = (p.sesiones || []).length;
+  const faltante = p.costoTotal - p.pagado;
+  const pct = p.costoTotal > 0 ? Math.round(p.pagado / p.costoTotal * 100) : 0;
+  const status = getStatus(p);
+  const statusLabel = { active: 'Activo', pending: 'Pago pendiente', complete: 'Completado' };
+  const statusClass = { active: 'status-active', pending: 'status-pending', complete: 'status-complete' };
+
+  const sesHTML = (p.sesiones || []).map((s, i) => `
+    <div class="sesion ${s.done ? 'done' : ''}" onclick="toggleSesion(${p.id},${i})">
+      <div class="ses-check">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="ses-name">${s.nombre}</div>
+      ${s.fecha ? `<div class="ses-date">${fmtDate(s.fecha)}</div>` : ''}
+      ${s.precio ? `<div class="ses-price">${fmt(s.precio)}</div>` : ''}
+    </div>
+  `).join('');
+
+  return `<div class="pcard" id="card-${p.id}">
+    <span class="status-badge ${statusClass[status]}">${statusLabel[status]}</span>
+    <div class="pcard-top">
+      <div class="pcard-header">
+        <div>
+          <div class="pcard-name">${p.nombre}</div>
+          <span class="pcard-proto ${proto.color || 'proto-custom'}">${p.protoNombre || 'Protocolo'}</span>
+        </div>
+      </div>
+      <div class="pcard-meta">
+        <div class="pmeta">
+          <div class="pmeta-l">Inicio</div>
+          <div class="pmeta-v">${fmtDate(p.fechaInicio)}</div>
+        </div>
+        <div class="pmeta">
+          <div class="pmeta-l">Sesiones</div>
+          <div class="pmeta-v ${sesCompletas===totalSes?'green':''}">${sesCompletas}/${totalSes}</div>
+        </div>
+        <div class="pmeta">
+          <div class="pmeta-l">Saldo</div>
+          <div class="pmeta-v ${faltante<=0?'green':'red'}">${faltante<=0?'Liquidado':fmt(faltante)}</div>
+        </div>
+        ${p.tel ? `<div class="pmeta"><div class="pmeta-l">Tel</div><div class="pmeta-v">${p.tel}</div></div>` : ''}
+      </div>
+    </div>
+
+    <div class="pcard-sesiones">
+      <div class="ses-title">
+        <span>Sesiones del protocolo</span>
+        <span style="color:var(--teal);font-weight:700">${sesCompletas}/${totalSes} completadas</span>
+      </div>
+      <div class="ses-grid">${sesHTML || '<div style="color:var(--fa);font-size:12px;padding:4px">Sin sesiones definidas</div>'}</div>
+    </div>
+
+    <div class="pcard-fin">
+      <div class="fin-row">
+        <span class="fin-label">Costo total</span>
+        <span class="fin-value">${fmt(p.costoTotal)}</span>
+      </div>
+      <div class="fin-row">
+        <span class="fin-label">Pagado</span>
+        <span class="fin-value" style="color:var(--green)">${fmt(p.pagado)} (${pct}%)</span>
+      </div>
+      <div class="fin-bar"><div class="fin-bar-fill" style="width:${pct}%"></div></div>
+      <div class="fin-row" style="margin-bottom:0">
+        <span class="fin-label">Faltante</span>
+        <span class="fin-value" style="color:${faltante<=0?'var(--green)':'var(--red)'}">${faltante<=0?'✓ Liquidado':fmt(faltante)}</span>
+      </div>
+      ${p.notas ? `<div style="margin-top:10px;font-size:11px;color:var(--mu);padding:8px;background:var(--s2);border-radius:6px">📝 ${p.notas}</div>` : ''}
+    </div>
+
+    <div class="pcard-actions">
+      <button class="act-btn" onclick="openPago(${p.id})">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Abono
+      </button>
+      <button class="act-btn" onclick="openAgenda(${p.id})">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Fecha
+      </button>
+      <button class="act-btn" onclick="editPatient(${p.id})">
+        <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Editar
+      </button>
+      <button class="act-btn danger" onclick="deletePatient(${p.id})">
+        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        Eliminar
+      </button>
+    </div>
+  </div>`;
+}
+
+function updateStats() {
+  const active = patients.filter(p => getStatus(p) === 'active').length;
+  const pending = patients.filter(p => getStatus(p) === 'pending').length;
+  const totalPendiente = patients.reduce((s,p) => s + Math.max(0, p.costoTotal - p.pagado), 0);
+  $('globalStats').innerHTML = `
+    <div class="stat-pill"><div class="stat-pill-n" style="color:var(--teal)">${patients.length}</div><div class="stat-pill-l">Pacientes</div></div>
+    <div class="stat-pill"><div class="stat-pill-n" style="color:var(--gold2)">${pending}</div><div class="stat-pill-l">Pendientes</div></div>
+    <div class="stat-pill"><div class="stat-pill-n" style="color:var(--green)">${fmt(totalPendiente)}</div><div class="stat-pill-l">Por cobrar</div></div>
+  `;
+}
+
+// ── TOGGLE SESIÓN ──
+function toggleSesion(pid, idx) {
+  const p = patients.find(x => x.id === pid);
+  if (!p) return;
+  p.sesiones[idx].done = !p.sesiones[idx].done;
+  save(); renderCards();
+  toast(p.sesiones[idx].done ? '✓ Sesión marcada como realizada' : 'Sesión desmarcada');
+}
+
+// ── NEW PATIENT ──
+function openNewPatient() {
+  editingId = null;
+  selectedProto = null;
+  customSesiones = [];
+  $('modalTitle').textContent = 'Nuevo paciente';
+  $('modalSub').textContent = 'Selecciona un protocolo o crea uno personalizado';
+  $('pNombre').value = '';
+  $('pFechaInicio').value = today();
+  $('pTel').value = '';
+  $('pCostoTotal').value = '';
+  $('pPagado').value = '';
+  $('pNotas').value = '';
+  $('customSes').style.display = 'none';
+  $('customSesList').innerHTML = '';
+  document.querySelectorAll('.proto-opt').forEach(el => el.classList.remove('selected'));
+  openModal('patientModal');
+}
+
+function selectProto(key, el) {
+  selectedProto = key;
+  document.querySelectorAll('.proto-opt').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  const proto = PROTOS[key];
+  if (key !== 'custom') {
+    $('customSes').style.display = 'none';
+    const totalSes = proto.sesiones.length;
+    if (!$('pCostoTotal').value) $('pCostoTotal').value = proto.precioPorSesion * totalSes;
+  } else {
+    $('customSes').style.display = 'block';
+    $('pCostoTotal').value = '';
+    renderCustomSesList();
+  }
+}
+
+function addCustomSes() {
+  const name = $('newSesName').value.trim();
+  if (!name) return;
+  customSesiones.push(name);
+  $('newSesName').value = '';
+  renderCustomSesList();
+}
+
+function renderCustomSesList() {
+  $('customSesList').innerHTML = customSesiones.map((s,i) => `
+    <div class="ses-custom-item">
+      <div class="ses-custom-name">${s}</div>
+      <button class="ses-remove" onclick="removeCustomSes(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeCustomSes(i) {
+  customSesiones.splice(i, 1);
+  renderCustomSesList();
+}
+
+function savePatient() {
+  const nombre = $('pNombre').value.trim();
+  if (!nombre) { toast('Escribe el nombre del paciente'); return; }
+  if (!selectedProto) { toast('Selecciona un protocolo'); return; }
+
+  const proto = PROTOS[selectedProto];
+  const sesNames = selectedProto === 'custom' ? customSesiones : proto.sesiones;
+  if (!sesNames.length) { toast('Agrega al menos una sesión'); return; }
+
+  const costoTotal = parseFloat($('pCostoTotal').value) || 0;
+  const pagado = parseFloat($('pPagado').value) || 0;
+
+  const sesiones = sesNames.map(n => ({
+    nombre: n,
+    done: false,
+    fecha: null,
+    precio: selectedProto !== 'custom' ? proto.precioPorSesion : null
+  }));
+
+  if (editingId) {
+    const idx = patients.findIndex(p => p.id === editingId);
+    if (idx >= 0) {
+      patients[idx] = {
+        ...patients[idx],
+        nombre,
+        fechaInicio: $('pFechaInicio').value,
+        tel: $('pTel').value,
+        protoKey: selectedProto,
+        protoNombre: proto.nombre,
+        costoTotal, pagado,
+        notas: $('pNotas').value,
+        sesiones
+      };
+    }
+    toast('Paciente actualizado');
+  } else {
+    patients.push({
+      id: nextId++,
+      nombre,
+      fechaInicio: $('pFechaInicio').value,
+      tel: $('pTel').value,
+      protoKey: selectedProto,
+      protoNombre: proto.nombre,
+      costoTotal, pagado,
+      notas: $('pNotas').value,
+      sesiones
+    });
+    toast('Paciente agregado ✓');
+  }
+
+  save(); closeModal('patientModal'); renderCards();
+}
+
+// ── EDIT ──
+function editPatient(id) {
+  const p = patients.find(x => x.id === id);
+  if (!p) return;
+  editingId = id;
+  selectedProto = p.protoKey;
+  customSesiones = p.protoKey === 'custom' ? p.sesiones.map(s => s.nombre) : [];
+  $('modalTitle').textContent = 'Editar paciente';
+  $('modalSub').textContent = p.nombre;
+  $('pNombre').value = p.nombre;
+  $('pFechaInicio').value = p.fechaInicio;
+  $('pTel').value = p.tel || '';
+  $('pCostoTotal').value = p.costoTotal;
+  $('pPagado').value = p.pagado;
+  $('pNotas').value = p.notas || '';
+  document.querySelectorAll('.proto-opt').forEach(el => el.classList.remove('selected'));
+  const opts = document.querySelectorAll('.proto-opt');
+  const keys = ['acne','regen','premium','custom'];
+  const idx = keys.indexOf(p.protoKey);
+  if (idx >= 0) opts[idx].classList.add('selected');
+  if (p.protoKey === 'custom') {
+    $('customSes').style.display = 'block';
+    renderCustomSesList();
+  }
+  openModal('patientModal');
+}
+
+// ── DELETE ──
+function deletePatient(id) {
+  if (!confirm('¿Eliminar este paciente?')) return;
+  patients = patients.filter(p => p.id !== id);
+  save(); renderCards(); toast('Paciente eliminado');
+}
+
+// ── PAGO ──
+function openPago(id) {
+  const p = patients.find(x => x.id === id);
+  if (!p) return;
+  editingPayId = id;
+  $('pagoSub').textContent = `${p.nombre} · Pagado: ${fmt(p.pagado)} / ${fmt(p.costoTotal)}`;
+  $('pagoMonto').value = '';
+  $('pagoNota').value = '';
+  openModal('pagoModal');
+}
+
+function savePago() {
+  const monto = parseFloat($('pagoMonto').value);
+  if (!monto || monto <= 0) { toast('Ingresa un monto válido'); return; }
+  const p = patients.find(x => x.id === editingPayId);
+  if (!p) return;
+  p.pagado = Math.min(p.pagado + monto, p.costoTotal);
+  save(); closeModal('pagoModal'); renderCards();
+  toast(`Abono registrado: ${fmt(monto)}`);
+}
+
+// ── AGENDA ──
+function openAgenda(id) {
+  const p = patients.find(x => x.id === id);
+  if (!p) return;
+  editingAgendaId = id;
+  $('agendaSub').textContent = p.nombre;
+  $('agendaFecha').value = today();
+  const sel = $('agendaSes');
+  sel.innerHTML = (p.sesiones || []).map((s,i) =>
+    `<option value="${i}">${s.done ? '✓ ' : ''}${s.nombre}</option>`
+  ).join('');
+  openModal('agendaModal');
+}
+
+function saveAgenda() {
+  const fecha = $('agendaFecha').value;
+  const idx = parseInt($('agendaSes').value);
+  const p = patients.find(x => x.id === editingAgendaId);
+  if (!p || !fecha) return;
+  p.sesiones[idx].fecha = fecha;
+  save(); closeModal('agendaModal'); renderCards();
+  toast('Fecha asignada ✓');
+}
+
+// ── EXPORT ──
+function openExport() {
+  let csv = 'Nombre,Protocolo,Inicio,Sesiones,Completadas,Costo Total,Pagado,Faltante,Estado\n';
+  patients.forEach(p => {
+    const ses = p.sesiones || [];
+    const done = ses.filter(s => s.done).length;
+    const faltante = p.costoTotal - p.pagado;
+    csv += `"${p.nombre}","${p.protoNombre}","${p.fechaInicio}",${ses.length},${done},${p.costoTotal},${p.pagado},${faltante},"${getStatus(p)}"\n`;
+  });
+  const b = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const u = URL.createObjectURL(b);
+  const a = document.createElement('a'); a.href=u; a.download='medbeauty-protocolos.csv'; a.click();
+  URL.revokeObjectURL(u);
+  toast('Exportado ✓');
+}
+
+// ── MODAL UTILS ──
+function openModal(id) { $(id).classList.add('open'); }
+function closeModal(id) { $(id).classList.remove('open'); }
+document.querySelectorAll('.ov').forEach(el => el.addEventListener('click', e => { if(e.target===el) el.classList.remove('open'); }));
+
+// ── TOAST ──
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── INIT ──
+load();
+renderCards();
+</script>
+</body>
+</html>
