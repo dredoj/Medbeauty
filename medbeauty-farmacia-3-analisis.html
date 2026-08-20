@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MedBeauty Farmacia</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0f2f5;
+  --surface: #ffffff;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --primary: #1a5c38;
+  --primary-light: #2d7a52;
+  --primary-dim: #e8f5ee;
+  --gold: #c9872a;
+  --gold-dim: #fef3e2;
+  --red: #dc2626;
+  --red-dim: #fef2f2;
+  --blue: #2563eb;
+  --blue-dim: #eff6ff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --muted2: #94a3b8;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* NAV */
+.nav {
+  background: var(--primary);
+  color: white;
+  padding: 0 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+}
+
+.nav-brand {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+}
+
+.nav-brand span {
+  font-weight: 300;
+  opacity: 0.7;
+  font-size: 13px;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.nav-tab {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  color: rgba(255,255,255,0.7);
+  transition: all 0.15s;
+  border: none;
+  background: transparent;
+  white-space: nowrap;
+}
+
+.nav-tab.active, .nav-tab:hover {
+  background: rgba(255,255,255,0.15);
+  color: white;
+}
+
+/* MAIN */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* ALERTS */
+.alerts-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.alert-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.alert-pill.danger { background: var(--red-dim); color: var(--red); border: 1px solid #fecaca; }
+.alert-pill.warning { background: var(--gold-dim); color: var(--gold); border: 1px solid #fde68a; }
+
+/* SEARCH */
+.search-wrap {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px 12px 44px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  background: white;
+  color: var(--text);
+  transition: border-color 0.15s;
+  -webkit-appearance: none;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(26,92,56,0.1);
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted2);
+  font-size: 18px;
+  pointer-events: none;
+}
+
+.search-clear {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--muted2);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+/* FILTERS */
+.filters {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.filters::-webkit-scrollbar { display: none; }
+
+.filter-chip {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  border: 1.5px solid var(--border);
+  background: white;
+  color: var(--muted);
+  transition: all 0.15s;
+}
+
+.filter-chip.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* STATS ROW */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+
+.stat-value.green { color: var(--primary); }
+.stat-value.red { color: var(--red); }
+.stat-value.gold { color: var(--gold); }
+
+/* PRODUCT GRID */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+
+.product-card {
+  background: white;
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  border: 1.5px solid transparent;
+  transition: all 0.15s;
+  cursor: pointer;
+}
+
+.product-card:hover { border-color: var(--primary); box-shadow: var(--shadow-md); }
+.product-card.low-stock { border-color: #fde68a; background: #fffdf5; }
+.product-card.no-stock { border-color: #fecaca; background: #fff5f5; }
+
+.product-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+.product-cat {
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  color: var(--muted2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.product-prices {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.price-cost {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+}
+
+.price-sell {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+  font-family: 'DM Mono', monospace;
+}
+
+.price-margin {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: var(--primary-dim);
+  color: var(--primary);
+  font-family: 'DM Mono', monospace;
+}
+
+.product-stock-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stock-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-family: 'DM Mono', monospace;
+}
+
+.stock-badge.ok { background: var(--primary-dim); color: var(--primary); }
+.stock-badge.low { background: var(--gold-dim); color: var(--gold); }
+.stock-badge.empty { background: var(--red-dim); color: var(--red); }
+
+.expiry-badge {
+  font-size: 10px;
+  color: var(--muted2);
+  font-family: 'DM Mono', monospace;
+  margin-left: auto;
+}
+
+.expiry-badge.near { color: var(--gold); }
+.expiry-badge.expired { color: var(--red); }
+
+.product-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.btn-sell {
+  flex: 1;
+  padding: 7px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.15s;
+}
+
+.btn-sell:hover { background: var(--primary-light); }
+
+.btn-edit {
+  padding: 7px 10px;
+  background: var(--bg);
+  color: var(--muted);
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+
+.btn-edit:hover { border-color: var(--primary); color: var(--primary); }
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: white;
+  border-radius: 20px 20px 0 0;
+  padding: 24px 20px 32px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-handle {
+  width: 36px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+
+.modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.modal-sub {
+  font-size: 12px;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 14px;
+}
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  background: white;
+  -webkit-appearance: none;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(26,92,56,0.1);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.modal-info {
+  background: var(--primary-dim);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  text-align: center;
+}
+
+.modal-info-item .mi-label {
+  font-size: 10px;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  text-transform: uppercase;
+}
+
+.modal-info-item .mi-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary);
+  font-family: 'DM Mono', monospace;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  margin-top: 4px;
+}
+
+.btn-secondary {
+  width: 100%;
+  padding: 11px;
+  background: transparent;
+  color: var(--muted);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  margin-top: 8px;
+}
+
+/* VIEWS */
+.view { display: none; }
+.view.active { display: block; }
+
+/* MOVEMENTS LIST */
+.movements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.movement-item {
+  background: white;
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.movement-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.movement-icon.sale { background: var(--primary-dim); }
+.movement-icon.stock { background: var(--blue-dim); }
+
+.movement-info { flex: 1; min-width: 0; }
+.movement-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.movement-date { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+.movement-amount { font-size: 14px; font-weight: 700; font-family: 'DM Mono', monospace; }
+.movement-amount.sale { color: var(--primary); }
+.movement-amount.stock-in { color: var(--blue); }
+
+/* DASHBOARD */
+.dash-section { margin-bottom: 24px; }
+.dash-title { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+
+.top-product-item {
+  background: white;
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.top-rank {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--border);
+  font-family: 'DM Mono', monospace;
+  min-width: 28px;
+}
+
+.top-rank.gold { color: #f59e0b; }
+.top-rank.silver { color: #94a3b8; }
+.top-rank.bronze { color: #b45309; }
+
+.top-info { flex: 1; min-width: 0; }
+.top-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.top-cat { font-size: 11px; color: var(--muted2); }
+.top-sales { font-size: 14px; font-weight: 700; color: var(--primary); font-family: 'DM Mono', monospace; text-align: right; }
+
+/* NO RESULTS */
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+
+.no-results .icon { font-size: 48px; margin-bottom: 12px; }
+.no-results p { font-size: 15px; }
+
+/* PAGE FOOTER */
+.page-count {
+  text-align: center;
+  padding: 16px;
+  font-size: 12px;
+  color: var(--muted2);
+  font-family: 'DM Mono', monospace;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .product-grid { grid-template-columns: 1fr; }
+  .modal { border-radius: 20px 20px 0 0; }
+}
+
+@media (min-width: 768px) {
+  .modal-overlay { align-items: center; padding: 20px; }
+  .modal { border-radius: 16px; }
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+}
+
+.empty-state {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--muted);
+}
+
+/* ADD/EDIT PRODUCT MODAL extras */
+.btn-danger {
+  width: 100%;
+  padding: 11px;
+  background: transparent;
+  color: var(--red);
+  border: 1.5px solid #fecaca;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  margin-top: 8px;
+  transition: all 0.15s;
+}
+.btn-danger:hover { background: var(--red-dim); }
+
+.fab-wrap {
+  position: fixed;
+  bottom: 24px;
+  right: max(16px, calc((100vw - 1200px) / 2 + 16px));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  z-index: 90;
+}
+
+.fab {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(26,92,56,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.fab:hover { transform: scale(1.08); box-shadow: 0 6px 16px rgba(26,92,56,0.5); }
+.fab.fab-export {
+  background: var(--gold);
+  box-shadow: 0 4px 12px rgba(201,135,42,0.4);
+  font-size: 18px;
+}
+.fab-label {
+  background: rgba(0,0,0,0.75);
+  color: white;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.fab-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-bar-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.search-bar-row .search-wrap {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.btn-icon {
+  padding: 0 14px;
+  height: 46px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: white;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.btn-icon:hover { border-color: var(--primary); color: var(--primary); }
+
+/* Export modal */
+.export-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: var(--bg);
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  border: 1.5px solid transparent;
+  transition: all 0.15s;
+}
+.export-option:hover { border-color: var(--primary); background: var(--primary-dim); }
+.export-icon { font-size: 28px; }
+.export-info .ei-title { font-weight: 600; font-size: 14px; }
+.export-info .ei-sub { font-size: 12px; color: var(--muted); }
+
+
+/* ── MONTHLY ANALYTICS ── */
+.monthly-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.month-select{flex:1;min-width:180px;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;background:#fff;color:var(--text);font:500 13px 'DM Sans',sans-serif}
+.monthly-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.monthly-card{background:#fff;border-radius:10px;padding:13px 14px;box-shadow:var(--shadow)}
+.monthly-card .mc-label{font:11px 'DM Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.monthly-card .mc-value{font-size:20px;font-weight:750;line-height:1.1}
+.monthly-card .mc-value.green{color:var(--primary)}
+.monthly-card .mc-value.blue{color:var(--blue)}
+.monthly-card .mc-value.gold{color:var(--gold)}
+.monthly-card .mc-value.red{color:var(--red)}
+.monthly-table-wrap{background:#fff;border-radius:10px;box-shadow:var(--shadow);overflow:auto;margin-bottom:20px}
+.monthly-table{width:100%;border-collapse:collapse;min-width:720px}
+.monthly-table th{padding:10px 12px;background:#f8fafc;color:var(--muted);font:10px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.4px;text-align:right;border-bottom:1px solid var(--border)}
+.monthly-table th:first-child{text-align:left}
+.monthly-table td{padding:10px 12px;border-bottom:1px solid #eef2f7;font-size:12px;text-align:right;white-space:nowrap}
+.monthly-table td:first-child{text-align:left;font-weight:600;white-space:normal}
+.monthly-table tr:last-child td{border-bottom:none}
+.monthly-table .profit{color:var(--primary);font-weight:700}
+.monthly-table .cost{color:var(--blue)}
+.monthly-table .negative{color:var(--red);font-weight:700}
+.monthly-detail-title{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:20px 0 10px}
+.monthly-note{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--muted);font-size:11px;line-height:1.45;margin-bottom:14px}
+.monthly-note strong{color:var(--text)}
+@media(max-width:600px){.monthly-summary{grid-template-columns:1fr 1fr}.monthly-card .mc-value{font-size:18px}}
+</style>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc, onSnapshot }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAQ1J-am1TkyHAbIT-zLtzDkNV-mfCO4-s",
+    authDomain: "medbeauty-71438.firebaseapp.com",
+    projectId: "medbeauty-71438",
+    storageBucket: "medbeauty-71438.firebasestorage.app",
+    messagingSenderId: "494839722349",
+    appId: "1:494839722349:web:6d0a7975364a030cf0ea64"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Expose to global scope for use in non-module scripts
+  window._db = db;
+  window._firestore = { doc, setDoc, getDoc, collection, getDocs, deleteDoc, onSnapshot };
+  window._firebaseReady = true;
+  document.dispatchEvent(new Event('firebaseReady'));
+</script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">MedBeauty <span>Farmacia</span></div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showView('inventario')">Inventario</button>
+      <button class="nav-tab" onclick="showView('movimientos')">Ventas</button>
+      <button class="nav-tab" onclick="showView('dashboard')">Análisis</button>
+      <button class="nav-tab" onclick="showView('productos')">Gestión</button>
+    </div>
+  </div>
+</nav>
+
+<div class="main">
+
+  <!-- ALERTS BAR -->
+  <div class="alerts-bar" id="alertsBar"></div>
+
+  <!-- ── INVENTARIO ── -->
+  <div id="view-inventario" class="view active">
+
+    <div class="search-bar-row">
+      <div class="search-wrap">
+        <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+        <input type="search" class="search-input" id="searchInput"
+               placeholder="Buscar medicamento, marca, categoría..."
+               oninput="onSearch()" autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+      </div>
+      <button class="btn-icon" onclick="openExportModal()" title="Exportar"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>
+    </div>
+
+    <div class="filters" id="filtersRow"></div>
+
+    <div class="stats-row" id="statsRow"></div>
+
+    <div class="product-grid" id="productGrid"></div>
+    <div class="page-count" id="pageCount"></div>
+  </div>
+
+  <!-- ── MOVIMIENTOS ── -->
+  <div id="view-movimientos" class="view">
+    <div style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:18px;font-weight:700">Registro de Ventas</div>
+      <button onclick="clearMovements()" style="font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;padding:6px">Limpiar todo</button>
+    </div>
+    <div class="movements-list" id="movementsList">
+      <div class="no-results"><div class="icon" style="color:var(--muted2)"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></div><p>Sin movimientos registrados</p></div>
+    </div>
+  </div>
+
+  <!-- ── DASHBOARD ── -->
+  <div id="view-dashboard" class="view">
+    <div class="stats-row" style="margin-bottom:20px" id="dashStats"></div>
+
+    <div class="dash-section">
+      <div class="dash-title">📅 Ventas por mes</div>
+      <div class="monthly-controls">
+        <select id="monthSelect" class="month-select" onchange="renderMonthlyAnalysis()"></select>
+      </div>
+      <div id="monthlySummary" class="monthly-summary"></div>
+      <div class="monthly-note" id="monthlyAccountingNote"></div>
+      <div class="monthly-detail-title">Resumen mensual</div>
+      <div id="monthlyTableWrap" class="monthly-table-wrap"></div>
+      <div class="monthly-detail-title">Mes → medicamento → piezas → costo → venta → utilidad</div>
+      <div id="monthlyProductTable" class="monthly-table-wrap"></div>
+    </div>
+
+    <div class="dash-section">
+      <div class="dash-title">🏆 Más Vendidos</div>
+      <div id="topSelling"></div>
+    </div>
+
+    <div class="dash-section">
+      <div class="dash-title">⚠️ Stock Bajo o Agotado</div>
+      <div id="lowStockList"></div>
+    </div>
+
+    <div class="dash-section">
+      <div class="dash-title">💰 Mayor Margen</div>
+      <div id="topMargin"></div>
+    </div>
+  </div>
+
+  <!-- ── GESTIÓN DE PRODUCTOS ── -->
+  <div id="view-productos" class="view">
+    <div style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:18px;font-weight:700">Gestión de Productos</div>
+    </div>
+
+    <div class="search-wrap" style="margin-bottom:12px">
+      <span class="search-icon"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+      <input type="search" class="form-input" id="gestionSearch"
+             placeholder="Buscar producto para editar o eliminar..."
+             oninput="renderGestion()" autocomplete="off"
+             style="padding-left:44px;border-radius:10px">
+    </div>
+
+    <div style="margin-bottom:16px">
+      <button class="btn-primary" style="width:auto;padding:10px 20px;font-size:13px" onclick="openAddModal()">
+        + Agregar nuevo producto
+      </button>
+    </div>
+
+    <div id="gestionList"></div>
+  </div>
+
+</div>
+
+<!-- FAB BUTTONS -->
+<div class="fab-wrap" id="fabWrap">
+  <div class="fab-item">
+    <span class="fab-label">Exportar ventas</span>
+    <button class="fab fab-export" onclick="openExportModal()" title="Exportar"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>
+  </div>
+  <div class="fab-item">
+    <span class="fab-label">Nuevo producto</span>
+    <button class="fab" onclick="openAddModal()" title="Agregar producto"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+  </div>
+</div>
+
+<!-- MODAL VENTA -->
+<div class="modal-overlay" id="sellModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="sellModalTitle">Registrar Venta</div>
+    <div class="modal-sub" id="sellModalSub"></div>
+    <div class="modal-info" id="sellModalInfo"></div>
+    <div class="form-group">
+      <label class="form-label">Cantidad vendida</label>
+      <input type="number" class="form-input" id="sellQty" min="1" value="1" style="font-size:24px;font-weight:700;text-align:center">
+    </div>
+    <button class="btn-primary" onclick="confirmSell()">Confirmar Venta</button>
+    <button class="btn-secondary" onclick="closeModal('sellModal')">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL EDITAR STOCK -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="editModalTitle">Actualizar Producto</div>
+    <div class="modal-sub" id="editModalSub"></div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Stock actual (piezas)</label>
+        <input type="number" class="form-input" id="editStock" min="0" value="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Stock mínimo</label>
+        <input type="number" class="form-input" id="editMinStock" min="0" value="3">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Fecha de caducidad</label>
+      <input type="month" class="form-input" id="editExpiry">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Precio costo ($)</label>
+        <input type="number" class="form-input" id="editCost" min="0" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Precio venta ($)</label>
+        <input type="number" class="form-input" id="editPrice" min="0" step="0.01">
+      </div>
+    </div>
+    <button class="btn-primary" onclick="confirmEdit()">Guardar cambios</button>
+    <button class="btn-secondary" onclick="closeModal('editModal')">Cancelar</button>
+  </div>
+</div>
+
+<script>
+const CATALOG = [{"id":1,"name":"ACEITE DE COCO 55ML","cost":9.11,"price":25.0,"category":"Aceites y esenciales","stock":1,"minStock":1,"margin":64.0,"movements":[],"expiry":null},{"id":2,"name":"ACEITE DE EUCALIPTO 55ML","cost":9.11,"price":25.0,"category":"Aceites y esenciales","stock":2,"minStock":1,"margin":64.0,"movements":[],"expiry":null},{"id":3,"name":"ACEITE DE GERMEN 55ML","cost":9.11,"price":25.0,"category":"Aceites y esenciales","stock":1,"minStock":1,"margin":64.0,"movements":[],"expiry":null},{"id":4,"name":"ACEITE DE OLIVO 55ML","cost":9.11,"price":25.0,"category":"Aceites y esenciales","stock":1,"minStock":3,"margin":63.6,"movements":[],"expiry":null},{"id":5,"name":"ACEITE DE ROMERO 55ML","cost":9.11,"price":25.0,"category":"Aceites y esenciales","stock":2,"minStock":1,"margin":64.0,"movements":[],"expiry":null},{"id":6,"name":"ACIDO ACETIL SALICILICO 100MG (ULTRA)","cost":15.46,"price":40.0,"category":"Analgésicos y antiinflamatorios","stock":2,"minStock":1,"margin":61.0,"movements":[],"expiry":null},{"id":7,"name":"ACIDO ASCORBICO EFERVESCENTE 1G (OXITAL-C)","cost":50.0,"price":110.0,"category":"Vitaminas y suplementos","stock":1,"minStock":1,"margin":55.0,"movements":[],"expiry":null},{"id":8,"name":"ACIDO FOLICO 400MCG (MATERFOL C/90)","cost":21.39,"price":80.0,"category":"Vitaminas y suplementos","stock":2,"minStock":1,"margin":73.0,"movements":[],"expiry":null},{"id":9,"name":"ACIDO HIALURONICO/COLAGENO/BIOTINA GOMITAS (GOMIX C/50)","cost":99.85,"price":170.0,"category":"Vitaminas y suplementos","stock":0,"minStock":3,"margin":41.3,"movements":[],"expiry":null},{"id":10,"name":"ACIDO HIALURONICO/COLAGENO/BIOTINA GOMITAS (NATUREX C/30)","cost":88.01,"price":150.0,"category":"Vitaminas y suplementos","stock":0,"minStock":3,"margin":41.3,"movements":[],"expiry":null},{"id":11,"name":"ACIDO NALIDIXCO/FENAZOPIRIDINA (AZOGEN 20 TABS)","cost":90.73,"price":170.0,"category":"Antibióticos y antiinfecciosos","stock":0,"minStock":1,"margin":47.0,"movements":[],"expiry":null},{"id":12,"name":"AGUA OXIGENADA 130ML","cost":10.0,"price":20.0,"category":"Material de curación","stock":2,"minStock":1,"margin":50.0,"movements":[],"expiry":null},{"id":13,"name":"ALCOHOL ROJO 500ML","cost":25.0,"price":40.0,"category":"Material de curación","stock":2,"minStock":1,"margin":38.0,"movements":[],"expiry":null},{"id":14,"name":"ALOPURINOL 200MG (PURIBEL C/20)","cost":25.29,"price":50.0,"category":"Otros","stock":3,"minStock":1,"margin":49.0,"movements":[],"expiry":null},{"id":15,"name":"AMBROXOL 30MG COMPRIMIDOS (CLOXAN 20 COMP)","cost":0.0,"price":40.0,"category":"Respiratorio","stock":2,"minStock":1,"margin":0.0,"movements":[],"expiry":null},{"id":16,"name":"AMBROXOL/DEXTROMETORFANO JARABE (FARIBROX TM 150ML)","cost":32.19,"price":60.0,"category":"Respiratorio","stock":1,"minStock":1,"margin":46.0,"movements":[],"expiry":null},{"id":17,"name":"AMBROXOL/DEXTROMETORFANO JARABE INFANTIL (FARIBROX TM)","cost":27.31,"price":60.0,"category":"Respiratorio","stock":3,"minStock":1,"margin":54.0,"movements":[],"expiry":null},{"id":18,"name":"AMBROXOL/DEXTROMETORFANO SUSP ORAL (COBADEX INFANTIL)","cost":25.96,"price":60.0,"category":"Respiratorio","stock":2,"minStock":1,"margin":57.0,"movements":[],"expiry":null},{"id":19,"name":"AMLODIPINO 5MG (PRESLOPIN C/30)","cost":9.94,"price":40.0,"category":"Cardiovascular","stock":0,"minStock":1,"margin":75.0,"movements":[],"expiry":null},{"id":20,"name":"AMOXICILINA/CLAVULANICO TABS 500MG (CLAMOXIN 10 TABS)","cost":53.48,"price":110.0,"category":"Antibióticos y antiinfecciosos","stock":2,"minStock":1,"margin":51.0,"movements":[],"expiry":null},{"id":21,"name":"AMOXICILINA/CLAVULANICO TABS 500MG (CLAMOXIN C/12)","cost":53.24,"price":120.0,"category":"Antibióticos y antiinfecciosos","stock":0,"minStock":3,"margin":55.6,"movements":[],"expiry":null},{"id":22,"name":"ARNICA GLOBULOS (MONTANA C/150)","cost":40.19,"price":80.0,"category":"Homeopaticos","stock":0,"minStock":1,"margin":50.0,"movements":[],"expiry":null},{"id":23,"name":"ARNICA POMADA 50GR","cost":13.0,"price":30.0,"category":"Dermatológicos","stock":2,"minStock":1,"margin":57.0,"movements":[],"expiry":null},{"id":24,"name":"ATORVASTATINA 20MG (ODIVITOR 10 TABS)","cost":16.0,"price":60.0,"category":"Cardiovascular","stock":0,"minStock":3,"margin":73.3,"movements":[],"expiry":null},{"id":25,"name":"AZITROMICINA SUSP 4G/100ML (SICALAN 30ML)","cost":79.36,"price":140.0,"category":"Antibióticos y antiinfecciosos","stock":0,"minStock":3,"margin":43.0,"movements":[],"expiry":null},{"id":26,"name":"AZITROMICINA TABS 500MG (CRAZTRONIN)","cost":27.76,"price":90.0,"category":"Antibióticos y antiinfecciosos","stock":2,"minStock":1,"margin":69.0,"movements":[],"expiry":null},{"id":27,"name":"BANO COLOIDE POLVO (ALISOY 90G)","cost":21.75,"price":60.0,"category":"Dermatológicos","stock":4,"minStock":3,"margin":63.7,"movements":[],"expiry":null},{"id":28,"name":"BENCIDAMINA CON ATOMIZADOR (MARACINA)","cost":33.37,"price":80.0,"category":"Analgésicos y antiinflamatorios","stock":0,"minStock":1,"margin":58.0,"movements":[],"expiry":null},{"id":29,"name":"BENCIDAMINA ENJUAGUE (MARACINA 360ML)","cost":54.24,"price":110.0,"category":"Analgésicos y antiinflamatorios","stock":1,"minStock":1,"margin":51.0,"movements":[],"expiry":null},{"id":30,"name":"BENZONATATO 100MG (PHARBEN 20 CAPS)","cost":26.48,"price":70.0,"category":"Respiratorio","stock":2,"minStock":1,"margin":62.0,"movements":[],"expiry":null},{"id":31,"name":"BETAHISTINA 24MG (BITENVER C/30)","cost":79.96,"price":160.0,"category":"Neurológico","stock":0,"minStock":1,"margin":50.0,"movements":[],"expiry":null},{"id":32,"name":"BETAMETASONA INY 8MG (ERISPAN)","cost":31.86,"price":80.0,"category":"Corticosteroides","stock":4,"minStock":4,"margin":60.0,"movements":[],"expiry":null},{"id":33,"name":"BETAMETASONA/CLOTRIMAZOL/GENTAMICINA CREMA (BARMICIL)","cost":25.0,"price":50.0,"category":"Dermatológicos","stock":2,"minStock":1,"margin":50.0,"movements":[],"expiry":null},{"id":34,"name":"BEZAFIBRATO 200MG (REDALIP 30 TABS)","cost":35.0,"price":80.0,"category":"Cardiovascular","stock":1,"minStock":1,"margin":56.0,"movements":[],"expiry":null},{"id":35,"name":"BROMURO IPRATROPIO/SALBUTAMOL NEBULIZACION (LONVITOL)","cost":83.0,"price":40.0,"category":"Respiratorio","stock":11,"minStock":3,"margin":-107.5,"movements":[],"expiry":null},{"id":36,"name":"BUDESONIDA NASAL 6ML/120 DOSIS (AMSA)","cost":160.0,"price":250.0,"category":"Respiratorio","stock":6,"minStock":3,"margin":36.0,"movements":[],"expiry":null},{"id":37,"name":"CAPTOPRIL 25MG (BRUCAP C/30)","cost":9.84,"price":35.0,"category":"Cardiovascular","stock":2,"minStock":1,"margin":72.0,"movements":[],"expiry":null},{"id":38,"name":"CEFALEXINA 500MG (CEFALVER 20 CAPS)","cost":50.36,"price":110.0,"category":"Antibióticos y antiinfecciosos","stock":1,"minStock":1,"margin":54.0,"movements":[],"expiry":null},{"id":39,"name":"CEFALEXINA SUSP 250MG/5ML (CEFALVER 90ML)","cost":38.57,"price":100.0,"category":"Antibióticos y antiinfecciosos","stock":1,"minStock":1,"margin":61.0,"movements":[],"expiry":null},{"id":40,"name":"CEFOTAXIMA INY 1G/4ML (AMSA)","cost":29.49,"price":70.0,"category":"Antibióticos y antiinfecciosos","stock":2,"minStock":3,"margin":58.0,"movements":[],"expiry":null},{"id":41,"name":"CEFTRIAXONA INY 1G/3.5ML (TRIAXONA IM)","cost":36.16,"price":80.0,"category":"Antibióticos y antiinfecciosos","stock":2,"minStock":3,"margin":55.0,"movements":[],"expiry":null},{"id":42,"name":"CELECOXIB 200MG (CICLOX C/10)","cost":45.0,"price":90.0,"category":"Analgésicos y antiinflamatorios","stock":1,"minStock":1,"margin":50.0,"movements":[],"expiry":null},{"id":43,"name":"CETIRIZINA 10MG (VISERTRAL C/10)","cost":35.74,"price":85.0,"category":"Antihistamínicos","stock":2,"minStock":1,"margin":58.0,"movements":[],"expiry":null},{"id":44,"name":"CINARIZINA 75MG (CYSLEV C/60)","cost":30.67,"price":70.0,"category":"Neurológico","stock":1,"minStock":3,"margin":56.2,"movements":[],"expiry":null},{"id":45,"name":"CINTAS COVAN 5CM","cost":18.0,"price":40.0,"category":"Material de curación","stock":9,"minStock":3,"margin":55.0,"movements":[],"expiry":null},{"id":46,"name":"CIPROFLOXACINO GOTAS OFTAL (AMSA)","cost":31.69,"price":60.0,"category":"Antibióticos y antiinfecciosos","stock":4,"minStock":3,"margin":47.2,"movements":[],"expiry":null},{"id":47,"name":"CIPROFLOXACINO 250MG (CIPRAIN C/10)","cost":24.0,"price":60.0,"category":"Antibióticos y antiinfecciosos","stock":1,"minStock":3,"margin":60.0,"movements":[],"expiry":null},{"id":48,"name":"CIPROFLOXACINO 250MG (KENZOFLEX C/12)","cost":13.13,"price":40.0,"category":"Antibióticos y antiinfecciosos","stock":0,"minStock":3,"margin":67.2,"movements":[],"expiry":null},{"id":49,"name":"CIPROFLOXACINO 500MG (KENZOFLEX C/12)","cost":26.0,"price":70.0,"category":"Antibióticos y antiinfecciosos","stock":2,"minStock":3,"margin":62.9,"movements":[],"expiry":null},{"id":50,"name":"CLARITROMICINA TABS 500MG (KLARIX C/10)","cost":67.0,"price":130.0,"category":"Antibióticos y antiinfecciosos","stock":1,"minStock":3,"margin":48.5,"movements":[],"expiry":null},{"id":51,"name":"CLIOQUINOL CREMA 3MG (LASAR)","cost":13.43,"price":60.0,"category":"Dermatológicos","stock":8,"minStock":3,"margin":78.0,"movements":[],"expiry":null},{"id":52,"name":"CLOROPIRAMINA 25MG (SCHOEN C/20)","cost":45.27,"price":90.0,"category":"Antihistamínicos","stock":1,"minStock":1,"margin":50.0,"movements":[],"expiry":null},{"id":53,"name":"CLORURO CETILPIRIDINIO/BENZOCAINA (TROCICLETAS B C/10)","cost":36.91,"price":70.0,"category":"Analgésicos y antiinflamatorios","stock":1,"minStock":1,"margin":47.0,"movements":[],"expiry":null},{"id":54,"name":"CLORURO DE SODIO GOTERO (NASALUB INFANTIL)","cost":87.48,"price":120.0,"category":"Respiratorio","stock":0,"minStock":3,"margin":27.1,"movements":[],"expiry":null},{"id":55,"name":"CLORURO DE SODIO SPRAY (NASALUB ADULTO)","cost":87.48,"price":120.0,"category":"Respiratorio","stock":0,"minStock":3,"margin":27.1,"movements":[],"expiry":null},{"id":56,"name":"CLORURO DE SODIO/GLICEROL SPRAY (NASPRAY ADULTO)","cost":25.0,"price":70.0,"category":"Respiratorio","stock":0,"minStock":3,"margin":64.3,"movements":[],"expiry":null},{"id":57,"name":"CLORURO DE SODIO/GLICEROL SPRAY (NASSAL)","cost":25.08,"price":60.0,"category":"Respiratorio","stock":1,"minStock":3,"margin":58.2,"movements":[],"expiry":null},{"id":58,"name":"COLAGENO/BIOTINA/CONDROITINA EFERVESCENTE (SELTZ C/20)","cost":99.01,"price":190.0,"category":"Vitaminas y suplementos","stock":0,"minStock":3,"margin":47.9,"movements":[],"expiry":null},{"id":59,"name":"COMPLEJO B SOL INY (TRIBEDOCE 5 AMP)","cost":74.3,"price":150.0,"category":"Vitaminas y suplementos","stock":1,"minStock":3,"margin":50.5,"movements":[],"expiry":null},{"id":60,"name":"COMPLEJO B/DEXAMETASONA INY (TRIBEDOCE DX 3 AMP)","cost":59.89,"price":120.0,"category":"Vitaminas y suplementos","stock":1,"minStock":1,"margin":50.0,"movements":[],"expiry":null},{"id":61,"name":"COMPLEJO B/DICLOFENACO INY (TRIBEDOCE COMPUESTO 3 AMP)","cost":62.56,"price":130.0,"category":"Vitaminas y suplementos","stock":0,"minStock":1,"margin":52.0,"movements":[],"expiry":null},{"id":62,"name":"CUBREBOCAS KN95 CAJA","cost":100.0,"price":200.0,"category":"Insumos médicos","stock":1,"minStock":3,"margin":50.0,"movements":[],"expiry":null},{"id":63,"name":"CUBREBOCAS TRICAPA DL C/50 CAJA","cost":50.0,"price":120.0,"category":"Insumos médicos","stock":4,"minStock":3,"margin":58.3,"movements":[],"expiry":null},{"id":64,"name":"DESLORATADINA JARABE (BLOTAMIN 120ML)","cost":33.14,"price":110.0,"category":"Antihistamínicos","stock":1,"minStock":3,"margin":69.9,"movements":[],"expiry":null},{"id":65,"name":"DEXAMETASONA INY 8MG (AMSA)","cost":11.0,"price":30.0,"category":"Corticosteroides","stock":3,"minStock":3,"margin":63.3,"movements":[],"expiry":null},{"id":66,"name":"DEXAMETASONA INY 8MG (REXIPATEN C/1 AMP)","cost":8.89,"price":30.0,"category":"Corticosteroides","stock":3,"minStock":1,"margin":70.0,"movements":[],"expiry":null},{"id":67,"name":"DEXAMETASONA INY 8MG (SINKEL C/1 AMP)","cost":10.0,"price":40.0,"category":"Corticosteroides","stock":4,"minStock":3,"margin":75.0,"movements":[],"expiry":null},{"id":68,"name":"DEXPANTHENOL CREMA 5% (PAMEDAN)","cost":22.57,"price":55.0,"category":"Dermatológicos","stock":1,"minStock":3,"margin":59.0,"movements":[],"expiry":null},{"id":69,"name":"DICLOFENACO 50MG COMPRIMIDOS (MAFENA C/20)","cost":15.65,"price":40.0,"category":"Analgésicos y antiinflamatorios","stock":2,"minStock":1,"margin":61.0,"movements":[],"expiry":null},{"id":70,"name":"DICLOFENACO GEL 60G (MAFENA)","cost":15.3,"price":60.0,"category":"Analgésicos y antiinflamatorios","stock":2,"minStock":1,"margin":75.0,"movements":[],"expiry":null},{"id":71,"name":"DICLOFENACO INY 75MG (DEFETRIL C/2)","cost":11.76,"price":55.0,"category":"Analgésicos y antiinflamatorios","stock":2,"minStock":3,"margin":78.6,"movements":[],"expiry":null},{"id":72,"name":"DICLOFENACO 100MG RETARD (MAFENA C/20)","cost":14.79,"price":50.0,"category":"Analgésicos y antiinflamatorios","stock":2,"minStock":1,"margin":70.0,"movements":[],"expiry":null},{"id":73,"name":"DIFENHIDRAMINA 25MG (GELPHARMA C/10)","cost":19.35,"price":40.0,"category":"Antihistamínicos","stock":2,"minStock":3,"margin":51.6,"movements":[],"expiry":null},{"id":74,"name":"DIFENHIDRAMINA 50MG (HIDRIGORT C/8)","cost":15.09,"price":45.0,"category":"Antihistamínicos","stock":0,"minStock":3,"margin":66.5,"movements":[],"expiry":null},{"id":75,"name":"DIFENHIDRAMINA JARABE (BRUDIFEN C/120ML)","cost":21.82,"price":60.0,"category":"Antihistamínicos","stock":0,"minStock":3,"margin":63.6,"movements":[],"expiry":null},{"id":76,"name":"DIFENIDOL INY 8MG (DIPHAFEN C/2 AMP)","cost":30.0,"price":55.0,"category":"Neurológico","stock":2,"minStock":3,"margin":45.5,"movements":[],"expiry":null},{"id":77,"name":"DIFENIDOL 25MG (NEOLPHARMA C/30)","cost":18.12,"price":50.0,"category":"Neurológico","stock":0,"minStock":3,"margin":63.8,"movements":[],"expiry":null},{"id":78,"name":"DIFENIDOL 25MG (RAAMFEN C/30)","cost":17.57,"price":60.0,"category":"Neurológico","stock":3,"minStock":3,"margin":70.7,"movements":[],"expiry":null},{"id":79,"name":"DIOSMINA/HESPERIDINA 450MG/50MG (MEDIGEN C/20)","cost":65.92,"price":120.0,"category":"Cardiovascular","stock":0,"minStock":3,"margin":45.1,"movements":[],"expiry":null},{"id":80,"name":"DIOSMINA/HESPERIDINA 450MG/50MG (ROVEMAX C/20)","cost":67.08,"price":120.0,"category":"Cardiovascular","stock":0,"minStock":3,"margin":44.1,"movements":[],"expiry":null},{"id":81,"name":"DIOSMINA/HESPERIDINA 450MG/50MG (FLAUSIVER C/20)","cost":77.11,"price":150.0,"category":"Cardiovascular","stock":0,"minStock":1,"margin":49.0,"movements":[],"expiry":null},{"id":82,"name":"DIPROPIONATO BECLOMETASONA 50MCG (CLOFHIVEN C/200 DOSIS)","cost":65.04,"price":120.0,"category":"Respiratorio","stock":1,"minStock":3,"margin":45.8,"movements":[],"expiry":null},{"id":83,"name":"DIYODOHIDROXIQUINOLEINA/METRONIDAZOL (LAMBLIKIN 30 TABS)","cost":46.94,"price":100.0,"category":"Antiparasitarios","stock":0,"minStock":3,"margin":53.1,"movements":[],"expiry":null},{"id":84,"name":"DIYODOHIDROXIQUINOLEINA/METRONIDAZOL (NORECIL 20 TABS)","cost":37.28,"price":100.0,"category":"Antiparasitarios","stock":0,"minStock":3,"margin":62.7,"movements":[],"expiry":null},{"id":85,"name":"DOXICICLINA 100MG (KENCICLEN 10 CAPS)","cost":27.9,"price":100.0,"category":"Antibióticos y antiinfecciosos","stock":7,"minStock":3,"margin":72.1,"movements":[],"expiry":null},{"id":86,"name":"ELECTROLIFE ZERO MORA SUERO ORAL","cost":19.96,"price":35.0,"category":"Hidratación","stock":2,"minStock":1,"margin":43.0,"movements":[],"expiry":null},{"id":87,"name":"ELECTROLIFE ZERO NARANJA SUERO ORAL","cost":19.96,"price":35.0,"category":"Hidratación","stock":2,"minStock":1,"margin":43.0,"movements":[],"expiry":null},{"id":88,"name":"ELECTROLIFE ZERO UVA SUERO ORAL","cost":21.86,"price":35.0,"category":"Hidratación","stock":2,"minStock":1,"margin":38.0,"movements":[],"expiry":null},{"id":89,"name":"ELECTROLIT SUERO ORAL COCO","cost":20.19,"price":35.0,"category":"Hidratación","stock":1,"minStock":1,"margin":42.0,"movements":[],"expiry":null},{"id":90,"name":"ELECTROLITOS ORALES APO EN POLVO (APOTEX)","cost":176.62,"price":12.0,"category":"Hidratación","stock":50,"minStock":3,"margin":-1371.8,"movements":[],"expiry":null},{"id":91,"name":"ENALAPRIL 10MG (OLAVAC C/30)","cost":7.9,"price":40.0,"category":"Cardiovascular","stock":2,"minStock":3,"margin":80.2,"movements":[],"expiry":null},{"id":92,"name":"ESTRIOL OVULOS 0.5MG (SONSVAL C/15)","cost":75.0,"price":250.0,"category":"Ginecológicos","stock":0,"minStock":3,"margin":70.0,"movements":[],"expiry":null},{"id":93,"name":"FEXOFENADINA 180MG (APERTUM DX C/10)","cost":91.86,"price":170.0,"category":"Antihistamínicos","stock":1,"minStock":3,"margin":46.0,"movements":[],"expiry":null},{"id":94,"name":"FINASTERIDA 5MG (TYCROPS C/30)","cost":50.38,"price":120.0,"category":"Urológicos","stock":2,"minStock":3,"margin":58.0,"movements":[],"expiry":null},{"id":95,"name":"FLUCONAZOL 150MG (DOFIL C/1)","cost":17.0,"price":50.0,"category":"Antibióticos y antiinfecciosos","stock":0,"minStock":3,"margin":66.0,"movements":[],"expiry":null},{"id":96,"name":"FUMARATO FERROSO 200MG","cost":14.94,"price":45.0,"category":"Vitaminas y suplementos","stock":1,"minStock":1,"margin":67.0,"movements":[],"expiry":null},{"id":97,"name":"FUROSEMIDA 40MG (DIURMESSEL C/20)","cost":10.05,"price":50.0,"category":"Cardiovascular","stock":1,"minStock":1,"margin":80.0,"movements":[],"expiry":null},{"id":98,"name":"GABAPENTINA 300MG (WERMY)","cost":54.02,"price":120.0,"category":"Neurológico","stock":1,"minStock":1,"margin":55.0,"movements":[],"expiry":null},{"id":99,"name":"GASA ESTERILIZADA 10X10 CM (QUIRMEX C/100)","cost":100.0,"price":160.0,"category":"Material de curación","stock":4,"minStock":3,"margin":37.5,"movements":[],"expiry":null},{"id":100,"name":"GASA ESTERILIZADA 7.5X5 CM (QUIRMEX C/10)","cost":10.0,"price":20.0,"category":"Material de curación","stock":3,"minStock":3,"margin":50.0,"movements":[],"expiry":null},{"id":101,"name":"GLIBENCLAMIDA 5MG (OCRIX C/50)","cost":8.16,"price":40.0,"category":"Diabetes","stock":1,"minStock":3,"margin":79.6,"movements":[],"expiry":null},{"id":102,"name":"GUAIFENESINA/OXOLAMINA GOTERO (GUAXOQUIM 60ML)","cost":38.96,"price":70.0,"category":"Respiratorio","stock":1,"minStock":1,"margin":44.0,"movements":[],"expiry":null},{"id":103,"name":"GUAIFENESINA/OXOLAMINA ADULTO (GUAXOQUIM 100ML)","cost":47.83,"price":90.0,"category":"Respiratorio","stock":2,"minStock":1,"margin":47.0,"movements":[],"expiry":null},{"id":104,"name":"GUANTES NITRILO TALLA M (UNIQUIN)","cost":100.0,"price":185.0,"category":"Insumos médicos","stock":6,"minStock":3,"margin":45.9,"movements":[],"expiry":null},{"id":105,"name":"HIDROCORTISONA CREMA 1% (K C/60G)","cost":36.53,"price":90.0,"category":"Corticosteroides","stock":0,"minStock":1,"margin":59.0,"movements":[],"expiry":null},{"id":106,"name":"HIDROCORTISONA INY 100MG","cost":29.99,"price":60.0,"category":"Corticosteroides","stock":2,"minStock":3,"margin":50.0,"movements":[],"expiry":null},{"id":107,"name":"HIDROXIDO ALUMINIO/MAGNESIO SUSP (ALUMAG)","cost":26.21,"price":60.0,"category":"Gastroenterología","stock":3,"minStock":2,"margin":56.0,"movements":[],"expiry":null},{"id":108,"name":"HIDROXIZINA 10MG (HIDROXIN C/30)","cost":36.58,"price":80.0,"category":"Neurológico","stock":1,"minStock":1,"margin":54.0,"movements":[],"expiry":null},{"id":109,"name":"HIERRO DEXTRAN INY 100MG (SALUCOM C/3 AMP)","cost":71.55,"price":140.0,"category":"Vitaminas y suplementos","stock":4,"minStock":3,"margin":48.9,"movements":[],"expiry":null},{"id":110,"name":"HIOSCINA 10MG (BEADVANCE 10 TABS)","cost":16.65,"price":40.0,"category":"Gastroenterología","stock":0,"minStock":3,"margin":58.4,"movements":[],"expiry":null},{"id":111,"name":"HIOSCINA 10MG (BIOMESINA 10 TABS)","cost":16.0,"price":35.0,"category":"Gastroenterología","stock":4,"minStock":1,"margin":54.0,"movements":[],"expiry":null},{"id":112,"name":"HIOSCINA 10MG (PASMODIL-PFC 12 TABS)","cost":16.6,"price":40.0,"category":"Gastroenterología","stock":0,"minStock":3,"margin":58.5,"movements":[],"expiry":null},{"id":113,"name":"HIOSCINA/PARACETAMOL GOTAS (PRECICOL 20ML)","cost":42.2,"price":80.0,"category":"Gastroenterología","stock":2,"minStock":3,"margin":47.2,"movements":[],"expiry":null},{"id":114,"name":"HIPROMELOSA SOL OFTALMICA (AMSA)","cost":28.33,"price":70.0,"category":"Oftalmológicos","stock":0,"minStock":3,"margin":59.5,"movements":[],"expiry":null},{"id":115,"name":"IBUPROFENO 400MG (GELUBRIN 10 CAPS)","cost":20.0,"price":50.0,"category":"Analgésicos y antiinflamatorios","stock":2,"minStock":3,"margin":60.0,"movements":[],"expiry":null},{"id":116,"name":"IBUPROFENO 600MG (ALGIDOL 10 CAPS)","cost":28.02,"price":60.0,"category":"Analgésicos y antiinflamatorios","stock":0,"minStock":3,"margin":53.3,"movements":[],"expiry":null},{"id":117,"name":"IBUPROFENO 600MG (GELUBRIN 10 CAPS)","cost":23.87,"price":50.0,"category":"Analgésicos y antiinflamatorios","stock":4,"minStock":3,"margin":52.0,"movements":[],"expiry":null},{"id":118,"name":"IBUPROFENO SUSP 2G/100ML (DOLPRIN 120ML)","cost":27.28,"price":90.0,"category":"Analgésicos y antiinflamatorios","stock":2,"minStock":3,"margin":69.7,"movements":[],"expiry":null},{"id":119,"name":"IBUPROFENO PEDIATRICO 40MG/ML (MOTRIN 15ML)","cost":108.99,"price":140.0,"category":"Analgésicos y antiinflamatorios","stock":1,"minStock":3,"margin":22.2,"movements":[],"expiry":null},{"id":120,"name":"IBUPROFENO 400MG (AFLENO 10 TABS)","cost":14.82,"price":45.0,"category":"Analgésicos y antiinflamatorios","stock":0,"minStock":3,"margin":67.1,"movements":[],"expiry":null},{"id":121,"name":"IBUPROFENO 800MG (AFLENO 10 TABS)","cost":21.08,"price":70.0,"category":"Analgésicos y antiinflamatorios","stock":2,"minStock":3,"margin":69.9,"movements":[],"expiry":null},{"id":122,"name":"INDOMETACINA 25MG (INDANET 30 CAPS)","cost":17.82,"price":50.0,"category":"Analgésicos y antiinflamatorios","stock":4,"minStock":3,"margin":64.4,"movements":[],"expiry":null},{"id":123,"name":"JABON QUIRURGICO (ANTIBENZIL NF 100ML)","cost":26.0,"price":65.0,"category":"Insumos médicos","stock":2,"minStock":3,"margin":60.0,"movements":[],"expiry":null},{"id":124,"name":"KETOROLACO INY 30MG (PISA C/3 AMP)","cost":20.0,"price":60.0,"category":"Analgésicos y antiinflamatorios","stock":6,"minStock":3,"margin":66.7,"movements":[],"expiry":null},{"id":125,"name":"KETOROLACO INY 30MG (BIODO C/3)","cost":28.79,"price":70.0,"category":"Analgésicos y antiinflamatorios","stock":0,"minStock":3,"margin":58.9,"movements":[],"expiry":null},{"id":126,"name":"KETOROLACO INY 30MG (LAKSU C/3 SUANCA)","cost":13.01,"price":50.0,"category":"Analgésicos y antiinflamatorios","stock":0,"minStock":3,"margin":74.0,"movements":[],"expiry":null},{"id":127,"name":"KETOROLACO INY 30MG (VITALIS C/3)","cost":14.23,"price":50.0,"category":"Analgésicos y antiinflamatorios","stock":0,"minStock":3,"margin":71.5,"movements":[],"expiry":null},{"id":128,"name":"KETOROLACO 10MG TABS (KETROL 10)","cost":0.0,"price":40.0,"category":"Analgésicos y antiinflamatorios","stock":0,"minStock":3,"margin":0.0,"movements":[],"expiry":null},{"id":129,"name":"KETOROLACO 10MG (MAVIDOL C/10)","cost":10.76,"price":50.0,"category":"Analgésicos y antiinflamatorios","stock":3,"minStock":3,"margin":78.5,"movements":[],"expiry":null},{"id":130,"name":"KETOROLACO SL 30MG (MAVIDOL SL 4 TABS)","cost":10.87,"price":40.0,"category":"Analgésicos y antiinflamatorios","stock":1,"minStock":3,"margin":72.8,"movements":[],"expiry":null},{"id":131,"name":"KETOROLACO/TRAMADOL INY (MAVIDOL TR C/3 AMP)","cost":50.72,"price":40.0,"category":"Analgésicos y antiinflamatorios","stock":3,"minStock":3,"margin":-26.8,"movements":[],"expiry":null},{"id":132,"name":"LA FEMME CAPSULAS (PROGELA C/30)","cost":96.82,"price":180.0,"category":"Ginecológicos","stock":0,"minStock":3,"margin":46.2,"movements":[],"expiry":null},{"id":133,"name":"LACTOBACILLUS 150MG INFANTIL (LACTOPRAM C/20)","cost":28.0,"price":70.0,"category":"Gastroenterología","stock":2,"minStock":3,"margin":60.0,"movements":[],"expiry":null},{"id":134,"name":"LACTOBACILLUS 430MG (LACTOPRAM C/20)","cost":28.0,"price":70.0,"category":"Gastroenterología","stock":0,"minStock":3,"margin":60.0,"movements":[],"expiry":null},{"id":135,"name":"LACTULOSA JARABE 10G/15ML (OPPELVER C/125ML)","cost":55.9,"price":110.0,"category":"Gastroenterología","stock":1,"minStock":1,"margin":49.0,"movements":[],"expiry":null},{"id":136,"name":"LACTULOSA JARABE 66.7G (SUANCA C/129ML)","cost":63.69,"price":110.0,"category":"Gastroenterología","stock":0,"minStock":1,"margin":42.0,"movements":[],"expiry":null},{"id":137,"name":"LANSOPRAZOL 30MG (AMDORY C/14)","cost":27.84,"price":70.0,"category":"Gastroenterología","stock":0,"minStock":1,"margin":60.0,"movements":[],"expiry":null},{"id":138,"name":"LEVOCETIRIZINA 5MG (BOCETIX C/10)","cost":52.26,"price":110.0,"category":"Antihistamínicos","stock":0,"minStock":3,"margin":52.5,"movements":[],"expiry":null},{"id":139,"name":"LEVODROPROPIZINA JARABE (SUPRATEX C/120ML)","cost":47.0,"price":120.0,"category":"Respiratorio","stock":1,"minStock":3,"margin":60.8,"movements":[],"expiry":null},{"id":140,"name":"LEVOFLOXACINO 500MG (UNIQUIN C/7)","cost":22.87,"price":50.0,"category":"Antibióticos y antiinfecciosos","stock":1,"minStock":3,"margin":54.3,"movements":[],"expiry":null},{"id":141,"name":"LEVOFLOXACINO 750MG (CINA C/7)","cost":38.26,"price":80.0,"category":"Antibióticos y antiinfecciosos","stock":0,"minStock":3,"margin":52.2,"movements":[],"expiry":null},{"id":142,"name":"LEVOFLOXACINO 750MG (UNIQUIN C/7)","cost":0.0,"price":80.0,"category":"Antibióticos y antiinfecciosos","stock":0,"minStock":3,"margin":0.0,"movements":[],"expiry":null},{"id":143,"name":"LEVONORGESTREL 1.5MG (PRUDENCE)","cost":19.2,"price":40.0,"category":"Ginecológicos","stock":3,"minStock":3,"margin":52.0,"movements":[],"expiry":null},{"id":144,"name":"LEVOTIROXINA 100MCG (TEMPUS C/100)","cost":58.0,"price":140.0,"category":"Otros","stock":1,"minStock":3,"margin":58.6,"movements":[],"expiry":null},{"id":145,"name":"LIDOCAINA 5% UNGÜENTO (ALOHARMA 35G)","cost":26.65,"price":80.0,"category":"Analgésicos y antiinflamatorios","stock":1,"minStock":3,"margin":66.7,"movements":[],"expiry":null},{"id":146,"name":"LIDOCAINA/HIDROCORTISONA UNGÜENTO RECTAL (FASTERIX)","cost":32.85,"price":70.0,"category":"Gastroenterología","stock":2,"minStock":1,"margin":53.0,"movements":[],"expiry":null},{"id":147,"name":"LOPERAMIDA 2MG (EXCLEFIN 12 COMP)","cost":9.46,"price":30.0,"category":"Gastroenterología","stock":0,"minStock":3,"margin":68.5,"movements":[],"expiry":null},{"id":148,"name":"LOPERAMIDA 2MG (TARMIN 12 COMP)","cost":7.33,"price":30.0,"category":"Gastroenterología","stock":3,"minStock":1,"margin":76.0,"movements":[],"expiry":null},{"id":149,"name":"LORATADINA 10MG (HISTINA 20 TABS)","cost":11.48,"price":40.0,"category":"Antihistamínicos","stock":0,"minStock":3,"margin":71.3,"movements":[],"expiry":null},{"id":150,"name":"LORATADINA 10MG (LARITROL 20 TABS)","cost":13.0,"price":40.0,"category":"Antihistamínicos","stock":8,"minStock":3,"margin":68.0,"movements":[],"expiry":null},{"id":151,"name":"LORATADINA SUSP 1MG/ML (LARITROL 60ML)","cost":21.82,"price":70.0,"category":"Antihistamínicos","stock":1,"minStock":3,"margin":68.8,"movements":[],"expiry":null},{"id":152,"name":"LORATADINA/BETAMETASONA (ERISPAN COMPUESTO)","cost":20.94,"price":50.0,"category":"Antihistamínicos","stock":4,"minStock":3,"margin":58.0,"movements":[],"expiry":null},{"id":153,"name":"LORATADINA/FENILEFRINA ADULTO (LARITROL-D 120ML)","cost":16.0,"price":70.0,"category":"Antihistamínicos","stock":1,"minStock":3,"margin":77.1,"movements":[],"expiry":null},{"id":154,"name":"LORATADINA/FENILEFRINA INFANTIL (LARITROL-D 60ML)","cost":31.89,"price":70.0,"category":"Antihistamínicos","stock":1,"minStock":3,"margin":54.4,"movements":[],"expiry":null},{"id":155,"name":"LOSARTAN 100MG (ALDERAN C/15)","cost":24.0,"price":60.0,"category":"Cardiovascular","stock":2,"minStock":1,"margin":60.0,"movements":[],"expiry":null},{"id":156,"name":"LOSARTAN 50MG (ALDERAN C/30)","cost":24.65,"price":60.0,"category":"Cardiovascular","stock":2,"minStock":1,"margin":59.0,"movements":[],"expiry":null},{"id":157,"name":"LOSARTAN/HIDROCLOROTIAZIDA (MEDIGEN)","cost":22.18,"price":60.0,"category":"Cardiovascular","stock":0,"minStock":3,"margin":63.0,"movements":[],"expiry":null},{"id":158,"name":"LOSARTAN/HIDROCLOROTIAZIDA (SCHOEN)","cost":27.0,"price":70.0,"category":"Cardiovascular","stock":2,"minStock":3,"margin":61.4,"movements":[],"expiry":null},{"id":159,"name":"MELOXICAM 15MG (FLEXIVER C/10)","cost":10.34,"price":40.0,"category":"Analgésicos y antiinflamatorios","stock":1,"minStock":3,"margin":74.2,"movements":[],"expiry":null},{"id":160,"name":"METAMIZOL INY 1G/2ML (PIROMIL C/3 AMP)","cost":30.89,"price":70.0,"category":"Analgésicos y antiinflamatorios","stock":9,"minStock":3,"margin":55.9,"movements":[],"expiry":null},{"id":161,"name":"METAMIZOL SUSP ORAL 5G (NEOSEDAL 120ML)","cost":30.24,"price":60.0,"category":"Analgésicos y antiinflamatorios","stock":2,"minStock":3,"margin":49.6,"movements":[],"expiry":null},{"id":162,"name":"METAMIZOL 500MG (WESTEPIRON C/10)","cost":9.77,"price":40.0,"category":"Analgésicos y antiinflamatorios","stock":4,"minStock":1,"margin":76.0,"movements":[],"expiry":null},{"id":163,"name":"METAMIZOL/BUTILHIOSCINA (BUSCONET C/10)","cost":32.21,"price":90.0,"category":"Analgésicos y antiinflamatorios","stock":1,"minStock":1,"margin":64.0,"movements":[],"expiry":null},{"id":164,"name":"METAMIZOL/HIOSCINA INY 5ML (BUSCONET 1 INY)","cost":35.63,"price":90.0,"category":"Analgésicos y antiinflamatorios","stock":3,"minStock":3,"margin":60.4,"movements":[],"expiry":null},{"id":165,"name":"METFORMINA 500MG (DINAMEL C/30)","cost":23.62,"price":50.0,"category":"Diabetes","stock":4,"minStock":1,"margin":53.0,"movements":[],"expiry":null},{"id":166,"name":"METFORMINA 850MG (ALPHARMA)","cost":18.12,"price":65.0,"category":"Diabetes","stock":0,"minStock":3,"margin":72.1,"movements":[],"expiry":null},{"id":167,"name":"METOCARBAMOL/IBUPROFENO 350MG/200MG (ML-PRIM C/12)","cost":48.61,"price":100.0,"category":"Analgésicos y antiinflamatorios","stock":0,"minStock":1,"margin":51.0,"movements":[],"expiry":null},{"id":168,"name":"METOCARBAMOL/IBUPROFENO 300MG/300MG (CARBAGER PLUS C/10)","cost":63.82,"price":110.0,"category":"Analgésicos y antiinflamatorios","stock":0,"minStock":3,"margin":42.0,"movements":[],"expiry":null},{"id":169,"name":"METOCLOPRAMIDA INY 10MG (C/6)","cost":21.93,"price":50.0,"category":"Gastroenterología","stock":3,"minStock":3,"margin":56.1,"movements":[],"expiry":null},{"id":170,"name":"METOCLOPRAMIDA GOTAS 400MG/20ML (CIRULAN)","cost":16.18,"price":40.0,"category":"Gastroenterología","stock":0,"minStock":3,"margin":60.0,"movements":[],"expiry":null},{"id":171,"name":"METOCLOPRAMIDA 10MG (CONYSMIN C/20)","cost":10.0,"price":45.0,"category":"Gastroenterología","stock":2,"minStock":1,"margin":78.0,"movements":[],"expiry":null},{"id":172,"name":"METOCLOPRAMIDA 10MG (DIRPASIO 20)","cost":9.11,"price":40.0,"category":"Gastroenterología","stock":0,"minStock":3,"margin":77.2,"movements":[],"expiry":null},{"id":173,"name":"METRONIDAZOL SUSP PEDIATRICA (METROSON C/120ML)","cost":23.34,"price":60.0,"category":"Antibióticos y antiinfecciosos","stock":2,"minStock":1,"margin":61.0,"movements":[],"expiry":null},{"id":174,"name":"METRONIDAZOL 500MG (LAMBLIT C/30)","cost":21.59,"price":70.0,"category":"Antibióticos y antiinfecciosos","stock":4,"minStock":1,"margin":69.0,"movements":[],"expiry":null},{"id":175,"name":"MOMETASONA SPRAY NASAL (DIMUXON C/140 DOSIS)","cost":162.64,"price":230.0,"category":"Respiratorio","stock":0,"minStock":3,"margin":29.3,"movements":[],"expiry":null},{"id":176,"name":"MONTELUKAST 10MG (VALTROVER 20 COMP)","cost":40.69,"price":100.0,"category":"Respiratorio","stock":2,"minStock":1,"margin":59.0,"movements":[],"expiry":null},{"id":177,"name":"MONTELUKAST 5MG (VALTROVER M C/20)","cost":51.61,"price":110.0,"category":"Respiratorio","stock":0,"minStock":1,"margin":53.0,"movements":[],"expiry":null},{"id":178,"name":"MONTELUKAST SOBRES 4MG (VALTROVER G C/10)","cost":72.76,"price":150.0,"category":"Respiratorio","stock":2,"minStock":1,"margin":51.0,"movements":[],"expiry":null},{"id":179,"name":"NAFAZOLINA SOL OFTALMICA (FAZOLIN)","cost":23.15,"price":45.0,"category":"Oftalmológicos","stock":2,"minStock":3,"margin":48.6,"movements":[],"expiry":null},{"id":180,"name":"NAPROXENO/PARACETAMOL SUSP (BRUNADOL C/100ML)","cost":38.95,"price":90.0,"category":"Analgésicos y antiinflamatorios","stock":1,"minStock":3,"margin":56.7,"movements":[],"expiry":null},{"id":181,"name":"NEOMICINA/POLIMIXINA/GRAMICIDINA SOL OFTAL (EXAKTA 15ML)","cost":41.3,"price":90.0,"category":"Oftalmológicos","stock":2,"minStock":1,"margin":54.0,"movements":[],"expiry":null},{"id":182,"name":"NISTATINA SUSP ORAL (MIBESANS)","cost":40.0,"price":100.0,"category":"Antibióticos y antiinfecciosos","stock":1,"minStock":3,"margin":60.0,"movements":[],"expiry":null},{"id":183,"name":"NITROFURANTOINA 100MG (SURONIT 12 TABS)","cost":31.67,"price":70.0,"category":"Antibióticos y antiinfecciosos","stock":0,"minStock":3,"margin":54.8,"movements":[],"expiry":null},{"id":184,"name":"OMEPRAZOL 20MG (AVIVIA C/14)","cost":12.53,"price":50.0,"category":"Gastroenterología","stock":6,"minStock":3,"margin":75.0,"movements":[],"expiry":null},{"id":185,"name":"ONDANSETRON INY 8MG (NAVONTEC C/3 AMP)","cost":67.1,"price":130.0,"category":"Gastroenterología","stock":3,"minStock":3,"margin":48.4,"movements":[],"expiry":null},{"id":186,"name":"ONDANSETRON INY 8MG/4ML (HT-BLOC C/3 AMP)","cost":69.1,"price":140.0,"category":"Gastroenterología","stock":3,"minStock":3,"margin":50.6,"movements":[],"expiry":null},{"id":187,"name":"OXIDO DE ZINC PASTA (ROSATIL)","cost":0.0,"price":30.0,"category":"Dermatológicos","stock":0,"minStock":3,"margin":0.0,"movements":[],"expiry":null},{"id":188,"name":"OXIDO DE ZINC PASTA 25% (XIMAFHIT)","cost":19.6,"price":40.0,"category":"Dermatológicos","stock":3,"minStock":1,"margin":51.0,"movements":[],"expiry":null},{"id":189,"name":"PARACETAMOL 500MG (PORTEM)","cost":7.42,"price":35.0,"category":"Analgésicos y antiinflamatorios","stock":3,"minStock":3,"margin":78.8,"movements":[],"expiry":null},{"id":190,"name":"PARACETAMOL SOLUCION ORAL (TEMPIRE C/30ML)","cost":27.81,"price":65.0,"category":"Analgésicos y antiinflamatorios","stock":3,"minStock":3,"margin":57.2,"movements":[],"expiry":null},{"id":191,"name":"PARACETAMOL/IBUPROFENO 325MG/200MG (DUALGOS C/20)","cost":35.72,"price":55.0,"category":"Analgésicos y antiinflamatorios","stock":2,"minStock":3,"margin":35.1,"movements":[],"expiry":null},{"id":192,"name":"PARACETAMOL/TRAMADOL 325MG/37.5MG (ROMINSOL C/20)","cost":38.14,"price":90.0,"category":"Analgésicos y antiinflamatorios","stock":1,"minStock":3,"margin":57.6,"movements":[],"expiry":null},{"id":193,"name":"PINAVERIO/DIMETICONA (NESAJAR)","cost":119.28,"price":200.0,"category":"Gastroenterología","stock":0,"minStock":3,"margin":40.4,"movements":[],"expiry":null},{"id":194,"name":"POLIVITAMINAS (BIMIN C/30)","cost":48.0,"price":110.0,"category":"Vitaminas y suplementos","stock":0,"minStock":1,"margin":56.0,"movements":[],"expiry":null},{"id":195,"name":"PRAVASTATINA 10MG (STRIACOL C/30)","cost":16.56,"price":70.0,"category":"Cardiovascular","stock":1,"minStock":3,"margin":76.3,"movements":[],"expiry":null},{"id":196,"name":"PROBIOTICO Y PREBIOTICO GOMITAS (GOMORE KIDS)","cost":73.94,"price":140.0,"category":"Vitaminas y suplementos","stock":1,"minStock":3,"margin":47.2,"movements":[],"expiry":null},{"id":197,"name":"PRUEBA RAPIDA EMBARAZO (MEDITEST)","cost":19.91,"price":50.0,"category":"Diagnóstico","stock":0,"minStock":1,"margin":60.0,"movements":[],"expiry":null},{"id":198,"name":"PUNZOCAT CALIBRE .22 (VIZCARRA AZUL)","cost":12.0,"price":30.0,"category":"Insumos médicos","stock":13,"minStock":3,"margin":60.0,"movements":[],"expiry":null},{"id":199,"name":"QUINFAMIDA/ALBENDAZOL SUSP PEDIATRICO (FARMIVER)","cost":25.08,"price":70.0,"category":"Antiparasitarios","stock":3,"minStock":3,"margin":64.2,"movements":[],"expiry":null},{"id":200,"name":"QUINFAMIDA/ALBENDAZOL SUSP INFANTIL (FARMIVER)","cost":26.29,"price":70.0,"category":"Antiparasitarios","stock":1,"minStock":1,"margin":62.0,"movements":[],"expiry":null},{"id":201,"name":"QUINFAMIDA/ALBENDAZOL TABS 150MG (FARMIVER C/2)","cost":27.0,"price":80.0,"category":"Antiparasitarios","stock":4,"minStock":1,"margin":66.0,"movements":[],"expiry":"MARZO 2028"},{"id":202,"name":"QUINFAMIDA/ALBENDAZOL TABS (LO-BRUQUIN 2 TABS)","cost":26.72,"price":70.0,"category":"Antiparasitarios","stock":0,"minStock":3,"margin":61.8,"movements":[],"expiry":null},{"id":203,"name":"SANITIZANTE CON EUCALIPTO (DASHA 500ML)","cost":60.0,"price":100.0,"category":"Insumos médicos","stock":0,"minStock":3,"margin":40.0,"movements":[],"expiry":null},{"id":204,"name":"SENOSIDOS A-B 8.6MG (KENER 20 TABS)","cost":9.86,"price":40.0,"category":"Gastroenterología","stock":1,"minStock":3,"margin":75.4,"movements":[],"expiry":null},{"id":205,"name":"SERTRALINA 50MG (ALUPREX C/20)","cost":24.6,"price":70.0,"category":"Neurológico","stock":2,"minStock":3,"margin":64.9,"movements":[],"expiry":null},{"id":206,"name":"SERTRALINA 50MG (TRAKOS C/14)","cost":22.24,"price":60.0,"category":"Neurológico","stock":0,"minStock":3,"margin":62.9,"movements":[],"expiry":null},{"id":207,"name":"SILYBUM MARIANUM 150MG (BYRMO C/20)","cost":71.98,"price":130.0,"category":"Hepatológicos","stock":0,"minStock":1,"margin":45.0,"movements":[],"expiry":null},{"id":208,"name":"SULFAMETOXAZOL/TRIMETOPRIMA 400MG/80MG (BACTIVER C/20)","cost":15.61,"price":50.0,"category":"Antibióticos y antiinfecciosos","stock":1,"minStock":3,"margin":68.8,"movements":[],"expiry":null},{"id":209,"name":"TADALAFIL 20MG (STAMINA C/4)","cost":26.59,"price":150.0,"category":"Urológicos","stock":2,"minStock":1,"margin":82.0,"movements":[],"expiry":null},{"id":210,"name":"TAMSULOSINA 0.4MG (ALPHALOK C/20)","cost":40.28,"price":140.0,"category":"Urológicos","stock":0,"minStock":3,"margin":71.2,"movements":[],"expiry":null},{"id":211,"name":"TAMSULOSINA 0.4MG (AMZUVAG C/20)","cost":41.18,"price":140.0,"category":"Urológicos","stock":0,"minStock":3,"margin":70.6,"movements":[],"expiry":null},{"id":212,"name":"TAMSULOSINA 0.4MG (FEDPROS)","cost":53.63,"price":140.0,"category":"Urológicos","stock":0,"minStock":3,"margin":61.7,"movements":[],"expiry":null},{"id":213,"name":"TERBINAFINA CREMA (ERBITRAX 30G)","cost":34.33,"price":100.0,"category":"Dermatológicos","stock":0,"minStock":2,"margin":66.0,"movements":[],"expiry":null},{"id":214,"name":"TERBINAFINA SOLUCION 1% (ALPHARMA 30ML)","cost":42.0,"price":100.0,"category":"Dermatológicos","stock":0,"minStock":1,"margin":58.0,"movements":[],"expiry":null},{"id":215,"name":"TERBINAFINA 250MG (ERBITRAX 28 TABS)","cost":129.12,"price":260.0,"category":"Dermatológicos","stock":0,"minStock":1,"margin":50.0,"movements":[],"expiry":null},{"id":216,"name":"TERMOMETRO PUNTA FLEXIBLE (MICROLIFE)","cost":87.07,"price":210.0,"category":"Insumos médicos","stock":0,"minStock":3,"margin":58.5,"movements":[],"expiry":null},{"id":217,"name":"TERMOMETRO DIGITAL FLEXIBLE","cost":33.77,"price":100.0,"category":"Insumos médicos","stock":0,"minStock":3,"margin":66.2,"movements":[],"expiry":null},{"id":218,"name":"TOALLA ALCOHOLADA C/100","cost":50.0,"price":110.0,"category":"Insumos médicos","stock":4,"minStock":3,"margin":54.5,"movements":[],"expiry":null},{"id":219,"name":"TRIMEBUTINA 200MG (CINEPRAC 20 TABS)","cost":44.85,"price":100.0,"category":"Gastroenterología","stock":0,"minStock":1,"margin":55.0,"movements":[],"expiry":null},{"id":220,"name":"TRIMEBUTINA 200MG (ESPABION C/40)","cost":117.42,"price":200.0,"category":"Gastroenterología","stock":0,"minStock":3,"margin":41.3,"movements":[],"expiry":null},{"id":221,"name":"TRIMEBUTINA/SIMETICONA SOL ORAL (MAVER 26ML)","cost":88.86,"price":170.0,"category":"Gastroenterología","stock":0,"minStock":3,"margin":47.7,"movements":[],"expiry":null},{"id":222,"name":"VALERIANA/PASSIFLORA 100MG/60MG (TAFLAVIX C/40)","cost":90.81,"price":180.0,"category":"Neurológico","stock":1,"minStock":1,"margin":50.0,"movements":[],"expiry":null},{"id":223,"name":"VITAMINA C/D3/ZINC GOMITAS (GOMORE KIDS)","cost":73.94,"price":150.0,"category":"Vitaminas y suplementos","stock":1,"minStock":3,"margin":50.7,"movements":[],"expiry":null},{"id":224,"name":"VITAMINA C/ZINC/BETA GLUCANO GOMITAS (GOMORE KIDS)","cost":73.62,"price":140.0,"category":"Vitaminas y suplementos","stock":0,"minStock":3,"margin":47.4,"movements":[],"expiry":null},{"id":225,"name":"VITAMINA C/ZINC EFERVESCENTE (SELTZ C/20)","cost":97.44,"price":190.0,"category":"Vitaminas y suplementos","stock":0,"minStock":3,"margin":48.7,"movements":[],"expiry":null},{"id":226,"name":"VITAMINA E 400MG (REVITARE C/30)","cost":40.73,"price":80.0,"category":"Vitaminas y suplementos","stock":0,"minStock":1,"margin":49.0,"movements":[],"expiry":null},{"id":227,"name":"ALOE VERA GEL FACIAL HIDRATANTE  C/ ÁCIDO HIALURONICO 200G","cost":65.0,"price":120.0,"category":"Dermatológicos","stock":2,"minStock":1,"margin":46.0,"movements":[],"expiry":null},{"id":228,"name":"METFORMINA TABLETAS 850MG (GLUNOVAG C/30 TABS)","cost":0.0,"price":60.0,"category":"Diabetes","stock":3,"minStock":1,"margin":0.0,"movements":[],"expiry":null},{"id":229,"name":"ACEITE DE ALMENDRAS DULCES E HIDROXIDO DE CALCIO (ADN-DERM CREMA 240 ML)","cost":57.0,"price":140.0,"category":"Dermatológicos","stock":1,"minStock":1,"margin":59.0,"movements":[],"expiry":null},{"id":230,"name":"AMOXICILINA/ ACIDO CLAVULANICO SUSPENSION ORAL 250MG/62.5MG/5ML (CLAMOXÍN C/60ML)","cost":40.0,"price":110.0,"category":"Antibióticos y antiinfecciosos","stock":2,"minStock":1,"margin":64.0,"movements":[],"expiry":"OCTUBRE 2027"},{"id":231,"name":"CEFTRIAXONA INY 1G/3.5ML (TRIAXONA IV)","cost":60.0,"price":99.0,"category":"Antibióticos y antiinfecciosos","stock":1,"minStock":1,"margin":39.0,"movements":[],"expiry":null},{"id":232,"name":"VITAFUSIN SOL. INYECTABLE IV","cost":267.0,"price":350.0,"category":"Analgésicos y antiinflamatorios","stock":17,"minStock":1,"margin":24.0,"movements":[],"expiry":null},{"id":233,"name":"FOTOSUN UV 100 - PROTECTOR SOLAR FPS 50+","cost":60.0,"price":180.0,"category":"Analgésicos y antiinflamatorios","stock":1,"minStock":1,"margin":67.0,"movements":[],"expiry":null},{"id":234,"name":"COLÁGENO FACIAL SPRAY C/AGUA DE ROSAS Y TÉ VERDE","cost":33.0,"price":80.0,"category":"Analgésicos y antiinflamatorios","stock":1,"minStock":1,"margin":59.0,"movements":[],"expiry":null},{"id":235,"name":"ATORVASTATINA TABLETAS 20MG (ODIVITOR C/20 TABS)","cost":25.0,"price":80.0,"category":"Analgésicos y antiinflamatorios","stock":4,"minStock":1,"margin":69.0,"movements":[],"expiry":null},{"id":236,"name":"CLINDAMICINA CÁPSULAS 300MG (FOSHLENN C/16 CAPS)","cost":36.0,"price":90.0,"category":"Antibióticos y antiinfecciosos","stock":3,"minStock":1,"margin":60.0,"movements":[],"expiry":null},{"id":237,"name":"PIDOTIMOD SOLUCIÓN ORAL 400MG/7ML (MAVER C/10 FRASCOS)","cost":240.0,"price":410.0,"category":"Vitaminas y suplementos","stock":0,"minStock":1,"margin":41.0,"movements":[],"expiry":null},{"id":238,"name":"TERBINAFINA CREMA (ERBITRAX 15 G)","cost":25.0,"price":75.0,"category":"Dermatológicos","stock":0,"minStock":1,"margin":67.0,"movements":[],"expiry":null},{"id":239,"name":"HIDROCORTISONA CREMA 1% (COLLICORT C/60G)","cost":42.0,"price":99.0,"category":"Dermatológicos","stock":1,"minStock":1,"margin":58.0,"movements":[],"expiry":null},{"id":240,"name":"CLORURO DE SODIO SPRAY NASAL 6.5MG/ML (NASSAL C/30ML)","cost":24.0,"price":60.0,"category":"Analgésicos y antiinflamatorios","stock":2,"minStock":1,"margin":60.0,"movements":[],"expiry":null}];
+
+
+// ── STATE ──
+let products = [];
+let movements = [];
+const HISTORICAL_SALES = [{"id":900001,"productId":179,"productName":"NAFAZOLINA SOL OFTALMICA (FAZOLIN)","type":"sale","qty":1,"price":45.0,"total":45.0,"date":"2026-08-18T00:00:00","dateLabel":"18/08/2026","historical":true},{"id":900002,"productId":130,"productName":"KETOROLACO SL 30MG (MAVIDOL SL 4 TABS)","type":"sale","qty":1,"price":40.0,"total":40.0,"date":"2026-08-05T00:00:00","dateLabel":"05/08/2026","historical":true},{"id":900003,"productId":130,"productName":"KETOROLACO SL 30MG (MAVIDOL SL 4 TABS)","type":"sale","qty":1,"price":40.0,"total":40.0,"date":"2026-08-05T00:00:00","dateLabel":"05/08/2026","historical":true},{"id":900004,"productId":183,"productName":"NITROFURANTOINA 100MG (SURONIT 12 TABS)","type":"sale","qty":2,"price":70.0,"total":140.0,"date":"2026-07-28T00:00:00","dateLabel":"28/07/2026","historical":true},{"id":900005,"productId":114,"productName":"HIPROMELOSA SOL OFTALMICA (AMSA)","type":"sale","qty":2,"price":70.0,"total":140.0,"date":"2026-07-28T00:00:00","dateLabel":"28/07/2026","historical":true},{"id":900006,"productId":114,"productName":"HIPROMELOSA SOL OFTALMICA (AMSA)","type":"sale","qty":2,"price":70.0,"total":140.0,"date":"2026-07-28T00:00:00","dateLabel":"28/07/2026","historical":true},{"id":900007,"productId":95,"productName":"FLUCONAZOL 150MG (DOFIL C/1)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-07-28T00:00:00","dateLabel":"28/07/2026","historical":true},{"id":900008,"productId":38,"productName":"CEFALEXINA 500MG (CEFALVER 20 CAPS)","type":"sale","qty":1,"price":110.0,"total":110.0,"date":"2026-07-28T00:00:00","dateLabel":"28/07/2026","historical":true},{"id":900009,"productId":22,"productName":"ARNICA GLOBULOS (MONTANA C/150)","type":"sale","qty":1,"price":80.0,"total":80.0,"date":"2026-07-28T00:00:00","dateLabel":"28/07/2026","historical":true},{"id":900010,"productId":19,"productName":"AMLODIPINO 5MG (PRESLOPIN C/30)","type":"sale","qty":2,"price":40.0,"total":80.0,"date":"2026-07-28T00:00:00","dateLabel":"28/07/2026","historical":true},{"id":900011,"productId":11,"productName":"ACIDO NALIDIXCO/FENAZOPIRIDINA (AZOGEN 20 TABS)","type":"sale","qty":1,"price":170.0,"total":170.0,"date":"2026-07-28T00:00:00","dateLabel":"28/07/2026","historical":true},{"id":900012,"productId":1,"productName":"ACEITE DE COCO 55ML","type":"sale","qty":1,"price":25.0,"total":25.0,"date":"2026-07-28T00:00:00","dateLabel":"28/07/2026","historical":true},{"id":900013,"productId":197,"productName":"PRUEBA RAPIDA EMBARAZO (MEDITEST)","type":"sale","qty":2,"price":50.0,"total":100.0,"date":"2026-07-27T00:00:00","dateLabel":"27/07/2026","historical":true},{"id":900014,"productId":137,"productName":"LANSOPRAZOL 30MG (AMDORY C/14)","type":"sale","qty":1,"price":70.0,"total":70.0,"date":"2026-07-27T00:00:00","dateLabel":"27/07/2026","historical":true},{"id":900015,"productId":184,"productName":"OMEPRAZOL 20MG (AVIVIA C/14)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-07-27T00:00:00","dateLabel":"27/07/2026","historical":true},{"id":900016,"productId":184,"productName":"OMEPRAZOL 20MG (AVIVIA C/14)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-07-27T00:00:00","dateLabel":"27/07/2026","historical":true},{"id":900017,"productId":51,"productName":"CLIOQUINOL CREMA 3MG (LASAR)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-07-26T00:00:00","dateLabel":"26/07/2026","historical":true},{"id":900018,"productId":184,"productName":"OMEPRAZOL 20MG (AVIVIA C/14)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-07-26T00:00:00","dateLabel":"26/07/2026","historical":true},{"id":900019,"productId":212,"productName":"TAMSULOSINA 0.4MG (FEDPROS)","type":"sale","qty":1,"price":140.0,"total":140.0,"date":"2026-07-24T00:00:00","dateLabel":"24/07/2026","historical":true},{"id":900020,"productId":32,"productName":"BETAMETASONA INY 8MG (ERISPAN)","type":"sale","qty":1,"price":80.0,"total":80.0,"date":"2026-07-23T00:00:00","dateLabel":"23/07/2026","historical":true},{"id":900021,"productId":117,"productName":"IBUPROFENO 600MG (GELUBRIN 10 CAPS)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-07-23T00:00:00","dateLabel":"23/07/2026","historical":true},{"id":900022,"productId":31,"productName":"BETAHISTINA 24MG (BITENVER C/30)","type":"sale","qty":1,"price":160.0,"total":160.0,"date":"2026-07-23T00:00:00","dateLabel":"23/07/2026","historical":true},{"id":900023,"productId":31,"productName":"BETAHISTINA 24MG (BITENVER C/30)","type":"sale","qty":1,"price":160.0,"total":160.0,"date":"2026-07-23T00:00:00","dateLabel":"23/07/2026","historical":true},{"id":900024,"productId":184,"productName":"OMEPRAZOL 20MG (AVIVIA C/14)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-07-20T00:00:00","dateLabel":"20/07/2026","historical":true},{"id":900025,"productId":219,"productName":"TRIMEBUTINA 200MG (CINEPRAC 20 TABS)","type":"sale","qty":1,"price":100.0,"total":100.0,"date":"2026-07-20T00:00:00","dateLabel":"20/07/2026","historical":true},{"id":900026,"productId":81,"productName":"DIOSMINA/HESPERIDINA 450MG/50MG (FLAUSIVER C/20)","type":"sale","qty":2,"price":150.0,"total":300.0,"date":"2026-07-20T00:00:00","dateLabel":"20/07/2026","historical":true},{"id":900027,"productId":51,"productName":"CLIOQUINOL CREMA 3MG (LASAR)","type":"sale","qty":5,"price":50.0,"total":250.0,"date":"2026-07-20T00:00:00","dateLabel":"20/07/2026","historical":true},{"id":900028,"productId":51,"productName":"CLIOQUINOL CREMA 3MG (LASAR)","type":"sale","qty":5,"price":50.0,"total":250.0,"date":"2026-07-20T00:00:00","dateLabel":"20/07/2026","historical":true},{"id":900029,"productId":238,"productName":"TERBINAFINA CREMA (ERBITRAX 15 G)","type":"sale","qty":2,"price":75.0,"total":150.0,"date":"2026-07-20T00:00:00","dateLabel":"20/07/2026","historical":true},{"id":900030,"productId":215,"productName":"TERBINAFINA 250MG (ERBITRAX 28 TABS)","type":"sale","qty":2,"price":260.0,"total":520.0,"date":"2026-07-20T00:00:00","dateLabel":"20/07/2026","historical":true},{"id":900031,"productId":214,"productName":"TERBINAFINA SOLUCION 1% (ALPHARMA 30ML)","type":"sale","qty":4,"price":100.0,"total":400.0,"date":"2026-07-20T00:00:00","dateLabel":"20/07/2026","historical":true},{"id":900032,"productId":213,"productName":"TERBINAFINA CREMA (ERBITRAX 30G)","type":"sale","qty":3,"price":100.0,"total":300.0,"date":"2026-07-20T00:00:00","dateLabel":"20/07/2026","historical":true},{"id":900033,"productId":13,"productName":"ALCOHOL ROJO 500ML","type":"sale","qty":2,"price":40.0,"total":80.0,"date":"2026-07-20T00:00:00","dateLabel":"20/07/2026","historical":true},{"id":900034,"productId":222,"productName":"VALERIANA/PASSIFLORA 100MG/60MG (TAFLAVIX C/40)","type":"sale","qty":1,"price":180.0,"total":180.0,"date":"2026-07-09T00:00:00","dateLabel":"09/07/2026","historical":true},{"id":900035,"productId":134,"productName":"LACTOBACILLUS 430MG (LACTOPRAM C/20)","type":"sale","qty":2,"price":70.0,"total":140.0,"date":"2026-06-29T00:00:00","dateLabel":"29/06/2026","historical":true},{"id":900036,"productId":107,"productName":"HIDROXIDO ALUMINIO/MAGNESIO SUSP (ALUMAG)","type":"sale","qty":1,"price":60.0,"total":60.0,"date":"2026-06-29T00:00:00","dateLabel":"29/06/2026","historical":true},{"id":900037,"productId":137,"productName":"LANSOPRAZOL 30MG (AMDORY C/14)","type":"sale","qty":1,"price":70.0,"total":70.0,"date":"2026-06-29T00:00:00","dateLabel":"29/06/2026","historical":true},{"id":900038,"productId":32,"productName":"BETAMETASONA INY 8MG (ERISPAN)","type":"sale","qty":1,"price":80.0,"total":80.0,"date":"2026-06-27T00:00:00","dateLabel":"27/06/2026","historical":true},{"id":900039,"productId":184,"productName":"OMEPRAZOL 20MG (AVIVIA C/14)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-06-27T00:00:00","dateLabel":"27/06/2026","historical":true},{"id":900040,"productId":167,"productName":"METOCARBAMOL/IBUPROFENO 350MG/200MG (ML-PRIM C/12)","type":"sale","qty":2,"price":100.0,"total":200.0,"date":"2026-06-27T00:00:00","dateLabel":"27/06/2026","historical":true},{"id":900041,"productId":60,"productName":"COMPLEJO B/DEXAMETASONA INY (TRIBEDOCE DX 3 AMP)","type":"sale","qty":1,"price":120.0,"total":120.0,"date":"2026-06-27T00:00:00","dateLabel":"27/06/2026","historical":true},{"id":900042,"productId":98,"productName":"GABAPENTINA 300MG (WERMY)","type":"sale","qty":1,"price":120.0,"total":120.0,"date":"2026-06-27T00:00:00","dateLabel":"27/06/2026","historical":true},{"id":900043,"productId":107,"productName":"HIDROXIDO ALUMINIO/MAGNESIO SUSP (ALUMAG)","type":"sale","qty":1,"price":60.0,"total":60.0,"date":"2026-06-27T00:00:00","dateLabel":"27/06/2026","historical":true},{"id":900044,"productId":98,"productName":"GABAPENTINA 300MG (WERMY)","type":"sale","qty":1,"price":120.0,"total":120.0,"date":"2026-06-27T00:00:00","dateLabel":"27/06/2026","historical":true},{"id":900045,"productId":115,"productName":"IBUPROFENO 400MG (GELUBRIN 10 CAPS)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-06-27T00:00:00","dateLabel":"27/06/2026","historical":true},{"id":900046,"productId":194,"productName":"POLIVITAMINAS (BIMIN C/30)","type":"sale","qty":2,"price":110.0,"total":220.0,"date":"2026-06-27T00:00:00","dateLabel":"27/06/2026","historical":true},{"id":900047,"productId":20,"productName":"AMOXICILINA/CLAVULANICO TABS 500MG (CLAMOXIN 10 TABS)","type":"sale","qty":1,"price":110.0,"total":110.0,"date":"2026-06-27T00:00:00","dateLabel":"27/06/2026","historical":true},{"id":900048,"productId":177,"productName":"MONTELUKAST 5MG (VALTROVER M C/20)","type":"sale","qty":2,"price":110.0,"total":220.0,"date":"2026-06-27T00:00:00","dateLabel":"27/06/2026","historical":true},{"id":900049,"productId":176,"productName":"MONTELUKAST 10MG (VALTROVER 20 COMP)","type":"sale","qty":1,"price":100.0,"total":100.0,"date":"2026-06-27T00:00:00","dateLabel":"27/06/2026","historical":true},{"id":900050,"productId":53,"productName":"CLORURO CETILPIRIDINIO/BENZOCAINA (TROCICLETAS B C/10)","type":"sale","qty":1,"price":70.0,"total":70.0,"date":"2026-06-27T00:00:00","dateLabel":"27/06/2026","historical":true},{"id":900051,"productId":194,"productName":"POLIVITAMINAS (BIMIN C/30)","type":"sale","qty":2,"price":110.0,"total":220.0,"date":"2026-06-26T00:00:00","dateLabel":"26/06/2026","historical":true},{"id":900052,"productId":163,"productName":"METAMIZOL/BUTILHIOSCINA (BUSCONET C/10)","type":"sale","qty":1,"price":90.0,"total":90.0,"date":"2026-06-26T00:00:00","dateLabel":"26/06/2026","historical":true},{"id":900053,"productId":114,"productName":"HIPROMELOSA SOL OFTALMICA (AMSA)","type":"sale","qty":1,"price":70.0,"total":70.0,"date":"2026-06-26T00:00:00","dateLabel":"26/06/2026","historical":true},{"id":900054,"productId":40,"productName":"CEFOTAXIMA INY 1G/4ML (AMSA)","type":"sale","qty":3,"price":70.0,"total":210.0,"date":"2026-06-26T00:00:00","dateLabel":"26/06/2026","historical":true},{"id":900055,"productId":38,"productName":"CEFALEXINA 500MG (CEFALVER 20 CAPS)","type":"sale","qty":1,"price":110.0,"total":110.0,"date":"2026-06-26T00:00:00","dateLabel":"26/06/2026","historical":true},{"id":900056,"productId":212,"productName":"TAMSULOSINA 0.4MG (FEDPROS)","type":"sale","qty":1,"price":140.0,"total":140.0,"date":"2026-06-24T00:00:00","dateLabel":"24/06/2026","historical":true},{"id":900057,"productId":107,"productName":"HIDROXIDO ALUMINIO/MAGNESIO SUSP (ALUMAG)","type":"sale","qty":1,"price":60.0,"total":60.0,"date":"2026-06-24T00:00:00","dateLabel":"24/06/2026","historical":true},{"id":900058,"productId":38,"productName":"CEFALEXINA 500MG (CEFALVER 20 CAPS)","type":"sale","qty":1,"price":110.0,"total":110.0,"date":"2026-06-24T00:00:00","dateLabel":"24/06/2026","historical":true},{"id":900059,"productId":11,"productName":"ACIDO NALIDIXCO/FENAZOPIRIDINA (AZOGEN 20 TABS)","type":"sale","qty":1,"price":170.0,"total":170.0,"date":"2026-06-24T00:00:00","dateLabel":"24/06/2026","historical":true},{"id":900060,"productId":98,"productName":"GABAPENTINA 300MG (WERMY)","type":"sale","qty":1,"price":120.0,"total":120.0,"date":"2026-06-23T00:00:00","dateLabel":"23/06/2026","historical":true},{"id":900061,"productId":38,"productName":"CEFALEXINA 500MG (CEFALVER 20 CAPS)","type":"sale","qty":1,"price":110.0,"total":110.0,"date":"2026-06-22T00:00:00","dateLabel":"22/06/2026","historical":true},{"id":900062,"productId":129,"productName":"KETOROLACO 10MG (MAVIDOL C/10)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-06-22T00:00:00","dateLabel":"22/06/2026","historical":true},{"id":900063,"productId":29,"productName":"BENCIDAMINA ENJUAGUE (MARACINA 360ML)","type":"sale","qty":1,"price":110.0,"total":110.0,"date":"2026-06-22T00:00:00","dateLabel":"22/06/2026","historical":true},{"id":900064,"productId":117,"productName":"IBUPROFENO 600MG (GELUBRIN 10 CAPS)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-06-22T00:00:00","dateLabel":"22/06/2026","historical":true},{"id":900065,"productId":28,"productName":"BENCIDAMINA CON ATOMIZADOR (MARACINA)","type":"sale","qty":1,"price":80.0,"total":80.0,"date":"2026-06-22T00:00:00","dateLabel":"22/06/2026","historical":true},{"id":900066,"productId":152,"productName":"LORATADINA/BETAMETASONA (ERISPAN COMPUESTO)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-06-22T00:00:00","dateLabel":"22/06/2026","historical":true},{"id":900067,"productId":189,"productName":"PARACETAMOL 500MG (PORTEM)","type":"sale","qty":1,"price":35.0,"total":35.0,"date":"2026-06-22T00:00:00","dateLabel":"22/06/2026","historical":true},{"id":900068,"productId":184,"productName":"OMEPRAZOL 20MG (AVIVIA C/14)","type":"sale","qty":3,"price":50.0,"total":150.0,"date":"2026-06-22T00:00:00","dateLabel":"22/06/2026","historical":true},{"id":900069,"productId":237,"productName":"PIDOTIMOD SOLUCIÓN ORAL 400MG/7ML (MAVER C/10 FRASCOS)","type":"sale","qty":1,"price":410.0,"total":410.0,"date":"2026-06-22T00:00:00","dateLabel":"22/06/2026","historical":true},{"id":900070,"productId":138,"productName":"LEVOCETIRIZINA 5MG (BOCETIX C/10)","type":"sale","qty":1,"price":110.0,"total":110.0,"date":"2026-06-21T00:00:00","dateLabel":"21/06/2026","historical":true},{"id":900071,"productId":189,"productName":"PARACETAMOL 500MG (PORTEM)","type":"sale","qty":1,"price":35.0,"total":35.0,"date":"2026-06-21T00:00:00","dateLabel":"21/06/2026","historical":true},{"id":900072,"productId":188,"productName":"OXIDO DE ZINC PASTA 25% (XIMAFHIT)","type":"sale","qty":2,"price":40.0,"total":80.0,"date":"2026-06-21T00:00:00","dateLabel":"21/06/2026","historical":true},{"id":900073,"productId":213,"productName":"TERBINAFINA CREMA (ERBITRAX 30G)","type":"sale","qty":2,"price":100.0,"total":200.0,"date":"2026-06-17T00:00:00","dateLabel":"17/06/2026","historical":true},{"id":900074,"productId":184,"productName":"OMEPRAZOL 20MG (AVIVIA C/14)","type":"sale","qty":2,"price":50.0,"total":100.0,"date":"2026-06-17T00:00:00","dateLabel":"17/06/2026","historical":true},{"id":900075,"productId":162,"productName":"METAMIZOL 500MG (WESTEPIRON C/10)","type":"sale","qty":1,"price":35.0,"total":35.0,"date":"2026-06-17T00:00:00","dateLabel":"17/06/2026","historical":true},{"id":900076,"productId":150,"productName":"LORATADINA 10MG (LARITROL 20 TABS)","type":"sale","qty":1,"price":40.0,"total":40.0,"date":"2026-06-17T00:00:00","dateLabel":"17/06/2026","historical":true},{"id":900077,"productId":38,"productName":"CEFALEXINA 500MG (CEFALVER 20 CAPS)","type":"sale","qty":1,"price":110.0,"total":110.0,"date":"2026-06-17T00:00:00","dateLabel":"17/06/2026","historical":true},{"id":900078,"productId":11,"productName":"ACIDO NALIDIXCO/FENAZOPIRIDINA (AZOGEN 20 TABS)","type":"sale","qty":1,"price":170.0,"total":170.0,"date":"2026-06-17T00:00:00","dateLabel":"17/06/2026","historical":true},{"id":900079,"productId":7,"productName":"ACIDO ASCORBICO EFERVESCENTE 1G (OXITAL-C)","type":"sale","qty":1,"price":110.0,"total":110.0,"date":"2026-06-17T00:00:00","dateLabel":"17/06/2026","historical":true},{"id":900080,"productId":152,"productName":"LORATADINA/BETAMETASONA (ERISPAN COMPUESTO)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-06-16T00:00:00","dateLabel":"16/06/2026","historical":true},{"id":900081,"productId":107,"productName":"HIDROXIDO ALUMINIO/MAGNESIO SUSP (ALUMAG)","type":"sale","qty":1,"price":60.0,"total":60.0,"date":"2026-06-14T00:00:00","dateLabel":"14/06/2026","historical":true},{"id":900082,"productId":219,"productName":"TRIMEBUTINA 200MG (CINEPRAC 20 TABS)","type":"sale","qty":2,"price":100.0,"total":200.0,"date":"2026-06-14T00:00:00","dateLabel":"14/06/2026","historical":true},{"id":900083,"productId":184,"productName":"OMEPRAZOL 20MG (AVIVIA C/14)","type":"sale","qty":2,"price":50.0,"total":100.0,"date":"2026-06-14T00:00:00","dateLabel":"14/06/2026","historical":true},{"id":900084,"productId":123,"productName":"JABON QUIRURGICO (ANTIBENZIL NF 100ML)","type":"sale","qty":1,"price":65.0,"total":65.0,"date":"2026-06-11T00:00:00","dateLabel":"11/06/2026","historical":true},{"id":900085,"productId":176,"productName":"MONTELUKAST 10MG (VALTROVER 20 COMP)","type":"sale","qty":1,"price":100.0,"total":100.0,"date":"2026-06-09T00:00:00","dateLabel":"09/06/2026","historical":true},{"id":900086,"productId":107,"productName":"HIDROXIDO ALUMINIO/MAGNESIO SUSP (ALUMAG)","type":"sale","qty":1,"price":60.0,"total":60.0,"date":"2026-06-09T00:00:00","dateLabel":"09/06/2026","historical":true},{"id":900087,"productId":103,"productName":"GUAIFENESINA/OXOLAMINA ADULTO (GUAXOQUIM 100ML)","type":"sale","qty":1,"price":90.0,"total":90.0,"date":"2026-06-09T00:00:00","dateLabel":"09/06/2026","historical":true},{"id":900088,"productId":38,"productName":"CEFALEXINA 500MG (CEFALVER 20 CAPS)","type":"sale","qty":1,"price":110.0,"total":110.0,"date":"2026-06-09T00:00:00","dateLabel":"09/06/2026","historical":true},{"id":900089,"productId":150,"productName":"LORATADINA 10MG (LARITROL 20 TABS)","type":"sale","qty":1,"price":40.0,"total":40.0,"date":"2026-06-09T00:00:00","dateLabel":"09/06/2026","historical":true},{"id":900090,"productId":117,"productName":"IBUPROFENO 600MG (GELUBRIN 10 CAPS)","type":"sale","qty":2,"price":50.0,"total":100.0,"date":"2026-06-09T00:00:00","dateLabel":"09/06/2026","historical":true},{"id":900091,"productId":184,"productName":"OMEPRAZOL 20MG (AVIVIA C/14)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-06-09T00:00:00","dateLabel":"09/06/2026","historical":true},{"id":900092,"productId":34,"productName":"BEZAFIBRATO 200MG (REDALIP 30 TABS)","type":"sale","qty":1,"price":80.0,"total":80.0,"date":"2026-06-08T00:00:00","dateLabel":"08/06/2026","historical":true},{"id":900093,"productId":11,"productName":"ACIDO NALIDIXCO/FENAZOPIRIDINA (AZOGEN 20 TABS)","type":"sale","qty":1,"price":170.0,"total":170.0,"date":"2026-06-08T00:00:00","dateLabel":"08/06/2026","historical":true},{"id":900094,"productId":207,"productName":"SILYBUM MARIANUM 150MG (BYRMO C/20)","type":"sale","qty":1,"price":130.0,"total":130.0,"date":"2026-06-08T00:00:00","dateLabel":"08/06/2026","historical":true},{"id":900095,"productId":228,"productName":"METFORMINA TABLETAS 850MG (GLUNOVAG C/30 TABS)","type":"sale","qty":2,"price":60.0,"total":120.0,"date":"2026-06-08T00:00:00","dateLabel":"08/06/2026","historical":true},{"id":900096,"productId":213,"productName":"TERBINAFINA CREMA (ERBITRAX 30G)","type":"sale","qty":1,"price":100.0,"total":100.0,"date":"2026-06-08T00:00:00","dateLabel":"08/06/2026","historical":true},{"id":900097,"productId":11,"productName":"ACIDO NALIDIXCO/FENAZOPIRIDINA (AZOGEN 20 TABS)","type":"sale","qty":1,"price":170.0,"total":170.0,"date":"2026-06-05T00:00:00","dateLabel":"05/06/2026","historical":true},{"id":900098,"productId":38,"productName":"CEFALEXINA 500MG (CEFALVER 20 CAPS)","type":"sale","qty":1,"price":110.0,"total":110.0,"date":"2026-06-05T00:00:00","dateLabel":"05/06/2026","historical":true},{"id":900099,"productId":7,"productName":"ACIDO ASCORBICO EFERVESCENTE 1G (OXITAL-C)","type":"sale","qty":1,"price":110.0,"total":110.0,"date":"2026-06-05T00:00:00","dateLabel":"05/06/2026","historical":true},{"id":900100,"productId":43,"productName":"CETIRIZINA 10MG (VISERTRAL C/10)","type":"sale","qty":1,"price":85.0,"total":85.0,"date":"2026-06-05T00:00:00","dateLabel":"05/06/2026","historical":true},{"id":900101,"productId":38,"productName":"CEFALEXINA 500MG (CEFALVER 20 CAPS)","type":"sale","qty":1,"price":110.0,"total":110.0,"date":"2026-06-05T00:00:00","dateLabel":"05/06/2026","historical":true},{"id":900102,"productId":22,"productName":"ARNICA GLOBULOS (MONTANA C/150)","type":"sale","qty":1,"price":80.0,"total":80.0,"date":"2026-06-04T00:00:00","dateLabel":"04/06/2026","historical":true},{"id":900103,"productId":184,"productName":"OMEPRAZOL 20MG (AVIVIA C/14)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-06-04T00:00:00","dateLabel":"04/06/2026","historical":true},{"id":900104,"productId":130,"productName":"KETOROLACO SL 30MG (MAVIDOL SL 4 TABS)","type":"sale","qty":1,"price":40.0,"total":40.0,"date":"2026-06-03T00:00:00","dateLabel":"03/06/2026","historical":true},{"id":900105,"productId":214,"productName":"TERBINAFINA SOLUCION 1% (ALPHARMA 30ML)","type":"sale","qty":1,"price":100.0,"total":100.0,"date":"2026-06-03T00:00:00","dateLabel":"03/06/2026","historical":true},{"id":900106,"productId":1,"productName":"ACEITE DE COCO 55ML","type":"sale","qty":1,"price":25.0,"total":25.0,"date":"2026-06-03T00:00:00","dateLabel":"03/06/2026","historical":true},{"id":900107,"productId":184,"productName":"OMEPRAZOL 20MG (AVIVIA C/14)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-06-02T00:00:00","dateLabel":"02/06/2026","historical":true},{"id":900108,"productId":194,"productName":"POLIVITAMINAS (BIMIN C/30)","type":"sale","qty":3,"price":110.0,"total":330.0,"date":"2026-06-02T00:00:00","dateLabel":"02/06/2026","historical":true},{"id":900109,"productId":107,"productName":"HIDROXIDO ALUMINIO/MAGNESIO SUSP (ALUMAG)","type":"sale","qty":1,"price":60.0,"total":60.0,"date":"2026-06-02T00:00:00","dateLabel":"02/06/2026","historical":true},{"id":900110,"productId":163,"productName":"METAMIZOL/BUTILHIOSCINA (BUSCONET C/10)","type":"sale","qty":1,"price":90.0,"total":90.0,"date":"2026-06-02T00:00:00","dateLabel":"02/06/2026","historical":true},{"id":900111,"productId":34,"productName":"BEZAFIBRATO 200MG (REDALIP 30 TABS)","type":"sale","qty":1,"price":80.0,"total":80.0,"date":"2026-06-02T00:00:00","dateLabel":"02/06/2026","historical":true},{"id":900112,"productId":207,"productName":"SILYBUM MARIANUM 150MG (BYRMO C/20)","type":"sale","qty":1,"price":130.0,"total":130.0,"date":"2026-06-02T00:00:00","dateLabel":"02/06/2026","historical":true},{"id":900113,"productId":201,"productName":"QUINFAMIDA/ALBENDAZOL TABS 150MG (FARMIVER C/2)","type":"sale","qty":4,"price":80.0,"total":320.0,"date":"2026-06-01T00:00:00","dateLabel":"01/06/2026","historical":true},{"id":900114,"productId":98,"productName":"GABAPENTINA 300MG (WERMY)","type":"sale","qty":1,"price":120.0,"total":120.0,"date":"2026-06-01T00:00:00","dateLabel":"01/06/2026","historical":true},{"id":900115,"productId":42,"productName":"CELECOXIB 200MG (CICLOX C/10)","type":"sale","qty":1,"price":90.0,"total":90.0,"date":"2026-06-01T00:00:00","dateLabel":"01/06/2026","historical":true},{"id":900116,"productId":194,"productName":"POLIVITAMINAS (BIMIN C/30)","type":"sale","qty":1,"price":110.0,"total":110.0,"date":"2026-05-29T00:00:00","dateLabel":"29/05/2026","historical":true},{"id":900117,"productId":184,"productName":"OMEPRAZOL 20MG (AVIVIA C/14)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-05-29T00:00:00","dateLabel":"29/05/2026","historical":true},{"id":900118,"productId":107,"productName":"HIDROXIDO ALUMINIO/MAGNESIO SUSP (ALUMAG)","type":"sale","qty":1,"price":60.0,"total":60.0,"date":"2026-05-29T00:00:00","dateLabel":"29/05/2026","historical":true},{"id":900119,"productId":163,"productName":"METAMIZOL/BUTILHIOSCINA (BUSCONET C/10)","type":"sale","qty":1,"price":90.0,"total":90.0,"date":"2026-05-29T00:00:00","dateLabel":"29/05/2026","historical":true},{"id":900120,"productId":26,"productName":"AZITROMICINA TABS 500MG (CRAZTRONIN)","type":"sale","qty":1,"price":90.0,"total":90.0,"date":"2026-05-28T00:00:00","dateLabel":"28/05/2026","historical":true},{"id":900121,"productId":107,"productName":"HIDROXIDO ALUMINIO/MAGNESIO SUSP (ALUMAG)","type":"sale","qty":1,"price":60.0,"total":60.0,"date":"2026-05-28T00:00:00","dateLabel":"28/05/2026","historical":true},{"id":900122,"productId":137,"productName":"LANSOPRAZOL 30MG (AMDORY C/14)","type":"sale","qty":1,"price":70.0,"total":70.0,"date":"2026-05-28T00:00:00","dateLabel":"28/05/2026","historical":true},{"id":900123,"productId":174,"productName":"METRONIDAZOL 500MG (LAMBLIT C/30)","type":"sale","qty":1,"price":70.0,"total":70.0,"date":"2026-05-28T00:00:00","dateLabel":"28/05/2026","historical":true},{"id":900124,"productId":137,"productName":"LANSOPRAZOL 30MG (AMDORY C/14)","type":"sale","qty":1,"price":70.0,"total":70.0,"date":"2026-05-28T00:00:00","dateLabel":"28/05/2026","historical":true},{"id":900125,"productId":51,"productName":"CLIOQUINOL CREMA 3MG (LASAR)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-05-28T00:00:00","dateLabel":"28/05/2026","historical":true},{"id":900126,"productId":227,"productName":"ALOE VERA GEL FACIAL HIDRATANTE  C/ ÁCIDO HIALURONICO 200G","type":"sale","qty":1,"price":120.0,"total":120.0,"date":"2026-05-28T00:00:00","dateLabel":"28/05/2026","historical":true},{"id":900127,"productId":34,"productName":"BEZAFIBRATO 200MG (REDALIP 30 TABS)","type":"sale","qty":2,"price":80.0,"total":160.0,"date":"2026-05-27T00:00:00","dateLabel":"27/05/2026","historical":true},{"id":900128,"productId":24,"productName":"ATORVASTATINA 20MG (ODIVITOR 10 TABS)","type":"sale","qty":6,"price":60.0,"total":360.0,"date":"2026-05-27T00:00:00","dateLabel":"27/05/2026","historical":true},{"id":900129,"productId":207,"productName":"SILYBUM MARIANUM 150MG (BYRMO C/20)","type":"sale","qty":2,"price":130.0,"total":260.0,"date":"2026-05-27T00:00:00","dateLabel":"27/05/2026","historical":true},{"id":900130,"productId":null,"productName":"DICLOFENACO 100MG (ULTRA C/20)","type":"sale","qty":1,"price":30.0,"total":30.0,"date":"2026-05-27T00:00:00","dateLabel":"27/05/2026","historical":true},{"id":900131,"productId":146,"productName":"LIDOCAINA/HIDROCORTISONA UNGÜENTO RECTAL (FASTERIX)","type":"sale","qty":1,"price":70.0,"total":70.0,"date":"2026-05-27T00:00:00","dateLabel":"27/05/2026","historical":true},{"id":900132,"productId":39,"productName":"CEFALEXINA SUSP 250MG/5ML (CEFALVER 90ML)","type":"sale","qty":1,"price":100.0,"total":100.0,"date":"2026-05-26T00:00:00","dateLabel":"26/05/2026","historical":true},{"id":900133,"productId":221,"productName":"TRIMEBUTINA/SIMETICONA SOL ORAL (MAVER 26ML)","type":"sale","qty":1,"price":170.0,"total":170.0,"date":"2026-05-26T00:00:00","dateLabel":"26/05/2026","historical":true},{"id":900134,"productId":102,"productName":"GUAIFENESINA/OXOLAMINA GOTERO (GUAXOQUIM 60ML)","type":"sale","qty":1,"price":70.0,"total":70.0,"date":"2026-05-26T00:00:00","dateLabel":"26/05/2026","historical":true},{"id":900135,"productId":214,"productName":"TERBINAFINA SOLUCION 1% (ALPHARMA 30ML)","type":"sale","qty":1,"price":100.0,"total":100.0,"date":"2026-05-26T00:00:00","dateLabel":"26/05/2026","historical":true},{"id":900136,"productId":117,"productName":"IBUPROFENO 600MG (GELUBRIN 10 CAPS)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-05-26T00:00:00","dateLabel":"26/05/2026","historical":true},{"id":900137,"productId":51,"productName":"CLIOQUINOL CREMA 3MG (LASAR)","type":"sale","qty":2,"price":50.0,"total":100.0,"date":"2026-05-26T00:00:00","dateLabel":"26/05/2026","historical":true},{"id":900138,"productId":227,"productName":"ALOE VERA GEL FACIAL HIDRATANTE  C/ ÁCIDO HIALURONICO 200G","type":"sale","qty":1,"price":120.0,"total":120.0,"date":"2026-05-25T00:00:00","dateLabel":"25/05/2026","historical":true},{"id":900139,"productId":22,"productName":"ARNICA GLOBULOS (MONTANA C/150)","type":"sale","qty":1,"price":80.0,"total":80.0,"date":"2026-05-25T00:00:00","dateLabel":"25/05/2026","historical":true},{"id":900140,"productId":40,"productName":"CEFOTAXIMA INY 1G/4ML (AMSA)","type":"sale","qty":5,"price":70.0,"total":350.0,"date":"2026-05-25T00:00:00","dateLabel":"25/05/2026","historical":true},{"id":900141,"productId":162,"productName":"METAMIZOL 500MG (WESTEPIRON C/10)","type":"sale","qty":1,"price":35.0,"total":35.0,"date":"2026-05-25T00:00:00","dateLabel":"25/05/2026","historical":true},{"id":900142,"productId":43,"productName":"CETIRIZINA 10MG (VISERTRAL C/10)","type":"sale","qty":1,"price":85.0,"total":85.0,"date":"2026-05-25T00:00:00","dateLabel":"25/05/2026","historical":true},{"id":900143,"productId":28,"productName":"BENCIDAMINA CON ATOMIZADOR (MARACINA)","type":"sale","qty":1,"price":70.0,"total":70.0,"date":"2026-05-25T00:00:00","dateLabel":"25/05/2026","historical":true},{"id":900144,"productId":176,"productName":"MONTELUKAST 10MG (VALTROVER 20 COMP)","type":"sale","qty":1,"price":100.0,"total":100.0,"date":"2026-05-23T00:00:00","dateLabel":"23/05/2026","historical":true},{"id":900145,"productId":219,"productName":"TRIMEBUTINA 200MG (CINEPRAC 20 TABS)","type":"sale","qty":1,"price":100.0,"total":100.0,"date":"2026-05-23T00:00:00","dateLabel":"23/05/2026","historical":true},{"id":900146,"productId":193,"productName":"PINAVERIO/DIMETICONA (NESAJAR)","type":"sale","qty":1,"price":200.0,"total":200.0,"date":"2026-05-23T00:00:00","dateLabel":"23/05/2026","historical":true},{"id":900147,"productId":228,"productName":"METFORMINA TABLETAS 850MG (GLUNOVAG C/30 TABS)","type":"sale","qty":2,"price":60.0,"total":120.0,"date":"2026-05-23T00:00:00","dateLabel":"23/05/2026","historical":true},{"id":900148,"productId":150,"productName":"LORATADINA 10MG (LARITROL 20 TABS)","type":"sale","qty":1,"price":40.0,"total":40.0,"date":"2026-05-23T00:00:00","dateLabel":"23/05/2026","historical":true},{"id":900149,"productId":38,"productName":"CEFALEXINA 500MG (CEFALVER 20 CAPS)","type":"sale","qty":1,"price":110.0,"total":110.0,"date":"2026-05-23T00:00:00","dateLabel":"23/05/2026","historical":true},{"id":900150,"productId":16,"productName":"AMBROXOL/DEXTROMETORFANO JARABE (FARIBROX TM 150ML)","type":"sale","qty":1,"price":60.0,"total":60.0,"date":"2026-05-23T00:00:00","dateLabel":"23/05/2026","historical":true},{"id":900151,"productId":81,"productName":"DIOSMINA/HESPERIDINA 450MG/50MG (FLAUSIVER C/20)","type":"sale","qty":1,"price":150.0,"total":150.0,"date":"2026-05-22T00:00:00","dateLabel":"22/05/2026","historical":true},{"id":900152,"productId":61,"productName":"COMPLEJO B/DICLOFENACO INY (TRIBEDOCE COMPUESTO 3 AMP)","type":"sale","qty":1,"price":130.0,"total":130.0,"date":"2026-05-22T00:00:00","dateLabel":"22/05/2026","historical":true},{"id":900153,"productId":167,"productName":"METOCARBAMOL/IBUPROFENO 350MG/200MG (ML-PRIM C/12)","type":"sale","qty":2,"price":100.0,"total":200.0,"date":"2026-05-22T00:00:00","dateLabel":"22/05/2026","historical":true},{"id":900154,"productId":137,"productName":"LANSOPRAZOL 30MG (AMDORY C/14)","type":"sale","qty":1,"price":70.0,"total":70.0,"date":"2026-05-22T00:00:00","dateLabel":"22/05/2026","historical":true},{"id":900155,"productId":32,"productName":"BETAMETASONA INY 8MG (ERISPAN)","type":"sale","qty":1,"price":80.0,"total":80.0,"date":"2026-05-22T00:00:00","dateLabel":"22/05/2026","historical":true},{"id":900156,"productId":42,"productName":"CELECOXIB 200MG (CICLOX C/10)","type":"sale","qty":1,"price":90.0,"total":90.0,"date":"2026-05-22T00:00:00","dateLabel":"22/05/2026","historical":true},{"id":900157,"productId":227,"productName":"ALOE VERA GEL FACIAL HIDRATANTE  C/ ÁCIDO HIALURONICO 200G","type":"sale","qty":1,"price":120.0,"total":120.0,"date":"2026-05-21T00:00:00","dateLabel":"21/05/2026","historical":true},{"id":900158,"productId":219,"productName":"TRIMEBUTINA 200MG (CINEPRAC 20 TABS)","type":"sale","qty":1,"price":100.0,"total":100.0,"date":"2026-05-21T00:00:00","dateLabel":"21/05/2026","historical":true},{"id":900159,"productId":194,"productName":"POLIVITAMINAS (BIMIN C/30)","type":"sale","qty":2,"price":110.0,"total":220.0,"date":"2026-05-21T00:00:00","dateLabel":"21/05/2026","historical":true},{"id":900160,"productId":194,"productName":"POLIVITAMINAS (BIMIN C/30)","type":"sale","qty":2,"price":110.0,"total":220.0,"date":"2026-05-21T00:00:00","dateLabel":"21/05/2026","historical":true},{"id":900161,"productId":34,"productName":"BEZAFIBRATO 200MG (REDALIP 30 TABS)","type":"sale","qty":2,"price":80.0,"total":160.0,"date":"2026-05-19T00:00:00","dateLabel":"19/05/2026","historical":true},{"id":900162,"productId":184,"productName":"OMEPRAZOL 20MG (AVIVIA C/14)","type":"sale","qty":1,"price":50.0,"total":50.0,"date":"2026-05-19T00:00:00","dateLabel":"19/05/2026","historical":true}];
+const HISTORICAL_COSTS = {"DICLOFENACO 100MG (ULTRA C/20)": 8.0};
+let activeCategory = 'Todos';
+let searchQuery = '';
+let editingId = null;
+let sellingId = null;
+
+// ── FIREBASE STORAGE ──
+const DOC_PRODUCTS  = 'farmacia/productos';
+const DOC_MOVEMENTS = 'farmacia/movimientos';
+
+async function save() {
+  try {
+    const { doc, setDoc } = window._firestore;
+    const db = window._db;
+    // Strip movements from products to reduce size
+    const slim = products.map(p => {
+      const {movements: _, ...rest} = p;
+      return rest;
+    });
+    await setDoc(doc(db, 'farmacia', 'productos'),  { data: JSON.stringify(slim),  ts: Date.now() });
+    await setDoc(doc(db, 'farmacia', 'movimientos'), { data: JSON.stringify(movements.slice(0,500)), ts: Date.now() });
+  } catch(e) {
+    console.error('Save error:', e);
+    showToast('Error al guardar — verifica conexión');
+  }
+}
+
+async function load() {
+  try {
+    const { doc, getDoc } = window._firestore;
+    const db = window._db;
+    showLoading(true);
+
+    const [pSnap, mSnap] = await Promise.all([
+      getDoc(doc(db, 'farmacia', 'productos')),
+      getDoc(doc(db, 'farmacia', 'movimientos'))
+    ]);
+
+    if (pSnap.exists()) {
+      const saved = JSON.parse(pSnap.data().data);
+      products = saved.map(pr => ({
+        movements: [],
+        minStock: 3,
+        expiry: null,
+        isCustom: false,
+        ...pr
+      }));
+    } else {
+      products = CATALOG.map(c => ({ ...c }));
+    }
+
+    const savedMovements = mSnap.exists() ? JSON.parse(mSnap.data().data) : [];
+    movements = mergeHistoricalSales(savedMovements, HISTORICAL_SALES);
+
+    // Keep product references consistent after importing historical sales.
+    movements.forEach(m => {
+      const p = products.find(x => x.id === m.productId);
+      if (p) {
+        if (!p.movements) p.movements = [];
+        if (!p.movements.some(pm => pm.id === m.id)) p.movements.push(m);
+      }
+    });
+
+    if (!pSnap.exists() || !mSnap.exists() || movements.length !== savedMovements.length) {
+      await save();
+    }
+  } catch(e) {
+    console.error('Load error:', e);
+    products = CATALOG.map(c => ({ ...c }));
+    movements = mergeHistoricalSales([], HISTORICAL_SALES);
+    showToast('Sin conexión — mostrando datos locales');
+  } finally {
+    showLoading(false);
+  }
+}
+
+function mergeHistoricalSales(existing, historical) {
+  const result = Array.isArray(existing) ? [...existing] : [];
+  const keys = new Set(result.filter(m => m.type === 'sale').map(m =>
+    [m.date, m.productName, m.qty, m.price, m.total].join('|')
+  ));
+  historical.forEach(m => {
+    const key = [m.date, m.productName, m.qty, m.price, m.total].join('|');
+    if (!keys.has(key)) {
+      result.push({ ...m });
+      keys.add(key);
+    }
+  });
+  return result.sort((a,b) => new Date(b.date) - new Date(a.date));
+}
+
+function showLoading(show) {
+  let el = document.getElementById('loadingOverlay');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'loadingOverlay';
+    el.style.cssText = 'position:fixed;inset:0;background:rgba(255,255,255,.9);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-family:DM Sans,sans-serif';
+    el.innerHTML = '<div style="width:40px;height:40px;border:3px solid #e2e8f0;border-top-color:#1a5c38;border-radius:50%;animation:spin 1s linear infinite"></div><div style="font-size:14px;color:#6b6b78;font-weight:600">Sincronizando con la nube...</div>';
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+    document.head.appendChild(style);
+    document.body.appendChild(el);
+  }
+  el.style.display = show ? 'flex' : 'none';
+}
+
+// ── CATEGORIES ──
+function getCategories() {
+  const cats = [...new Set(products.map(p => p.category))].sort();
+  return ['Todos', ...cats];
+}
+
+// ── INIT ──
+function init() {
+  load();
+  renderFilters();
+  render();
+  renderMovements();
+  renderDashboard();
+  renderAlerts();
+}
+
+// ── VIEW SWITCHER ──
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  if (typeof event !== 'undefined' && event.target) event.target.classList.add('active');
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'movimientos') renderMovements();
+}
+
+// ── FILTERS ──
+function renderFilters() {
+  const cats = getCategories();
+  const el = document.getElementById('filtersRow');
+  el.innerHTML = cats.map(c =>
+    `<button class="filter-chip ${c === activeCategory ? 'active' : ''}" onclick="setCategory('${c}')">${c}</button>`
+  ).join('');
+}
+
+function setCategory(cat) {
+  activeCategory = cat;
+  renderFilters();
+  render();
+}
+
+// ── SEARCH ──
+function onSearch() {
+  searchQuery = document.getElementById('searchInput').value;
+  const btn = document.getElementById('searchClear');
+  btn.style.display = searchQuery ? 'flex' : 'none';
+  render();
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  searchQuery = '';
+  document.getElementById('searchClear').style.display = 'none';
+  render();
+}
+
+// ── FILTER PRODUCTS ──
+function getFiltered() {
+  return products.filter(p => {
+    const catOk = activeCategory === 'Todos' || p.category === activeCategory;
+    const q = searchQuery.toLowerCase().trim();
+    const searchOk = !q || p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
+    return catOk && searchOk;
+  });
+}
+
+// ── RENDER STATS ──
+function renderStats(filtered) {
+  const totalProducts = filtered.length;
+  const inStock = filtered.filter(p => p.stock > 0).length;
+  const lowStock = filtered.filter(p => p.stock > 0 && p.stock <= p.minStock).length;
+  const noStock = filtered.filter(p => p.stock === 0).length;
+
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Total</div>
+      <div class="stat-value">${totalProducts}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">En stock</div>
+      <div class="stat-value green">${inStock}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Stock bajo</div>
+      <div class="stat-value gold">${lowStock}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Agotados</div>
+      <div class="stat-value red">${noStock}</div>
+    </div>
+  `;
+}
+
+// ── EXPIRY HELPERS ──
+function expiryClass(expiry) {
+  if (!expiry) return '';
+  const now = new Date();
+  const exp = new Date(expiry + '-01');
+  const diff = (exp - now) / (1000 * 60 * 60 * 24 * 30);
+  if (diff < 0) return 'expired';
+  if (diff < 3) return 'near';
+  return '';
+}
+
+function expiryLabel(expiry) {
+  if (!expiry) return '';
+  const cls = expiryClass(expiry);
+  const parts = expiry.split('-');
+  const label = `Cad: ${parts[1]}/${parts[0]}`;
+  if (cls === 'expired') return `<span class="expiry-badge expired">⚠️ VENCIDO ${label}</span>`;
+  if (cls === 'near') return `<span class="expiry-badge near">⚠️ ${label}</span>`;
+  return `<span class="expiry-badge">${label}</span>`;
+}
+
+// ── RENDER PRODUCTS ──
+function render() {
+  const filtered = getFiltered().sort((a,b) => a.name.localeCompare(b.name, 'es', { sensitivity:'base', numeric:true }));
+  renderStats(filtered);
+
+  const grid = document.getElementById('productGrid');
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="empty-state"><div style="font-size:48px;margin-bottom:12px">🔍</div><p>Sin resultados para "<strong>${searchQuery}</strong>"</p></div>`;
+    document.getElementById('pageCount').textContent = '';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(p => {
+    const stockClass = p.stock === 0 ? 'no-stock' : (p.stock <= p.minStock && p.stock > 0 ? 'low-stock' : '');
+    const badgeClass = p.stock === 0 ? 'empty' : (p.stock <= p.minStock ? 'low' : 'ok');
+    const stockLabel = p.stock === 0 ? 'Agotado' : `${p.stock} pza${p.stock !== 1 ? 's' : ''}`;
+    const margin = p.price > 0 && p.cost > 0 ? Math.round((p.price - p.cost) / p.price * 100) : 0;
+    const costLabel = p.cost > 0 ? `costo $${p.cost}` : 'sin costo';
+
+    return `
+    <div class="product-card ${stockClass}" id="card-${p.id}">
+      <div class="product-cat">${p.category}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-prices">
+        <span class="price-cost">${costLabel}</span>
+        <span class="price-sell">$${p.price}</span>
+        ${margin > 0 ? `<span class="price-margin">${margin}%</span>` : ''}
+      </div>
+      <div class="product-stock-row">
+        <span class="stock-badge ${badgeClass}">${stockLabel}</span>
+        ${expiryLabel(p.expiry)}
+      </div>
+      <div class="product-actions">
+        <button class="btn-sell" onclick="openSell(${p.id})"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg> Vender</button>
+        <button class="btn-edit" onclick="openEdit(${p.id})"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('pageCount').textContent = `${filtered.length} productos`;
+}
+
+// ── SELL MODAL ──
+function openSell(id) {
+  sellingId = id;
+  const p = products.find(x => x.id === id);
+  document.getElementById('sellModalTitle').textContent = 'Registrar Venta';
+  document.getElementById('sellModalSub').textContent = p.name;
+  document.getElementById('sellModalInfo').innerHTML = `
+    <div class="modal-info-item"><div class="mi-label">Precio</div><div class="mi-value">$${p.price}</div></div>
+    <div class="modal-info-item"><div class="mi-label">Stock</div><div class="mi-value">${p.stock}</div></div>
+    <div class="modal-info-item"><div class="mi-label">Margen</div><div class="mi-value">${Math.round((p.price-p.cost)/p.price*100)||0}%</div></div>
+  `;
+  document.getElementById('sellQty').value = 1;
+  document.getElementById('sellModal').classList.add('open');
+  setTimeout(() => document.getElementById('sellQty').focus(), 300);
+}
+
+async function confirmSell() {
+  const qty = parseInt(document.getElementById('sellQty').value) || 1;
+  const p = products.find(x => x.id === sellingId);
+  if (!p) return;
+
+  const newStock = Math.max(0, p.stock - qty);
+  p.stock = newStock;
+
+  const now = new Date();
+  const mov = {
+    id: Date.now(),
+    productId: p.id,
+    productName: p.name,
+    type: 'sale',
+    qty,
+    price: p.price,
+    total: qty * p.price,
+    date: now.toISOString(),
+    dateLabel: now.toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })
+  };
+  movements.unshift(mov);
+  if (!p.movements) p.movements = [];
+  p.movements.unshift(mov);
+
+  await save();
+  render();
+  renderAlerts();
+  closeModal('sellModal');
+
+  // Toast
+  showToast(`✓ Venta registrada — $${(qty * p.price).toLocaleString()}`);
+}
+
+// ── EDIT MODAL ──
+function openEdit(id) {
+  editingId = id;
+  const p = products.find(x => x.id === id);
+  document.getElementById('editModalTitle').textContent = 'Actualizar Producto';
+  document.getElementById('editModalSub').textContent = p.name;
+  document.getElementById('editStock').value = p.stock;
+  document.getElementById('editMinStock').value = p.minStock;
+  document.getElementById('editExpiry').value = p.expiry || '';
+  document.getElementById('editCost').value = p.cost;
+  document.getElementById('editPrice').value = p.price;
+  document.getElementById('editModal').classList.add('open');
+}
+
+async function confirmEdit() {
+  const p = products.find(x => x.id === editingId);
+  if (!p) return;
+
+  const newStock = parseInt(document.getElementById('editStock').value) || 0;
+  const oldStock = p.stock;
+
+  p.stock = newStock;
+  p.minStock = parseInt(document.getElementById('editMinStock').value) || 3;
+  p.expiry = document.getElementById('editExpiry').value || null;
+  p.cost = parseFloat(document.getElementById('editCost').value) || p.cost;
+  p.price = parseFloat(document.getElementById('editPrice').value) || p.price;
+  p.margin = p.price > 0 && p.cost > 0 ? Math.round((p.price - p.cost) / p.price * 100) : 0;
+
+  if (newStock !== oldStock) {
+    const diff = newStock - oldStock;
+    const now = new Date();
+    const mov = {
+      id: Date.now(),
+      productId: p.id,
+      productName: p.name,
+      type: 'stock',
+      qty: diff,
+      price: 0,
+      total: 0,
+      date: now.toISOString(),
+      dateLabel: now.toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })
+    };
+    movements.unshift(mov);
+    if (!p.movements) p.movements = [];
+    p.movements.unshift(mov);
+  }
+
+  await save();
+  render();
+  renderAlerts();
+  closeModal('editModal');
+  showToast('Producto actualizado');
+}
+
+// ── ALERTS ──
+function renderAlerts() {
+  const noStock = products.filter(p => p.stock === 0).length;
+  const lowStock = products.filter(p => p.stock > 0 && p.stock <= p.minStock).length;
+  const expired = products.filter(p => p.expiry && expiryClass(p.expiry) !== '').length;
+
+  let html = '';
+  if (noStock > 0) html += `<div class="alert-pill danger" onclick="filterAlert('agotados')"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> ${noStock} agotados</div>`;
+  if (lowStock > 0) html += `<div class="alert-pill warning" onclick="filterAlert('bajos')"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> ${lowStock} stock bajo</div>`;
+  if (expired > 0) html += `<div class="alert-pill danger" onclick="filterAlert('vencidos')"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ${expired} próx. a vencer</div>`;
+
+  document.getElementById('alertsBar').innerHTML = html;
+}
+
+function filterAlert(type) {
+  if (type === 'agotados') {
+    searchQuery = '';
+    document.getElementById('searchInput').value = '';
+    activeCategory = 'Todos';
+    renderFilters();
+    // Show only no-stock
+    const grid = document.getElementById('productGrid');
+    const filtered = products.filter(p => p.stock === 0);
+    renderStatsCustom(filtered);
+    grid.innerHTML = filtered.length === 0
+      ? '<div class="empty-state"><p>Sin productos agotados</p></div>'
+      : filtered.map(p => productCardHTML(p)).join('');
+    document.getElementById('pageCount').textContent = `${filtered.length} agotados`;
+  } else if (type === 'bajos') {
+    const filtered = products.filter(p => p.stock > 0 && p.stock <= p.minStock);
+    renderStatsCustom(filtered);
+    document.getElementById('productGrid').innerHTML = filtered.map(p => productCardHTML(p)).join('');
+    document.getElementById('pageCount').textContent = `${filtered.length} con stock bajo`;
+  } else if (type === 'vencidos') {
+    const filtered = products.filter(p => p.expiry && expiryClass(p.expiry) !== '');
+    renderStatsCustom(filtered);
+    document.getElementById('productGrid').innerHTML = filtered.map(p => productCardHTML(p)).join('');
+    document.getElementById('pageCount').textContent = `${filtered.length} próximos a vencer`;
+  }
+}
+
+function renderStatsCustom(filtered) {
+  const inStock = filtered.filter(p => p.stock > 0).length;
+  const low = filtered.filter(p => p.stock > 0 && p.stock <= p.minStock).length;
+  const no = filtered.filter(p => p.stock === 0).length;
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Mostrando</div><div class="stat-value">${filtered.length}</div></div>
+    <div class="stat-card"><div class="stat-label">Con stock</div><div class="stat-value green">${inStock}</div></div>
+    <div class="stat-card"><div class="stat-label">Stock bajo</div><div class="stat-value gold">${low}</div></div>
+    <div class="stat-card"><div class="stat-label">Agotados</div><div class="stat-value red">${no}</div></div>
+  `;
+}
+
+function productCardHTML(p) {
+  const stockClass = p.stock === 0 ? 'no-stock' : (p.stock <= p.minStock && p.stock > 0 ? 'low-stock' : '');
+  const badgeClass = p.stock === 0 ? 'empty' : (p.stock <= p.minStock ? 'low' : 'ok');
+  const stockLabel = p.stock === 0 ? 'Agotado' : `${p.stock} pzas`;
+  const margin = p.price > 0 && p.cost > 0 ? Math.round((p.price - p.cost) / p.price * 100) : 0;
+  const costLabel = p.cost > 0 ? `costo $${p.cost}` : 'sin costo';
+  return `
+    <div class="product-card ${stockClass}" id="card-${p.id}">
+      <div class="product-cat">${p.category}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-prices">
+        <span class="price-cost">${costLabel}</span>
+        <span class="price-sell">$${p.price}</span>
+        ${margin > 0 ? `<span class="price-margin">${margin}%</span>` : ''}
+      </div>
+      <div class="product-stock-row">
+        <span class="stock-badge ${badgeClass}">${stockLabel}</span>
+        ${expiryLabel(p.expiry)}
+      </div>
+      <div class="product-actions">
+        <button class="btn-sell" onclick="openSell(${p.id})"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg> Vender</button>
+        <button class="btn-edit" onclick="openEdit(${p.id})"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</button>
+      </div>
+    </div>`;
+}
+
+// ── MOVEMENTS ──
+function renderMovements() {
+  const el = document.getElementById('movementsList');
+  if (movements.length === 0) {
+    el.innerHTML = '<div class="no-results"><div class="icon" style="color:var(--muted2)"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></div><p>Sin movimientos registrados</p></div>';
+    return;
+  }
+
+  el.innerHTML = movements.slice(0, 100).map(m => {
+    const isSale = m.type === 'sale';
+    return `
+    <div class="movement-item">
+      <div class="movement-icon ${isSale ? 'sale' : 'stock'}">${isSale ? '💊' : '📦'}</div>
+      <div class="movement-info">
+        <div class="movement-name">${m.productName}</div>
+        <div class="movement-date">${m.dateLabel} · ${isSale ? `${m.qty} pza${m.qty !== 1 ? 's' : ''}` : (m.qty >= 0 ? `+${m.qty} ingreso` : `${m.qty} ajuste`)}</div>
+      </div>
+      ${isSale ? `<div class="movement-amount sale">+$${m.total.toLocaleString()}</div>` : '<div class="movement-amount stock-in">📦</div>'}
+    </div>`;
+  }).join('');
+}
+
+function clearMovements() {
+  if (!confirm('¿Limpiar todo el historial de ventas?')) return;
+  movements = [];
+  products.forEach(p => p.movements = []);
+  save();
+  renderMovements();
+  renderDashboard();
+}
+
+// ── DASHBOARD ──
+function money(v){ return '$' + Number(v || 0).toLocaleString('es-MX',{minimumFractionDigits:0,maximumFractionDigits:2}); }
+
+function saleCost(m){
+  const p = products.find(x => x.id === m.productId);
+  if (p && Number(p.cost) >= 0) return Number(p.cost) * Number(m.qty);
+  const legacy = HISTORICAL_COSTS[m.productName];
+  return legacy != null ? legacy * Number(m.qty) : 0;
+}
+
+function monthKey(date){ return new Date(date).toISOString().slice(0,7); }
+
+function monthLabel(key){
+  const [y,mo]=key.split('-').map(Number);
+  return new Date(y,mo-1,1).toLocaleDateString('es-MX',{month:'long',year:'numeric'});
+}
+
+function getSaleMonths(){
+  return [...new Set(movements.filter(m=>m.type==='sale').map(m=>monthKey(m.date)))].sort().reverse();
+}
+
+function renderMonthlyAnalysis(){
+  const sales = movements.filter(m=>m.type==='sale');
+  const months = getSaleMonths();
+  const select = document.getElementById('monthSelect');
+  if(!select) return;
+
+  const current = select.value;
+  select.innerHTML = `<option value="ALL">Todos los meses</option>` +
+    months.map(k=>`<option value="${k}">${monthLabel(k)}</option>`).join('');
+  select.value = current && (current==='ALL'||months.includes(current)) ? current : 'ALL';
+
+  const selected = select.value;
+  const period = selected==='ALL' ? sales : sales.filter(m=>monthKey(m.date)===selected);
+
+  const units = period.reduce((s,m)=>s+m.qty,0);
+  const revenue = period.reduce((s,m)=>s+m.total,0);
+  const cost = period.reduce((s,m)=>s+saleCost(m),0);
+  const profit = revenue-cost;
+  const margin = revenue>0 ? (profit/revenue*100) : 0;
+
+  document.getElementById('monthlySummary').innerHTML = `
+    <div class="monthly-card"><div class="mc-label">Venta</div><div class="mc-value green">${money(revenue)}</div></div>
+    <div class="monthly-card"><div class="mc-label">Inversión / costo</div><div class="mc-value blue">${money(cost)}</div></div>
+    <div class="monthly-card"><div class="mc-label">Ganancia bruta</div><div class="mc-value ${profit>=0?'green':'red'}">${money(profit)}</div></div>
+    <div class="monthly-card"><div class="mc-label">Margen bruto</div><div class="mc-value gold">${margin.toFixed(1)}%</div></div>
+  `;
+
+  // Monthly overview table: always useful for comparing months.
+  const monthly = {};
+  sales.forEach(m=>{
+    const k=monthKey(m.date);
+    if(!monthly[k]) monthly[k]={units:0,revenue:0,cost:0};
+    monthly[k].units += m.qty;
+    monthly[k].revenue += m.total;
+    monthly[k].cost += saleCost(m);
+  });
+  const rows = Object.entries(monthly).sort((a,b)=>b[0].localeCompare(a[0])).map(([k,d])=>{
+    const p=d.revenue-d.cost;
+    return `<tr>
+      <td>${monthLabel(k)}</td><td>${d.units}</td><td>${money(d.revenue)}</td>
+      <td class="cost">${money(d.cost)}</td><td class="${p>=0?'profit':'negative'}">${money(p)}</td>
+      <td>${d.revenue?((p/d.revenue)*100).toFixed(1):'0.0'}%</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('monthlyTableWrap').innerHTML = `
+    <table class="monthly-table">
+      <thead><tr><th>Mes</th><th>Unidades</th><th>Ventas</th><th>Inversión</th><th>Ganancia</th><th>Margen</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="6">Sin ventas registradas</td></tr>'}</tbody>
+    </table>`;
+
+  // Product breakdown for selected period.
+  const byProduct={};
+  period.forEach(m=>{
+    if(!byProduct[m.productName]) byProduct[m.productName]={units:0,revenue:0,cost:0};
+    byProduct[m.productName].units += m.qty;
+    byProduct[m.productName].revenue += m.total;
+    byProduct[m.productName].cost += saleCost(m);
+  });
+  const productRows=Object.entries(byProduct)
+    .sort((a,b)=>b[1].revenue-a[1].revenue)
+    .map(([name,d])=>{
+      const p=d.revenue-d.cost;
+      const m=d.revenue ? (p/d.revenue*100) : 0;
+      return `<tr><td>${name}</td><td>${d.units}</td><td>${money(d.cost)}</td><td>${money(d.revenue)}</td><td class="${p>=0?'profit':'negative'}">${money(p)}</td><td>${m.toFixed(1)}%</td></tr>`;
+    }).join('');
+  document.getElementById('monthlyProductTable').innerHTML=`
+    <table class="monthly-table">
+      <thead><tr><th>Medicamento</th><th>Piezas</th><th>Costo</th><th>Venta</th><th>Utilidad</th><th>Margen</th></tr></thead>
+      <tbody>${productRows || '<tr><td colspan="6">Sin ventas en este periodo</td></tr>'}</tbody>
+    </table>`;
+
+  const purchaseMovements = movements.filter(m => m.type !== 'sale');
+  const periodPurchases = selected==='ALL' ? purchaseMovements : purchaseMovements.filter(m=>monthKey(m.date)===selected);
+  const purchaseUnits = periodPurchases.reduce((s,m)=>s+Math.max(0,Number(m.qty)||0),0);
+  const purchaseCount = periodPurchases.filter(m=>Number(m.qty)>0).length;
+  document.getElementById('monthlyAccountingNote').innerHTML = selected==='ALL'
+    ? `<strong>Cómo se calcula:</strong> “Inversión / costo” es el costo de los medicamentos efectivamente vendidos (costo × piezas). Las compras o reposiciones de inventario no se consideran gasto del mes porque el historial actual no guarda el costo de cada entrada. ${purchaseCount ? `Hay ${purchaseCount} entradas de inventario registradas (${purchaseUnits} piezas).` : 'No hay compras/reposiciones con costo registradas.'}`
+    : `<strong>Cómo se calcula:</strong> “Inversión / costo” es el costo de los medicamentos efectivamente vendidos durante ${monthLabel(selected)}. Las compras o reposiciones no se restan de la utilidad hasta que se registre su costo de adquisición. ${purchaseCount ? `Se registraron ${purchaseCount} entradas de inventario (${purchaseUnits} piezas), sin costo de compra asociado.` : 'No hay entradas de inventario registradas en este mes.'}`;
+}
+
+function renderDashboard() {
+  const sales = movements.filter(m => m.type === 'sale');
+  const totalSales = sales.reduce((s, m) => s + m.total, 0);
+  const totalUnits = sales.reduce((s, m) => s + m.qty, 0);
+  const uniqueProducts = [...new Set(sales.map(m => m.productId ?? m.productName))].length;
+  const avgTicket = sales.length > 0 ? Math.round(totalSales / sales.length) : 0;
+
+  document.getElementById('dashStats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Total vendido</div><div class="stat-value green">${money(totalSales)}</div></div>
+    <div class="stat-card"><div class="stat-label">Unidades</div><div class="stat-value">${totalUnits}</div></div>
+    <div class="stat-card"><div class="stat-label">Productos distintos</div><div class="stat-value">${uniqueProducts}</div></div>
+    <div class="stat-card"><div class="stat-label">Ticket prom.</div><div class="stat-value gold">${money(avgTicket)}</div></div>
+  `;
+
+  renderMonthlyAnalysis();
+
+  const salesByProduct = {};
+  sales.forEach(m => {
+    const key = m.productId ?? m.productName;
+    if (!salesByProduct[key]) salesByProduct[key] = { name: m.productName, units: 0, total: 0 };
+    salesByProduct[key].units += m.qty;
+    salesByProduct[key].total += m.total;
+  });
+  const topSelling = Object.values(salesByProduct).sort((a, b) => b.units - a.units).slice(0, 5);
+  const rankClass = ['gold', 'silver', 'bronze', '', ''];
+  document.getElementById('topSelling').innerHTML = topSelling.length === 0
+    ? '<div style="color:var(--muted);font-size:13px;padding:16px 0">Sin ventas registradas</div>'
+    : topSelling.map((p, i) => `
+    <div class="top-product-item">
+      <div class="top-rank ${rankClass[i]}">${i + 1}</div>
+      <div class="top-info"><div class="top-name">${p.name}</div><div class="top-cat">${p.units} unidades vendidas</div></div>
+      <div class="top-sales">${money(p.total)}</div>
+    </div>`).join('');
+
+  const lowStock = products.filter(p => p.stock <= p.minStock).sort((a, b) => a.stock - b.stock).slice(0, 8);
+  document.getElementById('lowStockList').innerHTML = lowStock.length === 0
+    ? '<div style="color:var(--muted);font-size:13px;padding:16px 0">✅ Todo en orden</div>'
+    : lowStock.map(p => `
+    <div class="top-product-item">
+      <span class="stock-badge ${p.stock === 0 ? 'empty' : 'low'}" style="min-width:60px;text-align:center">${p.stock === 0 ? 'Agotado' : p.stock + ' pzas'}</span>
+      <div class="top-info"><div class="top-name">${p.name}</div><div class="top-cat">Mínimo: ${p.minStock} pzas</div></div>
+      <button class="btn-edit" onclick="openEdit(${p.id})" style="white-space:nowrap">Actualizar</button>
+    </div>`).join('');
+
+  const topMargin = products.filter(p => p.cost > 0 && p.price > 0)
+    .sort((a, b) => b.margin - a.margin).slice(0, 5);
+  document.getElementById('topMargin').innerHTML = topMargin.map((p, i) => `
+    <div class="top-product-item">
+      <div class="top-rank ${rankClass[i]}">${i + 1}</div>
+      <div class="top-info"><div class="top-name">${p.name}</div><div class="top-cat">Costo ${money(p.cost)} → Venta ${money(p.price)}</div></div>
+      <div class="top-sales">${p.margin}%</div>
+    </div>`).join('');
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1a5c38;color:white;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,0.2);white-space:nowrap';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+// ── MODAL HELPERS ──
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+
+
+// ── GESTIÓN VIEW ──
+function renderGestion() {
+  const q = (document.getElementById('gestionSearch')?.value || '').toLowerCase().trim();
+  const list = document.getElementById('gestionList');
+  if (!list) return;
+
+  const filtered = products.filter(p =>
+    !q || p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q)
+  ).sort((a,b) => a.name.localeCompare(b.name, 'es', { sensitivity:'base', numeric:true })).slice(0, 50);
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted)">Sin resultados</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(p => `
+    <div style="background:white;border-radius:10px;padding:12px 14px;margin-bottom:8px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+        <div style="font-size:11px;color:var(--muted2);font-family:'DM Mono',monospace">${p.category} · $${p.price} · stock: ${p.stock}</div>
+      </div>
+      <button class="btn-edit" onclick="openRename(${p.id})" style="white-space:nowrap;flex-shrink:0"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar</button>
+    </div>
+  `).join('');
+}
+
+// ── ADD PRODUCT ──
+function openAddModal() {
+  document.getElementById('addName').value = '';
+  document.getElementById('addCost').value = '';
+  document.getElementById('addPrice').value = '';
+  document.getElementById('addStock').value = '0';
+  document.getElementById('addMinStock').value = '3';
+  document.getElementById('addExpiry').value = '';
+  document.getElementById('addModal').classList.add('open');
+  setTimeout(() => document.getElementById('addName').focus(), 300);
+}
+
+async function confirmAdd() {
+  const name = document.getElementById('addName').value.trim().toUpperCase();
+  if (!name) { showToast('⚠️ El nombre es obligatorio'); return; }
+
+  const newId = Math.max(...products.map(p => p.id), 1000) + 1;
+  const cost = parseFloat(document.getElementById('addCost').value) || 0;
+  const price = parseFloat(document.getElementById('addPrice').value) || 0;
+  const margin = price > 0 && cost > 0 ? Math.round((price - cost) / price * 100) : 0;
+
+  const newProduct = {
+    id: newId,
+    name,
+    cost,
+    price,
+    category: document.getElementById('addCategory').value,
+    stock: parseInt(document.getElementById('addStock').value) || 0,
+    minStock: parseInt(document.getElementById('addMinStock').value) || 3,
+    expiry: document.getElementById('addExpiry').value || null,
+    margin,
+    movements: [],
+    isCustom: true
+  };
+
+  products.push(newProduct);
+  await save();
+  render();
+  renderFilters();
+  renderGestion();
+  renderAlerts();
+  closeModal('addModal');
+  showToast('Agregado: ' + name.substring(0, 30));
+}
+
+// ── RENAME/EDIT FULL ──
+function openRename(id) {
+  editingId = id;
+  const p = products.find(x => x.id === id);
+  document.getElementById('renameModalSub').textContent = p.name;
+  document.getElementById('renameName').value = p.name;
+  document.getElementById('renameCost').value = p.cost;
+  document.getElementById('renamePrice').value = p.price;
+  // Set category select
+  const sel = document.getElementById('renameCategory');
+  for (let i = 0; i < sel.options.length; i++) {
+    if (sel.options[i].value === p.category) { sel.selectedIndex = i; break; }
+  }
+  document.getElementById('renameModal').classList.add('open');
+  setTimeout(() => document.getElementById('renameName').focus(), 300);
+}
+
+async function confirmRename() {
+  const p = products.find(x => x.id === editingId);
+  if (!p) return;
+  const newName = document.getElementById('renameName').value.trim().toUpperCase();
+  if (!newName) { showToast('⚠️ El nombre no puede estar vacío'); return; }
+  p.name = newName;
+  p.category = document.getElementById('renameCategory').value;
+  p.cost = parseFloat(document.getElementById('renameCost').value) || p.cost;
+  p.price = parseFloat(document.getElementById('renamePrice').value) || p.price;
+  p.margin = p.price > 0 && p.cost > 0 ? Math.round((p.price - p.cost) / p.price * 100) : 0;
+  await save();
+  render();
+  renderFilters();
+  renderGestion();
+  closeModal('renameModal');
+  showToast('Producto actualizado');
+}
+
+async function confirmDelete() {
+  const p = products.find(x => x.id === editingId);
+  if (!p) return;
+  if (!confirm(`¿Eliminar "${p.name}"?
+
+Esta acción no se puede deshacer.`)) return;
+  products = products.filter(x => x.id !== editingId);
+  await save();
+  render();
+  renderFilters();
+  renderGestion();
+  renderAlerts();
+  closeModal('renameModal');
+  showToast('🗑 Producto eliminado');
+}
+
+// ── EXPORT ──
+function openExportModal() {
+  document.getElementById('exportModal').classList.add('open');
+}
+
+function exportCSV(type) {
+  let csv = '';
+  let filename = '';
+  const now = new Date().toLocaleDateString('es-MX').replace(/\//g, '-');
+
+  if (type === 'ventas') {
+    filename = `ventas-medbeauty-${now}.csv`;
+    csv = 'Fecha,Producto,Cantidad,Precio unitario,Total\n';
+    const sales = movements.filter(m => m.type === 'sale');
+    if (sales.length === 0) { showToast('Sin ventas registradas'); return; }
+    sales.forEach(m => {
+      const fecha = new Date(m.date).toLocaleDateString('es-MX');
+      csv += `"${fecha}","${m.productName}",${m.qty},${m.price},${m.total}\n`;
+    });
+
+  } else if (type === 'inventario') {
+    filename = `inventario-medbeauty-${now}.csv`;
+    csv = 'Producto,Categoria,Stock,Stock minimo,Costo,Precio venta,Margen %,Caducidad\n';
+    products.forEach(p => {
+      const exp = p.expiry ? p.expiry : '';
+      csv += `"${p.name}","${p.category}",${p.stock},${p.minStock},${p.cost},${p.price},${p.margin},"${exp}"\n`;
+    });
+
+  } else if (type === 'resumen') {
+    filename = `resumen-ventas-${now}.csv`;
+    const byProduct = {};
+    movements.filter(m => m.type === 'sale').forEach(m => {
+      if (!byProduct[m.productName]) byProduct[m.productName] = { units: 0, total: 0 };
+      byProduct[m.productName].units += m.qty;
+      byProduct[m.productName].total += m.total;
+    });
+    csv = 'Producto,Unidades vendidas,Total generado\n';
+    Object.entries(byProduct)
+      .sort((a, b) => b[1].units - a[1].units)
+      .forEach(([name, data]) => {
+        csv += `"${name}",${data.units},${data.total}\n`;
+      });
+    if (Object.keys(byProduct).length === 0) { showToast('Sin ventas registradas'); return; }
+
+  } else if (type === 'mensual') {
+    filename = `analisis-mensual-medbeauty-${now}.csv`;
+    const byMonth = {};
+    movements.filter(m => m.type === 'sale').forEach(m => {
+      const k = monthKey(m.date);
+      if (!byMonth[k]) byMonth[k] = { units:0, revenue:0, cost:0 };
+      byMonth[k].units += m.qty;
+      byMonth[k].revenue += m.total;
+      byMonth[k].cost += saleCost(m);
+    });
+    csv = 'Mes,Piezas vendidas,Venta total,Inversion costo,Ganancia bruta,Margen %\n';
+    Object.entries(byMonth).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([k,d]) => {
+      const profit = d.revenue - d.cost;
+      const margin = d.revenue ? (profit/d.revenue*100) : 0;
+      csv += `"${monthLabel(k)}",${d.units},${d.revenue.toFixed(2)},${d.cost.toFixed(2)},${profit.toFixed(2)},${margin.toFixed(1)}\n`;
+    });
+    if (Object.keys(byMonth).length === 0) { showToast('Sin ventas registradas'); return; }
+  }
+
+  // Download
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+  closeModal('exportModal');
+  showToast('Descargado: ' + filename);
+}
+
+// ── OVERRIDE showView to handle new tabs ──
+const _origShowView = showView;
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  event.target.classList.add('active');
+  // Hide FAB on non-inventario views to avoid confusion
+  const fab = document.getElementById('fabWrap');
+  if (fab) fab.style.display = (name === 'inventario' || name === 'productos') ? 'flex' : 'none';
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'movimientos') renderMovements();
+  if (name === 'productos') renderGestion();
+}
+
+
+// ── DELETE FROM EDIT MODAL ──
+async function deleteFromEdit() {
+  const p = products.find(x => x.id === editingId);
+  if (!p) return;
+  if (!confirm('Eliminar "' + p.name + '"?\n\nEsta acción no se puede deshacer.')) return;
+  products = products.filter(x => x.id !== editingId);
+  await save();
+  render();
+  renderFilters();
+  renderGestion();
+  renderAlerts();
+  closeModal('editModal');
+  showToast('Producto eliminado');
+}
+
+// ── START ──
+// Wait for Firebase then init
+function waitForFirebase(cb) {
+  if (window._firebaseReady) { cb(); }
+  else { document.addEventListener('firebaseReady', cb, {once:true}); }
+}
+
+waitForFirebase(async () => {
+  await load();
+  renderFilters();
+  render();
+  renderMovements();
+  renderDashboard();
+  renderAlerts();
+});
+</script>
+
+<!-- MODAL AGREGAR PRODUCTO -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Agregar Producto</div>
+    <div class="modal-sub">El producto se guardará en tu inventario</div>
+    <div class="form-group">
+      <label class="form-label">Nombre del producto *</label>
+      <input type="text" class="form-input" id="addName" placeholder="Ej: AMOXICILINA 500MG (MARCA C/10)">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Categoría</label>
+      <select class="form-input" id="addCategory">
+        <option>Analgésicos y antiinflamatorios</option>
+        <option>Antibióticos y antiinfecciosos</option>
+        <option>Antihistamínicos</option>
+        <option>Antiparasitarios</option>
+        <option>Cardiovascular</option>
+        <option>Corticosteroides</option>
+        <option>Dermatológicos</option>
+        <option>Diabetes</option>
+        <option>Gastroenterología</option>
+        <option>Ginecológicos</option>
+        <option>Hepatológicos</option>
+        <option>Hidratación</option>
+        <option>Homeopaticos</option>
+        <option>Insumos médicos</option>
+        <option>Material de curación</option>
+        <option>Neurológico</option>
+        <option>Oftalmológicos</option>
+        <option>Respiratorio</option>
+        <option>Urológicos</option>
+        <option>Vitaminas y suplementos</option>
+        <option>Aceites y esenciales</option>
+        <option>Diagnóstico</option>
+        <option>Otros</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Precio costo ($)</label>
+        <input type="number" class="form-input" id="addCost" min="0" step="0.01" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Precio venta ($)</label>
+        <input type="number" class="form-input" id="addPrice" min="0" step="0.01" placeholder="0.00">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Stock inicial</label>
+        <input type="number" class="form-input" id="addStock" min="0" value="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Stock mínimo</label>
+        <input type="number" class="form-input" id="addMinStock" min="0" value="3">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Fecha de caducidad</label>
+      <input type="month" class="form-input" id="addExpiry">
+    </div>
+    <button class="btn-primary" onclick="confirmAdd()">+ Agregar producto</button>
+    <button class="btn-secondary" onclick="closeModal('addModal')">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL EDITAR NOMBRE -->
+<div class="modal-overlay" id="renameModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Editar Producto</div>
+    <div class="modal-sub" id="renameModalSub"></div>
+    <div class="form-group">
+      <label class="form-label">Nombre del producto</label>
+      <input type="text" class="form-input" id="renameName">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Categoría</label>
+      <select class="form-input" id="renameCategory">
+        <option>Analgésicos y antiinflamatorios</option>
+        <option>Antibióticos y antiinfecciosos</option>
+        <option>Antihistamínicos</option>
+        <option>Antiparasitarios</option>
+        <option>Cardiovascular</option>
+        <option>Corticosteroides</option>
+        <option>Dermatológicos</option>
+        <option>Diabetes</option>
+        <option>Gastroenterología</option>
+        <option>Ginecológicos</option>
+        <option>Hepatológicos</option>
+        <option>Hidratación</option>
+        <option>Homeopaticos</option>
+        <option>Insumos médicos</option>
+        <option>Material de curación</option>
+        <option>Neurológico</option>
+        <option>Oftalmológicos</option>
+        <option>Respiratorio</option>
+        <option>Urológicos</option>
+        <option>Vitaminas y suplementos</option>
+        <option>Aceites y esenciales</option>
+        <option>Diagnóstico</option>
+        <option>Otros</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Precio costo ($)</label>
+        <input type="number" class="form-input" id="renameCost" min="0" step="0.01">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Precio venta ($)</label>
+        <input type="number" class="form-input" id="renamePrice" min="0" step="0.01">
+      </div>
+    </div>
+    <button class="btn-primary" onclick="confirmRename()">Guardar cambios</button>
+    <button class="btn-danger" onclick="confirmDelete()"><svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> Eliminar producto</button>
+    <button class="btn-secondary" onclick="closeModal('renameModal')">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL EXPORTAR -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Exportar Datos</div>
+    <div class="modal-sub">Elige qué quieres exportar</div>
+
+    <div class="export-option" onclick="exportCSV('ventas')">
+      <div class="export-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+      <div class="export-info">
+        <div class="ei-title">Historial de ventas (CSV)</div>
+        <div class="ei-sub">Fecha, producto, cantidad, precio, total — abre en Excel</div>
+      </div>
+    </div>
+
+    <div class="export-option" onclick="exportCSV('inventario')">
+      <div class="export-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+      <div class="export-info">
+        <div class="ei-title">Inventario actual (CSV)</div>
+        <div class="ei-sub">Todos los productos con stock, costo, precio y margen</div>
+      </div>
+    </div>
+
+    <div class="export-option" onclick="exportCSV('resumen')">
+      <div class="export-icon"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg></div>
+      <div class="export-info">
+        <div class="ei-title">Resumen de ventas por producto (CSV)</div>
+        <div class="ei-sub">Unidades vendidas y total por producto</div>
+      </div>
+    </div>
+
+    <div class="export-option" onclick="exportCSV('mensual')">
+      <div class="export-icon">📅</div>
+      <div class="export-info">
+        <div class="ei-title">Análisis mensual (CSV)</div>
+        <div class="ei-sub">Mes, piezas, ventas, inversión/costo y ganancia bruta</div>
+      </div>
+    </div>
+
+    <button class="btn-secondary" onclick="closeModal('exportModal')">Cerrar</button>
+  </div>
+</div>
+
+</body>
+</html>
